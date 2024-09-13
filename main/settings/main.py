@@ -12,3 +12,5 @@ except ImportError or ModuleNotFoundError:
     print('No Module settings in tails')
 *******
 '''
+
+#STATIC_ROOT = 'staticfiles/'

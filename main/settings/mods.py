@@ -21,6 +21,9 @@ DEBUG = env('DEBUG')
 # exception if SECRET_KEY not in os.environ
 SECRET_KEY = env('SECRET_KEY')
 
+STATIC_ROOT = 'staticfiles/'
+
+
 # Parse database connection url strings
 # like psql://user:pass@127.0.0.1:8458/db
 DATABASES = {
