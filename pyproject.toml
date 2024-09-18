@@ -16,6 +16,9 @@ ruff = "^0.6.4"
 django-stubs = "^5.0.4"
 
 
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.6.5"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
