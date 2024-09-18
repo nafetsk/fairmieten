@@ -35,3 +35,19 @@ to create testdata
 
 ## Test Aggregationen
 open `localhost:8000/aggregationen` for a test bar graph
+
+## Testdaten
+
+You can open the interactive shell with
+```
+poetry run python3 manage.py shell
+```
+Then run 
+```
+from fairmieten.test_data import create_test_data
+create_test_data()
+```
+to create testdata
+
+## Test Aggregationen
+open `localhost:8000/aggregationen` for a test bar graph
