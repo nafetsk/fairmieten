@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from .hello import urls as hello_urls
+import fairmieten.views
 
 #from .hello import views as hello_views
  
@@ -23,6 +24,9 @@ from .hello import urls as hello_urls
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("hello/", include(hello_urls)),
+    path("aggregation/", fairmieten.views.aggregation),
+    path("aggregation/test_chart/", fairmieten.views.test_chart),
+    path("aggregation/data/vorfaelle_pro_jahr/", fairmieten.views.vorfaelle_pro_jahr),
 ]
 
 

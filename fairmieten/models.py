@@ -1,13 +1,21 @@
 from django.db import models
 
 class Diskrimminierungsart(models.Model):
-	id = models.AutoField(primary_key=True)
-	name = models.CharField(max_length=100)
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
+
+
     
 class Diskriminierung(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     typ = models.ForeignKey(Diskrimminierungsart, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 class Loesungsansaetze(models.Model):
     id = models.AutoField(primary_key=True)
