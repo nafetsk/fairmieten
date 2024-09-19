@@ -29,8 +29,9 @@
       </div>
     </header>
 
-    <button hx-get="/aggregation/test_chart" hx-target="#chart-container">Vorfälle pro Jahr als Bardiagramm</button>
-    <button hx-get="/aggregation/diskriminierungsarten" hx-target="#chart-container">Diskriminierungsarten als Bardiagramm</button>
+    {% for chart in charts %}
+        <button hx-get="/aggregation/get_chart?chartURL={{ chart.url }}" hx-target="#chart-container">{{ chart.name }}</button>
+    {% endfor %}
     <div id="chart-container"></div>
   </body>
   

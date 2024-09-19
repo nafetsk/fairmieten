@@ -1,6 +1,6 @@
 import random
 from faker import Faker
-from .models import Diskrimminierungsart, Diskriminierung, Vorgang
+from .models import Diskrimminierungsart, Diskriminierung, Vorgang, Charts
 from datetime import datetime, timedelta
 
 
@@ -78,6 +78,10 @@ def create_test_data():
         vorgang.diskriminierung.set(random.sample(diskriminierungen_list, k=3))
         vorgang.diskriminierungsart.set(random.sample(diskrimminierungsarten_list, k=2))
         vorgaenge.append(vorgang)
+
+    # create charts
+    Charts.objects.create(name="Vorfälle pro Jahr", url="data/vorfaelle_pro_jahr/")
+    Charts.objects.create(name="Vorfälle pro Diskriminierungsart", url="data/diskriminierungsarten/")
     
 
 # Call the function to create test data

@@ -56,5 +56,10 @@ class Item(models.Model):
  
  #TODO: Personendaten ?
     
+class Charts(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    url = models.CharField(max_length=100)
     
-
+    def __str__(self):
+        return self.name
