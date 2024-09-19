@@ -26,7 +26,9 @@ urlpatterns = [
     path("hello/", include(hello_urls)),
     path("aggregation/", fairmieten.views.aggregation),
     path("aggregation/test_chart/", fairmieten.views.test_chart),
+    path("aggregation/diskriminierungsarten/", fairmieten.views.diskriminierungsarten_chart),
     path("aggregation/data/vorfaelle_pro_jahr/", fairmieten.views.vorfaelle_pro_jahr),
+    path("aggregation/data/diskriminierungsarten/", fairmieten.views.diskriminierungsarten),
 ]
 
 
