@@ -1,33 +1,32 @@
+from typing import Dict, Any
 from django.shortcuts import render
+from django.http import HttpRequest, HttpResponse
 from django.http import JsonResponse
 from fairmieten.models import Vorgang, Charts, Diskrimminierungsart
-from django.db import models
 from django.db.models.functions import ExtractYear
 from django.db.models import Count
+from django.db.models.query import QuerySet
 
 
-# Create your views here.
-
-
-def aggregation(request):
+def aggregation(request: HttpRequest) -> HttpResponse:
     # get all charts from database
     charts = Charts.objects.all()
     return render(request, "aggregation.html", {"charts": charts})
 
 
-def get_chart(request):
+def get_chart(request: HttpRequest) -> HttpResponse:
     # get charturl from request
-    chart_url = request.GET.get("chartURL")
+    chart_url: str = request.GET.get("chartURL")
     return render(request, "chart.html", {"chart_url": chart_url})
 
 
-def diskriminierungsarten_chart(request):
+def diskriminierungsarten_chart(request: HttpRequest) -> HttpResponse:
     return render(request, "diskriminierung.html")
 
 
-def vorfaelle_pro_jahr(request):
+def vorfaelle_pro_jahr(request: HttpRequest) -> HttpResponse:
     # get data from database
-    incidents_per_year = (
+    incidents_per_year: QuerySet = (
         Vorgang.objects.annotate(year=ExtractYear("datum_vorfall_von"))
         .values("year")
         .annotate(count=Count("id"))
@@ -35,7 +34,7 @@ def vorfaelle_pro_jahr(request):
     )
 
     # format data for chart.js
-    data = {
+    data: Dict[str, Any] = {
         "chartName": "Vorfälle pro Jahr",
         "chartType": "bar",
         "xAxisName": "Jahr",
@@ -58,14 +57,14 @@ def vorfaelle_pro_jahr(request):
     return JsonResponse(data)
 
 
-def diskriminierungsarten(request):
+def diskriminierungsarten(request: HttpRequest) -> HttpResponse:
     # get data from database
-    diskriminierungsarten_data = Diskrimminierungsart.objects.annotate(
+    diskriminierungsarten_data: QuerySet = Diskrimminierungsart.objects.annotate(
         vorgang_count=Count("vorgang")
     ).values("name", "vorgang_count")
 
     # format data for chart.js
-    data = {
+    data: Dict[str, Any] = {
         "chartName": "Vorfälle pro Diskriminierungsart",
         "chartType": "bar",
         "xAxisName": "Diskriminierungsart",
