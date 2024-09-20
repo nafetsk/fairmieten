@@ -1,5 +1,14 @@
 from django.contrib import admin
-from .models import Diskrimminierungsart, Diskriminierung, Loesungsansaetze, Ergebnis, Vorgang, Intervention, Item, Charts
+from .models import (
+    Diskrimminierungsart,
+    Diskriminierung,
+    Loesungsansaetze,
+    Ergebnis,
+    Vorgang,
+    Intervention,
+    Item,
+    Charts,
+)
 
 
 # Register your models here.

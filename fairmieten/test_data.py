@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 
 fake = Faker()
 
+
 def create_test_data():
     # Create Diskrimminierungsart instances
     diskrimminierungsarten = [
@@ -21,9 +22,10 @@ def create_test_data():
     diskrimminierungsarten_list = []
     for diskrimminierungsart in diskrimminierungsarten:
         Diskrimminierungsart.objects.create(name=diskrimminierungsart)
-        diskrimminierungsarten_list.append(Diskrimminierungsart.objects.filter(name=diskrimminierungsart).first())
+        diskrimminierungsarten_list.append(
+            Diskrimminierungsart.objects.filter(name=diskrimminierungsart).first()
+        )
 
-    
     # Create Diskriminierung instances
     diskriminierungen = {
         "Person of Color": "Rassismus",
@@ -54,26 +56,34 @@ def create_test_data():
     for diskriminierung, diskrimminierungsart in diskriminierungen.items():
         typ = Diskrimminierungsart.objects.filter(name=diskrimminierungsart).first()
         Diskriminierung.objects.create(name=diskriminierung, typ=typ)
-        diskriminierungen_list.append(Diskriminierung.objects.filter(name=diskriminierung).first())
-    
+        diskriminierungen_list.append(
+            Diskriminierung.objects.filter(name=diskriminierung).first()
+        )
+
     # Create Vorgang instances
 
     # Calculate the date range for the last 4 years
     end_date = datetime.today()
-    start_date = end_date - timedelta(days=4*365)
-    #diskriminierungen_list = list(diskriminierungen.values())
+    start_date = end_date - timedelta(days=4 * 365)
+    # diskriminierungen_list = list(diskriminierungen.values())
 
     vorgaenge = []
     for _ in range(20):
         vorgang = Vorgang.objects.create(
-            datum_kontakaufnahme=fake.date_between(start_date=start_date, end_date=end_date),
-            datum_vorfall_von=fake.date_between(start_date=start_date, end_date=end_date),
+            datum_kontakaufnahme=fake.date_between(
+                start_date=start_date, end_date=end_date
+            ),
+            datum_vorfall_von=fake.date_between(
+                start_date=start_date, end_date=end_date
+            ),
             uhrzeit_vorfall=fake.time(),
-            datum_vorfall_bis=fake.date_between(start_date=start_date, end_date=end_date),
+            datum_vorfall_bis=fake.date_between(
+                start_date=start_date, end_date=end_date
+            ),
             sprache=fake.language_name(),
             beschreibung=fake.text(),
             plz=fake.postcode(),
-            bezirk_item=fake.city()
+            bezirk_item=fake.city(),
         )
         vorgang.diskriminierung.set(random.sample(diskriminierungen_list, k=3))
         vorgang.diskriminierungsart.set(random.sample(diskrimminierungsarten_list, k=2))
@@ -81,8 +91,10 @@ def create_test_data():
 
     # create charts
     Charts.objects.create(name="Vorfälle pro Jahr", url="data/vorfaelle_pro_jahr/")
-    Charts.objects.create(name="Vorfälle pro Diskriminierungsart", url="data/diskriminierungsarten/")
-    
+    Charts.objects.create(
+        name="Vorfälle pro Diskriminierungsart", url="data/diskriminierungsarten/"
+    )
+
 
 # Call the function to create test data
 create_test_data()
