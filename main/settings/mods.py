@@ -1,4 +1,5 @@
-import os, environ
+import os
+import environ
 from .main import INSTALLED_APPS, MIDDLEWARE, BASE_DIR
 
 INSTALLED_APPS += ["environ", "main.hello", "fairmieten"]

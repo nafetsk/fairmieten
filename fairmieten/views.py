@@ -60,7 +60,7 @@ def vorfaelle_pro_jahr(request: HttpRequest) -> HttpResponse:
 def diskriminierungsarten(request: HttpRequest) -> HttpResponse:
     # get data from database
     diskriminierungsarten_data: QuerySet = Diskrimminierungsart.objects.annotate(
-        vorgang_count=Count("vorgang")
+        vorgang_count=Count("diskriminierung__vorgang")
     ).values("name", "vorgang_count")
 
     # format data for chart.js

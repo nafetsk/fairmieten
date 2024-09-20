@@ -39,7 +39,6 @@ class Vorgang(models.Model):
     plz = models.IntegerField()
     bezirk_item = models.CharField(max_length=100)
     diskriminierung = models.ManyToManyField(Diskriminierung, blank=True)
-    diskriminierungsart = models.ManyToManyField(Diskrimminierungsart, blank=True)
     loesungsansaetze = models.ManyToManyField(Loesungsansaetze, blank=True)
     ergebnis = models.ManyToManyField(Ergebnis, blank=True)
 
