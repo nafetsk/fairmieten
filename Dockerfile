@@ -18,3 +18,5 @@ RUN poetry install --no-root
 # Copy the project code into the container
 COPY . /app/
 COPY main/.env.template main/.env
+
+CMD poetry run python3 manage.py runserver
