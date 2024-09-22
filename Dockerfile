@@ -19,6 +19,6 @@ RUN poetry install --no-root
 COPY . /app/
 COPY main/.env.template main/.env
 
-EXPOSE 80
+EXPOSE 8000
 
 CMD poetry run python3 manage.py runserver
