@@ -13,12 +13,14 @@ WORKDIR /app
 RUN python3 -m pip install poetry
 COPY pyproject.toml poetry.lock* /app/
 RUN poetry install --no-root
-#RUN poetry run python3 manage.py migrate
 
 # Copy the project code into the container
 COPY . /app/
 COPY main/.env.template main/.env
+RUN poetry run python3 manage.py migrate
 
-EXPOSE 8000
 
-CMD poetry run python3 manage.py runserver
+EXPOSE 8001
+
+ENTRYPOINT ["poetry", "run", "python3" ,"manage.py", "runserver"]
+CMD ["0.0.0.0:8001"]

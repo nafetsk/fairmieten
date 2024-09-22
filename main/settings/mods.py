@@ -1,6 +1,7 @@
 import os
 import environ
-from .main import INSTALLED_APPS, MIDDLEWARE, BASE_DIR
+from .main import INSTALLED_APPS, BASE_DIR
+
 
 INSTALLED_APPS += ["environ", "main.hello", "fairmieten"]
 
@@ -12,8 +13,11 @@ env = environ.Env(
 # Take environment variables from .env file
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
+
 # False if not in os.environ because of casting above
 DEBUG = env("DEBUG")
+
+ALLOWED_HOSTS = ["fairmieten.ecord.de", "localhost", "127.0.0.1"]
 
 # Raises Django's ImproperlyConfigured
 # exception if SECRET_KEY not in os.environ
