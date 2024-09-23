@@ -86,7 +86,6 @@ def create_test_data():
             bezirk_item=fake.city(),
         )
         vorgang.diskriminierung.set(random.sample(diskriminierungen_list, k=3))
-        vorgang.diskriminierungsart.set(random.sample(diskrimminierungsarten_list, k=2))
         vorgaenge.append(vorgang)
 
     # create charts
