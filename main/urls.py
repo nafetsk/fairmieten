@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from .hello import urls as hello_urls
 import fairmieten.views
+import fairmieten.form_views
 
 # from .hello import views as hello_views
 
@@ -36,4 +37,5 @@ urlpatterns = [
         "aggregation/data/diskriminierungsarten/",
         fairmieten.views.diskriminierungsarten,
     ),
+    path('vorgang/neu/', fairmieten.form_views.vorgang_erstellen, name='vorgang_erstellen'),
 ]
