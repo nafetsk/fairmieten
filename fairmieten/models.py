@@ -1,21 +1,32 @@
 from django.db import models
 
+
 class Diskrimminierungsart(models.Model):
-	id = models.AutoField(primary_key=True)
-	name = models.CharField(max_length=100)
-    
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
 class Diskriminierung(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     typ = models.ForeignKey(Diskrimminierungsart, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
+
 class Loesungsansaetze(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
 
+
 class Ergebnis(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
+
 
 class Vorgang(models.Model):
     id = models.AutoField(primary_key=True)
@@ -28,25 +39,32 @@ class Vorgang(models.Model):
     plz = models.IntegerField()
     bezirk_item = models.CharField(max_length=100)
     diskriminierung = models.ManyToManyField(Diskriminierung, blank=True)
-    diskriminierungsart = models.ManyToManyField(Diskrimminierungsart, blank=True)
     loesungsansaetze = models.ManyToManyField(Loesungsansaetze, blank=True)
     ergebnis = models.ManyToManyField(Ergebnis, blank=True)
+
 
 class Intervention(models.Model):
     id = models.AutoField(primary_key=True)
     vorgang_id = models.ForeignKey(Vorgang, on_delete=models.CASCADE)
     datum = models.DateField()
     form_item = models.CharField(max_length=100)
-    bemerkung = models.TextField()  
-    
-class Item(models.Model):
-	id = models.AutoField(primary_key=True)
-	key = models.CharField(max_length=100) #TODO: bessere Datentyp? 
-	value = models.CharField(max_length=100)
- 
- #TODO: Beweise anlegen
- 
- #TODO: Personendaten ?
-    
-    
+    bemerkung = models.TextField()
 
+
+class Item(models.Model):
+    id = models.AutoField(primary_key=True)
+    key = models.CharField(max_length=100)  # TODO: bessere Datentyp?
+    value = models.CharField(max_length=100)
+
+    # TODO: Beweise anlegen
+
+    # TODO: Personendaten ?
+
+
+class Charts(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    url = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name

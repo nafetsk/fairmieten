@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block additional_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+{% block additional_css %}
+  <link rel="stylesheet" href="{% static 'css/styles_aggregation.css' %}" />
+{% endblock %}
+
+{% block content %}
+{% for chart in charts %}
+        <button hx-get="/aggregation/get_chart?chartURL={{ chart.url }}" hx-target="#chart-container">{{ chart.name }}</button>
+    {% endfor %}
+    <div id="chart-container"></div>
+{% endblock %}

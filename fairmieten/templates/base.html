@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <script
+      src="https://unpkg.com/htmx.org@2.0.2"
+      integrity="sha384-Y7hw+L/jvKeWIRRkqWYfPcvVxHzVzn5REgzbawhxAuQGwX1XWe70vji+VSeHOThJ"
+      crossorigin="anonymous"
+    ></script>
+    {% block additional_js %}
+	{% endblock %}
+	{% block additional_css %}
+    {% endblock %}
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+    />
+  </head>
+  <body>
+    <header>
+		{% include 'header.html' %}
+    </header>
+	<main>
+        {% block content %}
+        <!-- Inhalte der Unterseiten werden hier eingefügt -->
+        {% endblock %}
+    </main>
+
+</body>
+  
+</html>
+
+

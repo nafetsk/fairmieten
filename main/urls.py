@@ -13,18 +13,27 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, include
 from .hello import urls as hello_urls
+import fairmieten.views
 
-#from .hello import views as hello_views
- 
+# from .hello import views as hello_views
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("hello/", include(hello_urls)),
+    path("aggregation/", fairmieten.views.aggregation),
+    path("aggregation/get_chart/", fairmieten.views.get_chart),
+    path(
+        "aggregation/diskriminierungsarten/",
+        fairmieten.views.diskriminierungsarten_chart,
+    ),
+    path("aggregation/data/vorfaelle_pro_jahr/", fairmieten.views.vorfaelle_pro_jahr),
+    path(
+        "aggregation/data/diskriminierungsarten/",
+        fairmieten.views.diskriminierungsarten,
+    ),
 ]
-
-
-
-

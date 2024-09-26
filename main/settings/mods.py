@@ -1,11 +1,9 @@
-import os, environ
-from .main import INSTALLED_APPS, MIDDLEWARE, BASE_DIR
+import os
+import environ
+from .main import INSTALLED_APPS, BASE_DIR
 
-INSTALLED_APPS += [
-    "environ",
-    "main.hello",
-    "fairmieten"
-]
+
+INSTALLED_APPS += ["environ", "fairmieten", "main.hello"]
 
 env = environ.Env(
     # set casting, default value
@@ -13,16 +11,19 @@ env = environ.Env(
 )
 
 # Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+
 
 # False if not in os.environ because of casting above
-DEBUG = env('DEBUG')
+DEBUG = env("DEBUG")
+
+ALLOWED_HOSTS = ["fairmieten.ecord.de", "localhost", "127.0.0.1"]
 
 # Raises Django's ImproperlyConfigured
 # exception if SECRET_KEY not in os.environ
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env("SECRET_KEY")
 
-STATIC_ROOT = 'staticfiles/'
+STATIC_ROOT = "staticfiles/"
 
 
 # Parse database connection url strings
@@ -30,8 +31,5 @@ STATIC_ROOT = 'staticfiles/'
 DATABASES = {
     # read os.environ['DATABASE_URL'] and raises
     # ImproperlyConfigured exception if not found
-    'default': env.db_url(
-        'DATABASE_URL',
-        default='sqlite:////tmp/my-tmp-sqlite.db'
-    )
+    "default": env.db_url("DATABASE_URL", default="sqlite:////tmp/my-tmp-sqlite.db")
 }
