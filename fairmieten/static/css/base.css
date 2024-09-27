@@ -21,6 +21,7 @@ footer{
 .with-sidebar {
     display: flex;
     height: 100vh; /* Volle Bildschirmhöhe */
+	width: 100%;
 }
 
 .sidebar {
@@ -28,13 +29,9 @@ footer{
     overflow-y: auto; /* Falls die Seitenleiste länger ist als der Bildschirm */
 }
 
-.inner-content-wrapper {
-    flex-grow: 1;
-    overflow: hidden; /* Verhindert Scrollen auf dieser Ebene */
-}
-
 .inner-content {
     height: 100%;
+	width: 100%;
     overflow-y: auto; /* Ermöglicht Scrollen innerhalb dieses Bereichs */
     padding: 20px;
     box-sizing: border-box;

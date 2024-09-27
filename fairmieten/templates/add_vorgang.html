@@ -1,16 +1,21 @@
+
 <div class="with-sidebar">
-    <aside class="sidebar" id="sidebar">
-      <h3>Seitenleiste</h3>
+	<aside class="sidebar" id="sidebar">
       <ul>
-        {% for key, value in form_liste %}
-        <li>{{ value }}</li>
-        {% endfor %}
-      </ul>
+		{% for key, value in form_liste %}
+		<li>
+			<a href="#" hx-get="{% url key|add:'_form'  %}" 
+				hx-target="#htmx-inner-content" hx-swap="beforeend">
+				{{ value }}
+				{{forloop.counter1}}
+			</a>
+		</li>
+	{% endfor %}
+		  </ul>
     </aside>
-    
+
     <div class="inner-content" id="htmx-inner-content">
-      <h2>Neuen Vorgang erstellen</h2>
-      <form method="post">
+		<form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Speichern</button>
