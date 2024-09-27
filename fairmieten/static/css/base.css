@@ -1,0 +1,20 @@
+.header{
+	padding: 0rem;
+	position: sticky;
+	top: 0;
+	z-index: 1000;
+	background-color: white;
+	margin-top: 1rem;
+	padding-bottom: 1rem;
+	height: 70px;
+}
+.header li{
+	padding-top: 0;
+}
+main{
+	padding: 1rem;
+	background-color: #eefbfb;
+}
+footer{
+	background-image: url('../img/berlin_satellit.png');
+}

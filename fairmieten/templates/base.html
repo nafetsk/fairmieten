@@ -11,21 +11,29 @@
 	{% endblock %}
 	{% block additional_css %}
     {% endblock %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
     />
   </head>
   <body>
-    <header>
-		{% include 'header.html' %}
-    </header>
+    <div class="header">
+      <div class="container">
+        {% include 'header.html' %}
+      </div>
+    </div>
 	<main>
+    <div class="container">
         {% block content %}
         <!-- Inhalte der Unterseiten werden hier eingefügt -->
         {% endblock %}
-    </main>
-
+    </div>
+  </main>
+  <footer>
+    {% include 'footer.html' %}
+  </footer>
 </body>
   
 </html>

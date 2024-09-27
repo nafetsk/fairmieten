@@ -1,11 +1,23 @@
 {% load static %}
-<div class="header-left">
-	<img src="{% static 'logo/logo.jpg' %}" alt="Logo" />
-	<!-- Logo Image -->
-	<a href="/aggregation">Startseite</a>
-	<a href="/aggregation">Aggregation</a>
-  </div>
-  <div class="header-right">
-	<span>Stefan Klotz</span>
-	<a href="logout.html">Abmelden</a>
-  </div>
+<nav>
+<ul>
+	<li><img src="{% static 'logo/logo_rund.svg' %}" alt="Logo" /></li>
+</ul>
+<ul class="sticky">
+	<li>
+		<a href="/vorgang">Vorgänge</a>
+	</li>
+	<li>
+		<a href="/vorgang/neu">Vorgang erstellen</a>
+	</li>
+	<li>
+		<a href="/aggregation">Diagramme</a>
+	</li>
+	<li>
+		<span>Stefan Klotz</span>
+	</li>
+	<li>
+		<a href="/logout">Abmelden</a>
+	</li>
+</ul>
+</nav>
