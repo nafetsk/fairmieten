@@ -8,6 +8,8 @@ from .models import (
     Intervention,
     Item,
     Charts,
+    Person,
+    Verursacher,
 )
 
 
@@ -20,3 +22,5 @@ admin.site.register(Vorgang)
 admin.site.register(Intervention)
 admin.site.register(Item)
 admin.site.register(Charts)
+admin.site.register(Person)
+admin.site.register(Verursacher)

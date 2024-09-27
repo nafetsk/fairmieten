@@ -20,10 +20,6 @@ def get_chart(request: HttpRequest) -> HttpResponse:
     return render(request, "chart.html", {"chart_url": chart_url})
 
 
-def diskriminierungsarten_chart(request: HttpRequest) -> HttpResponse:
-    return render(request, "diskriminierung.html")
-
-
 def vorfaelle_pro_jahr(request: HttpRequest) -> HttpResponse:
     # get data from database
     incidents_per_year: QuerySet = (

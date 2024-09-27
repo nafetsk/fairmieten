@@ -34,7 +34,9 @@ class Person(models.Model):
 class Vorgang(models.Model):
     id = models.AutoField(primary_key=True)
     fallnummer = models.IntegerField(null=True, blank=True)
+    vorgangstyp_item = models.CharField(max_length=100, null=True, blank=True) # allgemeine Beratung, Meldung, Fallbetreuung
     datum_kontakaufnahme = models.DateField(null=True, blank=True)
+    kontakaufnahme_durch_item = models.CharField(max_length=100, null=True, blank=True) # (Betroffene Person, beschuldigte Person, unbeteiligte Person)
     datum_vorfall_von = models.DateField(null=True, blank=True)
     datum_vorfall_bis = models.DateField(null=True, blank=True)
     sprache = models.CharField(max_length=100)
@@ -44,6 +46,11 @@ class Vorgang(models.Model):
     loesungsansaetze = models.ManyToManyField(Loesungsansaetze, blank=True)
     ergebnis = models.ManyToManyField(Ergebnis, blank=True)
     person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+
+# TODO: es fehlt noch "Wer ist Betroffen", 
+# Träger Institution?, 
+# Prozesskostenübernahme?,
+# Relevante Rechtsbeieiche
 
 # Verursacher
 class Verursacher(models.Model):
