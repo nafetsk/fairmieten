@@ -18,3 +18,24 @@ main{
 footer{
 	background-image: url('../img/berlin_satellit.png');
 }
+.with-sidebar {
+    display: flex;
+    height: 100vh; /* Volle Bildschirmhöhe */
+}
+
+.sidebar {
+    width: 25%; /* oder eine feste Breite wie 250px */
+    overflow-y: auto; /* Falls die Seitenleiste länger ist als der Bildschirm */
+}
+
+.inner-content-wrapper {
+    flex-grow: 1;
+    overflow: hidden; /* Verhindert Scrollen auf dieser Ebene */
+}
+
+.inner-content {
+    height: 100%;
+    overflow-y: auto; /* Ermöglicht Scrollen innerhalb dieses Bereichs */
+    padding: 20px;
+    box-sizing: border-box;
+}
