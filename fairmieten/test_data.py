@@ -76,13 +76,11 @@ def create_test_data():
             datum_vorfall_von=fake.date_between(
                 start_date=start_date, end_date=end_date
             ),
-            uhrzeit_vorfall=fake.time(),
             datum_vorfall_bis=fake.date_between(
                 start_date=start_date, end_date=end_date
             ),
             sprache=fake.language_name(),
             beschreibung=fake.text(),
-            plz=fake.postcode(),
             bezirk_item=fake.city(),
         )
         vorgang.diskriminierung.set(random.sample(diskriminierungen_list, k=3))

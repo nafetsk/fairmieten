@@ -7,11 +7,9 @@ class VorgangForm(forms.ModelForm):
         fields = [
             'datum_kontakaufnahme',
             'datum_vorfall_von',
-            'uhrzeit_vorfall',
             'datum_vorfall_bis',
             'sprache',
             'beschreibung',
-            'plz',
             'bezirk_item',
             'diskriminierung',
             'loesungsansaetze',
@@ -21,5 +19,4 @@ class VorgangForm(forms.ModelForm):
             'datum_kontakaufnahme': forms.DateInput(attrs={'type': 'date'}),
             'datum_vorfall_von': forms.DateInput(attrs={'type': 'date'}),
             'datum_vorfall_bis': forms.DateInput(attrs={'type': 'date'}),
-            'uhrzeit_vorfall': forms.TimeInput(attrs={'type': 'time'}),
         }
