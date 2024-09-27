@@ -34,4 +34,6 @@ urlpatterns = [
     path('vorgang/allgemein/', fairmieten.form_views.vorgang_form, name='vorgang_form'),
     path('vorgang/person', fairmieten.form_views.person_form, name='person_form'),
     path('vorgang/diskriminierung', fairmieten.form_views.diskriminierung_form, name='diskriminierung_form'),
+    path('', fairmieten.views.home, name='home'),
+
 ]

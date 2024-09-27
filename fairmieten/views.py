@@ -7,6 +7,8 @@ from django.db.models.functions import ExtractYear
 from django.db.models import Count
 from django.db.models.query import QuerySet
 
+def home(request: HttpRequest) -> HttpResponse:
+    return render(request, "home.html")
 
 def aggregation(request: HttpRequest) -> HttpResponse:
     # get all charts from database
