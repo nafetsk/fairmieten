@@ -1,6 +1,13 @@
 import random
 from faker import Faker
-from .models import Diskrimminierungsart, Diskriminierung, Vorgang, Charts
+from .models import (
+    Diskrimminierungsart,
+    Diskriminierung,
+    Vorgang,
+    Charts,
+    Loesungsansaetze,
+    Ergebnis,
+)
 from datetime import datetime, timedelta
 
 
@@ -8,6 +15,14 @@ fake = Faker()
 
 
 def create_test_data():
+    # Clear entries from each model
+    Vorgang.objects.all().delete()
+    Diskriminierung.objects.all().delete()
+    Loesungsansaetze.objects.all().delete()
+    Ergebnis.objects.all().delete() 
+    Charts.objects.all().delete()
+
+
     # Create Diskrimminierungsart instances
     diskrimminierungsarten = [
         "Rassismus",
@@ -60,6 +75,39 @@ def create_test_data():
             Diskriminierung.objects.filter(name=diskriminierung).first()
         )
 
+    # create Loesungsansaetze instances
+    loesungsansaetze = [
+        "Nachbarschaftsverhältnis verbessern",
+        "Entschuldigung",
+        "gütliche Einigung",
+        "juristische Beratung",
+        "Mediation",
+        "Schlichtung",
+        "Schiedsverfahren",
+        "gerichtliche Klärung",
+    ]
+    loesungsansaetze_list = []
+    for loesungsansatz in loesungsansaetze:
+        Loesungsansaetze.objects.create(name=loesungsansatz)
+        loesungsansaetze_list.append(
+            Loesungsansaetze.objects.filter(name=loesungsansatz).first()
+        )
+
+    # create Ergebnis instances
+    ergebnisse = [
+        "Entschuldigung",
+        "gütliche Einigung",
+        "gerichtliche Klärung",
+        "Mediation",
+        "Schlichtung",
+        "Schiedsverfahren",
+    ]
+    ergebnisse_list = []
+    for ergebnis in ergebnisse:
+        Ergebnis.objects.create(name=ergebnis)
+        ergebnisse_list.append(Ergebnis.objects.filter(name=ergebnis).first())
+
+
     # Create Vorgang instances
 
     # Calculate the date range for the last 4 years
@@ -79,17 +127,76 @@ def create_test_data():
             datum_vorfall_bis=fake.date_between(
                 start_date=start_date, end_date=end_date
             ),
-            sprache=fake.language_name(),
+            kontakaufnahme_durch_item=fake.random_element(
+                elements=(
+                    "Betroffene Person",
+                    "beschuldigte Person",
+                    "unbeteiligte Person",
+                )
+            ),
+            sprache=fake.random_element(
+                elements=(
+                    "Deutsch",
+                    "Englisch",
+                    "Französisch",
+                    "Arabisch",
+                )
+            ),
             beschreibung=fake.text(),
-            bezirk_item=fake.city(),
+            bezirk_item=fake.random_element(
+                elements=(
+                    "Mitte",
+                    "Friedrichshain-Kreuzberg",
+                    "Pankow",
+                    "Charlottenburg-Wilmersdorf",
+                    "Spandau",
+                    "Steglitz-Zehlendorf",
+                    "Tempelhof-Schöneberg",
+                    "Neukölln",
+                    "Treptow-Köpenick",
+                    "Marzahn-Hellersdorf",
+                    "Lichtenberg",
+                    "Reinickendorf",
+                )
+            ),
         )
+
         vorgang.diskriminierung.set(random.sample(diskriminierungen_list, k=3))
-        vorgaenge.append(vorgang)
+        vorgang.loesungsansaetze.set(random.sample(loesungsansaetze_list, k=2))
+        vorgang.ergebnis.set(random.sample(ergebnisse_list, k=1))
+    
+    vorgaenge.append(vorgang)
 
     # create charts
-    Charts.objects.create(name="Vorfälle pro Jahr", url="data/vorfaelle_pro_jahr/")
     Charts.objects.create(
-        name="Vorfälle pro Diskriminierungsart", url="data/diskriminierungsarten/"
+        name="Vorfälle pro Sprache",
+        description="Vorfälle pro Sprache Beschreibung",
+        variable="sprache",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Bezirk",
+        description="Vorfälle pro Bezirk Beschreibung",
+        variable="bezirk_item",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Diskriminierung",
+        description="Vorfälle pro Diskriminierung Beschreibung",
+        variable="diskriminierung",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Kontaktaufnahme",
+        description="Vorfälle pro Kontaktaufnahme Beschreibung",
+        variable="kontakaufnahme_durch_item",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Lösungsansatz",
+        description="Vorfälle pro Lösungsansatz Beschreibung",
+        variable="loesungsansaetze",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Ergebnis",
+        description="Vorfälle pro Ergebnis Beschreibung",
+        variable="ergebnis",
     )
 
 

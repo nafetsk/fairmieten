@@ -14,11 +14,44 @@ def aggregation(request: HttpRequest) -> HttpResponse:
     return render(request, "aggregation.html", {"charts": charts})
 
 
-def get_chart(request: HttpRequest) -> HttpResponse:
+def get_chart(request: HttpRequest, id: int) -> HttpResponse:
     # get charturl from request
-    chart_url: str = request.GET.get("chartURL")
+    
+    chart_url = "data/" + str(id) + "/"
     return render(request, "chart.html", {"chart_url": chart_url})
 
+def get_data(request: HttpRequest, id: int) -> HttpResponse:
+    # get Chart by id
+    chart = Charts.objects.get(id=id)
+
+    # get data grouped by the specified variable
+    incidents_per_variable: QuerySet = (
+        Vorgang.objects.values(chart.variable)
+        .annotate(count=Count('id'))
+        .order_by(chart.variable)
+    )
+
+    data: Dict[str, Any] = {
+        "chartName": chart.name,
+        "chartType": "bar",
+        "xAxisName": chart.variable,
+        "yAxisName": "Anzahl Vorfälle",
+        "labels": [
+            incident[chart.variable] for incident in incidents_per_variable
+        ],  # Years on x-axis
+        "datasets": [
+            {
+                "label": "Anzahl Vorfälle",
+                "data": [
+                    incident["count"] for incident in incidents_per_variable
+                ],  # Count of incidents on y-axis
+                "backgroundColor": "rgba(255, 99, 132, 0.2)",  # Bar color
+                "borderColor": "rgba(255, 99, 132, 1)",  # Border color
+                "borderWidth": 1,
+            }
+        ],
+    }
+    return JsonResponse(data)
 
 def vorfaelle_pro_jahr(request: HttpRequest) -> HttpResponse:
     # get data from database

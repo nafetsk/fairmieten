@@ -1,6 +1,18 @@
 {% load static %}
 
 <canvas id="chart"></canvas>
+<div>
+    <h3>Daten als Tabelle</h3>
+    <table id="dataTable" border="1">
+        <thead>
+            <tr>
+                <!-- Empty for now; will be populated by JavaScript -->
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
 
 <script>
     var chartURL = "{{ chart_url }}"
@@ -43,6 +55,40 @@
                 }
             }
         });
+    // Dynamically set axis names in the table header
+    const tableHeadRow = document.querySelector('#dataTable thead tr');
+        
+        // Create and append the X-axis name header (e.g., Year)
+        const xAxisHeader = document.createElement('th');
+        xAxisHeader.textContent = data.xAxisName;  // Set X-axis name from data
+        tableHeadRow.appendChild(xAxisHeader);
+
+        // Create and append the Y-axis name header (chart dataset name)
+        const yAxisHeader = document.createElement('th');
+        yAxisHeader.textContent = data.chartName;  // Set Y-axis name (chart name) from data
+        tableHeadRow.appendChild(yAxisHeader);
+
+        // Populate the table body with data
+        const dataTableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+        
+        data.labels.forEach((label, index) => {
+            const row = document.createElement('tr');
+
+            // Add label (e.g., year) to the first column
+            const labelCell = document.createElement('td');
+            labelCell.textContent = label;
+            row.appendChild(labelCell);
+
+            // Add data value to the second column
+            const valueCell = document.createElement('td');
+            valueCell.textContent = data.datasets[0].data[index];
+            row.appendChild(valueCell);
+
+            // Append row to the table body
+            dataTableBody.appendChild(row);
+        });
     })
     .catch(error => console.error('Error fetching data:', error));
+
+
 </script>

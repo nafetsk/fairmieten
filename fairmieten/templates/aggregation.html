@@ -2,14 +2,48 @@
 {% load static %}
 {% block additional_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const select = document.getElementById('chart-select');
+      const von = document.getElementById('von');
+      const bis = document.getElementById('bis');
+
+      select.addEventListener('change', function() {
+          const chartId = this.value;
+          const vonValue = von.value;
+          const bisValue = bis.value;
+          const url = `/aggregation/get_chart/${chartId}?von=${vonValue}&bis=${bisValue}`;
+          // nur zum Debuggen
+          console.log(`Setting hx-get to: ${url}`); 
+          // das hier ist der eigentliche AJAX-Request, den müssen wir nur manuell auslösen
+          // weil HTMX darauf sonst nicht klar kommt
+          htmx.ajax('GET', url, { target: '#chart-container' });
+      });
+  });
+  </script>
 {% endblock %}
 {% block additional_css %}
   <link rel="stylesheet" href="{% static 'css/styles_aggregation.css' %}" />
 {% endblock %}
 
 {% block content %}
-{% for chart in charts %}
-        <button hx-get="/aggregation/get_chart?chartURL={{ chart.url }}" hx-target="#chart-container">{{ chart.name }}</button>
+
+<div>
+  <label for="von">Von:</label>
+  <input type="date" id="von" name="von">
+  
+  <label for="bis">Bis:</label>
+  <input type="date" id="bis" name="bis">
+</div>
+
+<div>
+  <label for="chart-select">Select Chart:</label>
+  <select id="chart-select" name="chart-select">
+    <option value="">--Select a Chart--</option>
+    {% for chart in charts %}
+      <option value="{{ chart.id }}">{{ chart.name }}</option>
     {% endfor %}
+  </select>
+</div>
     <div id="chart-container"></div>
 {% endblock %}

@@ -75,8 +75,7 @@ class Item(models.Model):
 
 class Charts(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    url = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
+    type = models.IntegerField(null=True, blank=True)
+    name = models.CharField(max_length=100, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    variable = models.CharField(max_length=100, null=True, blank=True)
