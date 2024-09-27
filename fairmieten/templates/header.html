@@ -8,8 +8,11 @@
 		<a href="/vorgang">Vorgänge</a>
 	</li>
 	<li>
-		<a href="/vorgang/neu">Vorgang erstellen</a>
-	</li>
+		<a href="/vorgang/neu/" hx-get="/vorgang/neu/"
+		hx-target="#htmx-content"
+		hx-swap="innerHTML">
+	   Neuen Vorgang erstellen
+	 </a>	</li>
 	<li>
 		<a href="/aggregation">Diagramme</a>
 	</li>

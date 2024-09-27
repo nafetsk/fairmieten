@@ -1,10 +1,19 @@
-{% extends "base.html" %}
-
-{% block content %}
-<h2>Neuen Vorgang erstellen</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Speichern</button>
-</form>
-{% endblock %}
+<div class="with-sidebar">
+    <aside class="sidebar" id="sidebar">
+      <h3>Seitenleiste</h3>
+      <ul>
+        {% for key, value in form_liste %}
+        <li>{{ value }}</li>
+        {% endfor %}
+      </ul>
+    </aside>
+    
+    <div class="inner-content" id="htmx-inner-content">
+      <h2>Neuen Vorgang erstellen</h2>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Speichern</button>
+      </form>
+    </div>
+  </div>
