@@ -4,22 +4,16 @@ from .forms import PersonForm, VorgangForm
 def vorgang_liste(request):
     return render(request, 'vorgang_liste.html')
 
+form_liste = [
+    {'key':'vorgang', 'label':'Allgemein', 'form': VorgangForm},
+    {'key':'person', 'label':'Person', 'form': PersonForm},
+    {'key':'diskriminierung', 'label':'Falltypologie', 'form': PersonForm}
+]
+
 
 def vorgang_erstellen(request):
-    if request.method == 'POST':
-        form = VorgangForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('vorgang_liste')  # Ersetzen Sie 'vorgang_liste' durch Ihre tatsächliche URL
-    else:
-        form = VorgangForm()
-    return render(request, 'add_vorgang.html', {'form': form, 'form_liste': form_liste})
+    return render(request, 'add_vorgang.html', {'form_liste': form_liste})
 
-form_liste = [
-    ('vorgang', 'Allgemein'),
-    ('person', 'Person'),
-    ('diskriminierung', 'Falltypologie')
-]
 
 def vorgang_form(request):
 	if request.method == 'POST':
