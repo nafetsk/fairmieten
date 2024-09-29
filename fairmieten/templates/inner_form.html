@@ -1,4 +1,8 @@
-<form method="post">
+<form id="{{item_key}}_form" hx-post="{% url 'save_form' form_nr %}?id={{form.instance.id}}" hx-trigger="submit"
+  hx-target="#{{item_key}}_form" hx-swap="outerHTML">
+  <span>{{uhrzeit}}</span>
   {% csrf_token %}
+  <input name="id" value="{{form.instance.id}}" hidden/>
   {{ form.as_p }}
+  <button type="submit">Absenden</button>
 </form>

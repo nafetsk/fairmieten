@@ -5,6 +5,7 @@ class VorgangForm(forms.ModelForm):
     class Meta:
         model = Vorgang
         fields = [
+            "id",
             "fallnummer",
             "kontakaufnahme_durch_item",
             'datum_kontakaufnahme',
