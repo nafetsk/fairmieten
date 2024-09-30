@@ -25,12 +25,6 @@ class Ergebnis(models.Model):
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
     name = models.CharField(max_length=100)
 
-# Betroffene Person
-class Person(models.Model): 
-    id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
-    alter_item = models.CharField(max_length=100) # String weil Kohorten
-    anzahl_kinder = models.IntegerField(null=True, blank=True)
-    gender_item = models.CharField(max_length=100)
 
 class Vorgang(models.Model):
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
@@ -46,7 +40,15 @@ class Vorgang(models.Model):
     diskriminierung = models.ManyToManyField(Diskriminierung, blank=True)
     loesungsansaetze = models.ManyToManyField(Loesungsansaetze, blank=True)
     ergebnis = models.ManyToManyField(Ergebnis, blank=True)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+
+# Betroffene Person
+class Person(models.Model): 
+    id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
+    alter_item = models.CharField(max_length=100) # String weil Kohorten
+    anzahl_kinder = models.IntegerField(null=True, blank=True)
+    gender_item = models.CharField(max_length=100)
+    vorgang = models.ForeignKey(Vorgang, on_delete=models.CASCADE, null=True, blank=True)
+
 
 # TODO: es fehlt noch "Wer ist Betroffen", 
 # Träger Institution?, 
