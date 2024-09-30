@@ -4,7 +4,7 @@
       <ul>
 		{% for item in form_liste %}
 		<li>
-			<a href="#" hx-get="{% url item.key|add:'_form'  %}" 
+			<a href="#" hx-get="{% url 'create_'|add:item.key  %}" 
 				hx-target="#htmx-inner-content" hx-swap="beforeend">
 				{{ item.label }}
 				{{forloop.counter0}}
@@ -16,7 +16,7 @@
 
     <div class="inner-content" id="htmx-inner-content">
 		{% for item in form_liste %}
-		{%include 'inner_form.html' with form=item.form item_key=item.key form_nr=forloop.counter0 %}
-		{%endfor%}
+		{% include 'inner_form.html' with item_key=item.key form=item.form form_nr=forloop.counter0 vorgang_id=vorgang_id %}
+		{% endfor %}
     </div>
   </div>
