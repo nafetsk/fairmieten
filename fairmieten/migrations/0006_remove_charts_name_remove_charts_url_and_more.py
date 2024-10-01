@@ -33,14 +33,4 @@ class Migration(migrations.Migration):
             name="variable",
             field=models.CharField(blank=True, max_length=100, null=True),
         ),
-        migrations.AddField(
-            model_name="vorgang",
-            name="kontakaufnahme_durch_item",
-            field=models.CharField(blank=True, max_length=100, null=True),
-        ),
-        migrations.AddField(
-            model_name="vorgang",
-            name="vorgangstyp_item",
-            field=models.CharField(blank=True, max_length=100, null=True),
-        ),
     ]
