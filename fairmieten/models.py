@@ -21,9 +21,22 @@ class Loesungsansaetze(models.Model):
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
     name = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.name
+    
+class Rechtsbereich(models.Model):
+    id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
 class Ergebnis(models.Model):
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 
 class Vorgang(models.Model):
@@ -40,6 +53,8 @@ class Vorgang(models.Model):
     diskriminierung = models.ManyToManyField(Diskriminierung, blank=True)
     loesungsansaetze = models.ManyToManyField(Loesungsansaetze, blank=True)
     ergebnis = models.ManyToManyField(Ergebnis, blank=True)
+    rechtsbereich = models.ManyToManyField(Rechtsbereich, blank=True)
+    zugang_fachstelle_item = models.CharField(max_length=100, null=True,  blank=True) # (Flyer, Internet, ...)
 
 # Betroffene Person
 class Person(models.Model): 
@@ -48,12 +63,8 @@ class Person(models.Model):
     anzahl_kinder = models.IntegerField(null=True, blank=True)
     gender_item = models.CharField(max_length=100)
     vorgang = models.ForeignKey(Vorgang, on_delete=models.CASCADE, null=True, blank=True)
-
-
-# TODO: es fehlt noch "Wer ist Betroffen", 
-# Träger Institution?, 
-# Prozesskostenübernahme?,
-# Relevante Rechtsbeieiche
+    betroffen_item = models.CharField(max_length=100, null=True, blank=True) # (Alleinstehend, Familie, usw.)
+    prozeskostenuebernahme_item = models.CharField(max_length=100, null=True, blank=True) # (Ja, Nein, zu prüfen, anderes)
 
 # Verursacher
 class Verursacher(models.Model):
@@ -74,12 +85,3 @@ class Item(models.Model):
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
     key = models.CharField(max_length=100)  # TODO: bessere Datentyp?
     value = models.CharField(max_length=100)
-
-
-class Charts(models.Model):
-    id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
-    name = models.CharField(max_length=100)
-    url = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name

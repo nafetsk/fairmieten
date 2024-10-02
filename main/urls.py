@@ -19,17 +19,12 @@ from django.urls import path, include
 from .hello import urls as hello_urls
 import fairmieten.views
 import fairmieten.form_views
+import aggregation.urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("hello/", include(hello_urls)),
-    path("aggregation/", fairmieten.views.aggregation),
-    path("aggregation/get_chart/", fairmieten.views.get_chart),
-    path("aggregation/data/vorfaelle_pro_jahr/", fairmieten.views.vorfaelle_pro_jahr),
-    path(
-        "aggregation/data/diskriminierungsarten/",
-        fairmieten.views.diskriminierungsarten,
-    ),
+    path("aggregation/", include(aggregation.urls)),
     path('vorgang/neu/', fairmieten.form_views.vorgang_erstellen, name='vorgang_erstellen'),
     path('vorgang/allgemein/', fairmieten.form_views.create_vorgang, name='create_vorgang'),
     path('vorgang/person', fairmieten.form_views.create_person, name='create_person'),

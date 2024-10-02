@@ -28,7 +28,7 @@ poetry run python3 manage.py shell
 ```
 Then run 
 ```
-from fairmieten.test_data import create_test_data
+from aggregation.test_data import create_test_data
 create_test_data()
 ```
 to create testdata

@@ -3,7 +3,7 @@ import environ
 from .main import INSTALLED_APPS, BASE_DIR
 
 
-INSTALLED_APPS += ["environ", "fairmieten", "main.hello"]
+INSTALLED_APPS += ["environ", "fairmieten", "main.hello", "aggregation"]
 
 env = environ.Env(
     # set casting, default value
