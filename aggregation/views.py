@@ -61,8 +61,9 @@ def get_query_set(chart: Charts, start_year: int, end_year: int) -> QuerySet:
             vorgang__datum_vorfall_bis__lte=end_date,
         )
 
-        return filtered_vorgang.annotate(count=Count("vorgang")).values(
-            "count", x_variable=F(chart.variable) # hier wird "name" in x_variable umbenannt, damit alles wieder einheitlich ist
+        # Group by the specified variable and count the related Vorgang instances
+        return filtered_vorgang.values(chart.variable).annotate(count=Count("vorgang")).values(
+            "count", x_variable=F(chart.variable)  # Rename the variable to x_variable for consistency
         )
     else:
         return None

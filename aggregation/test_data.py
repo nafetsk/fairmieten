@@ -8,6 +8,7 @@ from fairmieten.models import (
     Ergebnis,
     Verursacher,
     Person,
+    Rechtsbereich,
 )
 from .models import Charts
 from datetime import datetime, timedelta
@@ -25,6 +26,7 @@ def create_test_data():
     Verursacher.objects.all().delete()
     Person.objects.all().delete()
     Charts.objects.all().delete()
+    Rechtsbereich.objects.all().delete()
 
 
     # Create Diskrimminierungsart instances
@@ -111,6 +113,19 @@ def create_test_data():
         Ergebnis.objects.create(name=ergebnis)
         ergebnisse_list.append(Ergebnis.objects.filter(name=ergebnis).first())
 
+    # create Rechtsbereich instances
+    rechtsbereiche = [
+        "Mietrecht",
+        "Arbeitsrecht",
+        "Sozialrecht",
+        "AGG",
+    ]
+    rechtsbereiche_list = []
+    for rechtsbereich in rechtsbereiche:
+        Rechtsbereich.objects.create(name=rechtsbereich)
+        rechtsbereiche_list.append(
+            Rechtsbereich.objects.filter(name=rechtsbereich).first()
+        )
 
     # Create Vorgang instances
 
@@ -170,11 +185,21 @@ def create_test_data():
                     "Fallbetreuung",
                 )
             ),
+            zugang_fachstelle_item=fake.random_element(
+                elements=(
+                    "Flyer",
+                    "Internet",
+                    "Mundpropaganda",
+                    "Soziale Medien",
+                    "Veranstaltung",
+                )
+            ),
         )
 
         vorgang.diskriminierung.set(random.sample(diskriminierungen_list, k=3))
         vorgang.loesungsansaetze.set(random.sample(loesungsansaetze_list, k=2))
         vorgang.ergebnis.set(random.sample(ergebnisse_list, k=1))
+        vorgang.rechtsbereich.set(random.sample(rechtsbereiche_list, k=2))
     
         vorgaenge.append(vorgang)
 
@@ -192,7 +217,9 @@ def create_test_data():
             alter_item=fake.random_element(elements=("0-18", "19-35", "36-50", "51+")),
             anzahl_kinder=fake.random_int(min=0, max=5),
             gender_item=fake.random_element(elements=("männlich", "weiblich", "divers")),
-            vorgang=vorgang
+            vorgang=vorgang,
+            prozeskostenuebernahme_item=fake.random_element(elements=("Ja", "Nein", "zu prüfen", "anderes")),
+            betroffen_item=fake.random_element(elements=("Alleinstehend", "Familie", "andere")),
         )
 
 
@@ -268,19 +295,48 @@ def create_test_data():
         model="Person",
     )
     Charts.objects.create(
-        name="Vorfälle pro Unternehmentyp",
+        name="Vorfälle pro verursachenden Unternehmentyp",
         description="Vorfälle pro Unternehmsentyp Beschreibung",
         variable="unternehmenstyp_item",
         type=4,
         model="Verursacher",
     )
     Charts.objects.create(
-        name="Vorfälle pro Personentyp",
+        name="Vorfälle pro verursachenden Personentyp",
         description="Vorfälle pro Personentyp Beschreibung",
         variable="personentyp_item",
         type=4,
         model="Verursacher",
     )
+    Charts.objects.create(
+        name="Vorfälle pro Rechtsbereich",
+        description="Vorfälle pro Rechtsbereich Beschreibung",
+        variable="rechtsbereich",
+        type=2,
+        model="Rechtsbereich",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Betroffenheit",
+        description="Vorfälle pro Betroffenheit Beschreibung",
+        variable="betroffen_item",
+        type=4,
+        model="Person",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Prozesskostenübernahme",
+        description="Vorfälle pro Prozesskostenübernahme Beschreibung",
+        variable="prozeskostenuebernahme_item",
+        type=4,
+        model="Person",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Zugang zur Fachstelle",
+        description="Vorfälle pro Zugang Fachstelle Beschreibung",
+        variable="zugang_fachstelle_item",
+        type=1,
+        model="Vorgang",
+    )
+
 
 
 
