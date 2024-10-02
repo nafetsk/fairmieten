@@ -6,6 +6,8 @@ from fairmieten.models import (
     Vorgang,
     Loesungsansaetze,
     Ergebnis,
+    Verursacher,
+    Person,
 )
 from .models import Charts
 from datetime import datetime, timedelta
@@ -20,6 +22,8 @@ def create_test_data():
     Diskriminierung.objects.all().delete()
     Loesungsansaetze.objects.all().delete()
     Ergebnis.objects.all().delete() 
+    Verursacher.objects.all().delete()
+    Person.objects.all().delete()
     Charts.objects.all().delete()
 
 
@@ -159,13 +163,38 @@ def create_test_data():
                     "Reinickendorf",
                 )
             ),
+            vorgangstyp_item=fake.random_element(
+                elements=(
+                    "allgemeine Beratung",
+                    "Meldung",
+                    "Fallbetreuung",
+                )
+            ),
         )
 
         vorgang.diskriminierung.set(random.sample(diskriminierungen_list, k=3))
         vorgang.loesungsansaetze.set(random.sample(loesungsansaetze_list, k=2))
         vorgang.ergebnis.set(random.sample(ergebnisse_list, k=1))
     
-    vorgaenge.append(vorgang)
+        vorgaenge.append(vorgang)
+
+    # Create test data for Verursacher
+    for vorgang in vorgaenge:
+        Verursacher.objects.create(
+            unternehmenstyp_item=fake.random_element(elements=("städtisch", "land", "privat")),
+            personentyp_item=fake.random_element(elements=("Hausmeister", "Hausverwaltung")),
+            vorgang=vorgang
+        )
+
+    # Create test data for Person
+    for vorgang in vorgaenge:
+        Person.objects.create(
+            alter_item=fake.random_element(elements=("0-18", "19-35", "36-50", "51+")),
+            anzahl_kinder=fake.random_int(min=0, max=5),
+            gender_item=fake.random_element(elements=("männlich", "weiblich", "divers")),
+            vorgang=vorgang
+        )
+
 
     # create charts
     Charts.objects.create(
@@ -173,43 +202,87 @@ def create_test_data():
         description="Vorfälle pro Sprache Beschreibung",
         variable="sprache",
         type=1,
+        model="Vorgang",
     )
     Charts.objects.create(
         name="Vorfälle pro Bezirk",
         description="Vorfälle pro Bezirk Beschreibung",
         variable="bezirk_item",
         type=1,
+        model="Vorgang",
     )
     Charts.objects.create(
         name="Vorfälle pro Diskriminierung",
         description="Vorfälle pro Diskriminierung Beschreibung",
         variable="diskriminierung",
         type=2,
+        model="Diskriminierung",
     )
     Charts.objects.create(
         name="Vorfälle pro Kontaktaufnahme",
         description="Vorfälle pro Kontaktaufnahme Beschreibung",
         variable="kontakaufnahme_durch_item",
         type=1,
+        model="Vorgang",
     )
     Charts.objects.create(
         name="Vorfälle pro Lösungsansatz",
         description="Vorfälle pro Lösungsansatz Beschreibung",
         variable="loesungsansaetze",
         type=2,
+        model="Loesungsansaetze",
     )
     Charts.objects.create(
         name="Vorfälle pro Ergebnis",
         description="Vorfälle pro Ergebnis Beschreibung",
         variable="ergebnis",
         type=2,
+        model="Ergebnis",
     )
     Charts.objects.create(
         name="Vorfälle pro Jahr",
-        description="Vorfälle pro Jajr Beschreibung",
+        description="Vorfälle pro Jahr Beschreibung",
         variable="datum_vorfall_von",
         type=3,
+        model="Vorgang",
     )
+    Charts.objects.create(
+        name="Vorfälle pro Vorgangstyp",
+        description="Vorfälle pro Vorgangstyp Beschreibung",
+        variable="vorgangstyp_item",
+        type=1,
+        model="Vorgang",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Alter",
+        description="Vorfälle pro Alter Beschreibung",
+        variable="alter_item",
+        type=4,
+        model="Person",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Geschlecht",
+        description="Vorfälle pro Geschlecht Beschreibung",
+        variable="gender_item",
+        type=4,
+        model="Person",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Unternehmentyp",
+        description="Vorfälle pro Unternehmsentyp Beschreibung",
+        variable="unternehmenstyp_item",
+        type=4,
+        model="Verursacher",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Personentyp",
+        description="Vorfälle pro Personentyp Beschreibung",
+        variable="personentyp_item",
+        type=4,
+        model="Verursacher",
+    )
+
+
 
 
 
