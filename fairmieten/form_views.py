@@ -47,7 +47,7 @@ def save_form(request, form_nr:int):
 
 
 def create_vorgang(request):
-	vorgang = get_Instance(request, Vorgang)
+	vorgang = get_Instance(request, Vorgang, "vorgang_id")
 	if request.method == 'POST':
 		form = VorgangForm(request.POST, instance=vorgang)
 		if form.is_valid():

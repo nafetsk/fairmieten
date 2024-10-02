@@ -22,6 +22,7 @@ footer{
     display: flex;
     height: 100vh; /* Volle Bildschirmhöhe */
 	width: 100%;
+	overflow: hidden;
 }
 
 .sidebar {
@@ -30,9 +31,20 @@ footer{
 }
 
 .inner-content {
-    height: 100%;
-	width: 100%;
     overflow-y: auto; /* Ermöglicht Scrollen innerhalb dieses Bereichs */
     padding: 20px;
     box-sizing: border-box;
+	flex-grow: 1;
+}
+
+.sidebar a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+}
+
+.sidebar a.active {
+	background-color: #f0f0f0;
+font-weight: bold;
 }

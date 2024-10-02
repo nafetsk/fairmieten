@@ -1,7 +1,6 @@
 <form  id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}" 
-  hx-trigger="submit" hx-target="#{{item_key}}_form" hx-swap="outerHTML">
+  hx-trigger="change delay:1000ms" hx-target="#{{item_key}}_form" hx-swap="outerHTML">
   <span>{{uhrzeit}}</span>
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Absenden</button>
 </form>
