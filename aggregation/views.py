@@ -15,6 +15,7 @@ from django.db.models import Count, F
 from django.db.models.query import QuerySet
 from django.apps import apps
 import json
+import csv
 
 
 def get_query_set(chart: Charts, start_year: int, end_year: int) -> QuerySet:
@@ -110,6 +111,30 @@ def get_chart(request: HttpRequest) -> HttpResponse:
 
     return render(request, "chart.html", {"data": data_json})
 
+def csv_download(request: HttpRequest) -> HttpResponse:
+    # Create the HttpResponse object with the appropriate CSV header.
+    response: HttpResponse = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="vorgang.csv"'
+
+    writer = csv.writer(response)
+    # Write the header row
+    writer.writerow([
+        'ID', 'Fallnummer', 'Vorgangstyp', 'Datum Kontakaufnahme', 
+        'Kontakaufnahme Durch', 'Datum Vorfall Von', 'Datum Vorfall Bis', 
+        'Sprache', 'Beschreibung', 'Bezirk'
+    ])
+
+    # Write data rows
+    for vorgang in Vorgang.objects.all():
+        writer.writerow([
+            vorgang.id, vorgang.fallnummer, vorgang.vorgangstyp_item, 
+            vorgang.datum_kontakaufnahme, vorgang.kontakaufnahme_durch_item, 
+            vorgang.datum_vorfall_von, vorgang.datum_vorfall_bis, 
+            vorgang.sprache, vorgang.beschreibung, vorgang.bezirk_item
+        ])
+
+    return response
+    
 
 # def get_data(request: HttpRequest, id: uuid) -> HttpResponse:
 #     # get Chart by id
