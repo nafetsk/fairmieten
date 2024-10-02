@@ -80,14 +80,3 @@ class Item(models.Model):
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
     key = models.CharField(max_length=100)  # TODO: bessere Datentyp?
     value = models.CharField(max_length=100)
-
-
-class Charts(models.Model):
-    id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False)
-    type = models.IntegerField(null=True, blank=True)
-    name = models.CharField(max_length=100, null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
-    variable = models.CharField(max_length=100, null=True, blank=True)
-
-    def __str__(self):
-        return self.name

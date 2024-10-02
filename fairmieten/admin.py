@@ -7,10 +7,10 @@ from .models import (
     Vorgang,
     Intervention,
     Item,
-    Charts,
     Person,
     Verursacher,
 )
+from aggregation.models import Charts
 
 
 # Register your models here.

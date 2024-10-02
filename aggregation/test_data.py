@@ -1,13 +1,13 @@
 import random
 from faker import Faker
-from .models import (
+from fairmieten.models import (
     Diskrimminierungsart,
     Diskriminierung,
     Vorgang,
-    Charts,
     Loesungsansaetze,
     Ergebnis,
 )
+from .models import Charts
 from datetime import datetime, timedelta
 
 
