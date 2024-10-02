@@ -15,27 +15,19 @@
 </div>
 
 <script>
-    var chartURL = "{{ chart_url }}"
-    console.log(chartURL)
-    fetch(chartURL)
-    // fetch('data/vorfaelle_pro_jahr/')
-    .then(response => response.json())
-    .then(data => {
-        // Get the canvas context
-        const ctx = document.getElementById('chart').getContext('2d');
-        
-        // Create a bar chart using Chart.js
-        console.log(data);
+
+    function renderChart(data) {
+        var ctx = document.getElementById('chart').getContext('2d');
         new Chart(ctx, {
-            type: data.chartType,  // Bar chart type
+            type: data.chartType,
             data: {
-                labels: data.labels,  // Years on the x-axis
+                labels: data.labels,
                 datasets: [{
-                    label: data.chartName,  // Legend label
-                    data: data.datasets[0].data,  // Incident count on y-axis
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',  // Bar color
-                    borderColor: 'rgba(255, 99, 132, 1)',  // Border color
-                    borderWidth: 1  // Bar border width
+                    label: data.chartName,
+                    data: data.datasets[0].data,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
                 }]
             },
             options: {
@@ -55,40 +47,44 @@
                 }
             }
         });
+    }
+
+    // Ensure data_json is correctly passed and parsed
+    var data = JSON.parse('{{ data|escapejs }}');
+    renderChart(data);
+
     // Dynamically set axis names in the table header
-    const tableHeadRow = document.querySelector('#dataTable thead tr');
+    var tableHeadRow = document.querySelector('#dataTable thead tr');
         
         // Create and append the X-axis name header (e.g., Year)
-        const xAxisHeader = document.createElement('th');
+        var xAxisHeader = document.createElement('th');
         xAxisHeader.textContent = data.xAxisName;  // Set X-axis name from data
         tableHeadRow.appendChild(xAxisHeader);
 
         // Create and append the Y-axis name header (chart dataset name)
-        const yAxisHeader = document.createElement('th');
+        var yAxisHeader = document.createElement('th');
         yAxisHeader.textContent = data.chartName;  // Set Y-axis name (chart name) from data
         tableHeadRow.appendChild(yAxisHeader);
 
         // Populate the table body with data
-        const dataTableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+        var dataTableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
         
         data.labels.forEach((label, index) => {
-            const row = document.createElement('tr');
+            var row = document.createElement('tr');
 
             // Add label (e.g., year) to the first column
-            const labelCell = document.createElement('td');
+            var labelCell = document.createElement('td');
             labelCell.textContent = label;
             row.appendChild(labelCell);
 
             // Add data value to the second column
-            const valueCell = document.createElement('td');
+            var valueCell = document.createElement('td');
             valueCell.textContent = data.datasets[0].data[index];
             row.appendChild(valueCell);
 
             // Append row to the table body
             dataTableBody.appendChild(row);
         });
-    })
-    .catch(error => console.error('Error fetching data:', error));
 
 
 </script>

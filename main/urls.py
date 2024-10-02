@@ -25,6 +25,6 @@ urlpatterns = [
     path("hello/", include(hello_urls)),
     path("aggregation/", fairmieten.views.aggregation),
     path("aggregation/get_chart/", fairmieten.views.get_chart),
-    path("aggregation/data/<uuid:id>/", fairmieten.views.get_data),
+    # path("aggregation/data/<uuid:id>/", fairmieten.views.get_data),
     path('vorgang/neu/', fairmieten.form_views.vorgang_erstellen, name='vorgang_erstellen'),
 ]

@@ -172,32 +172,45 @@ def create_test_data():
         name="Vorfälle pro Sprache",
         description="Vorfälle pro Sprache Beschreibung",
         variable="sprache",
+        type=1,
     )
     Charts.objects.create(
         name="Vorfälle pro Bezirk",
         description="Vorfälle pro Bezirk Beschreibung",
         variable="bezirk_item",
+        type=1,
     )
     Charts.objects.create(
         name="Vorfälle pro Diskriminierung",
         description="Vorfälle pro Diskriminierung Beschreibung",
         variable="diskriminierung",
+        type=2,
     )
     Charts.objects.create(
         name="Vorfälle pro Kontaktaufnahme",
         description="Vorfälle pro Kontaktaufnahme Beschreibung",
         variable="kontakaufnahme_durch_item",
+        type=1,
     )
     Charts.objects.create(
         name="Vorfälle pro Lösungsansatz",
         description="Vorfälle pro Lösungsansatz Beschreibung",
         variable="loesungsansaetze",
+        type=2,
     )
     Charts.objects.create(
         name="Vorfälle pro Ergebnis",
         description="Vorfälle pro Ergebnis Beschreibung",
         variable="ergebnis",
+        type=2,
     )
+    Charts.objects.create(
+        name="Vorfälle pro Jahr",
+        description="Vorfälle pro Jajr Beschreibung",
+        variable="datum_vorfall_von",
+        type=3,
+    )
+
 
 
 # Call the function to create test data
