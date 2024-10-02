@@ -9,6 +9,7 @@ from fairmieten.models import (
     Verursacher,
     Person,
     Rechtsbereich,
+    Intervention,
 )
 from .models import Charts
 from datetime import datetime, timedelta
@@ -222,6 +223,16 @@ def create_test_data():
             betroffen_item=fake.random_element(elements=("Alleinstehend", "Familie", "andere")),
         )
 
+    # create test data for Intervention
+    for vorgang in vorgaenge:
+        Intervention.objects.create(
+            datum=fake.date_between(start_date=start_date, end_date=end_date),
+            form_item=fake.random_element(elements=("Gerichtstermin", "Diskrminierungsbeschwerde", "Briefentwurf", "Telefonat")),
+            vorgang=vorgang,
+            bemerkung=fake.text(),
+        )
+
+
 
     # create charts
     Charts.objects.create(
@@ -335,6 +346,13 @@ def create_test_data():
         variable="zugang_fachstelle_item",
         type=1,
         model="Vorgang",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Art der Intervention",
+        description="Vorfälle pro Intervention Beschreibung",
+        variable="form_item",
+        type=4,
+        model="Intervention",
     )
 
 

@@ -28,13 +28,13 @@ def get_query_set(chart: Charts, start_year: int, end_year: int) -> QuerySet:
         datum_vorfall_von__gte=start_date, datum_vorfall_von__lte=end_date
     )
 
-    if chart.type == 1:  # Variable ist Feld in Vorgang
+    if chart.type == 1:  # Variable ist einfaches Feld in Vorgang
         return (
             time_filter.values(x_variable=F(chart.variable))
             .annotate(count=Count("id"))
             .order_by(chart.variable)
         )
-    elif chart.type == 2:  # Variable ist M2M Feld in Vorgang
+    elif chart.type == 2:  # Variable ist M2M Feld in Vorgang, Vorgang verweist auf ein anderes Modell
         #modell_name: str = chart.variable.capitalize()
         modell_class = apps.get_model("fairmieten", chart.model)
 
@@ -54,7 +54,7 @@ def get_query_set(chart: Charts, start_year: int, end_year: int) -> QuerySet:
             .annotate(count=Count("id"))
             .order_by("year")
         )
-    elif chart.type == 4:  # Variable ist M2M Feld aber von einem anderen Modell ausgehen
+    elif chart.type == 4:  # Variable ist M2M Feld anderes Modell verweist auf Vorgang
         modell_class = apps.get_model("fairmieten", chart.model)
         filtered_vorgang = modell_class.objects.filter(
             vorgang__datum_vorfall_von__gte=start_date,

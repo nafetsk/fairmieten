@@ -75,10 +75,10 @@ class Verursacher(models.Model):
 
 class Intervention(models.Model):
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
-    vorgang_id = models.ForeignKey(Vorgang, on_delete=models.CASCADE)
-    datum = models.DateField()
-    form_item = models.CharField(max_length=100)
-    bemerkung = models.TextField()
+    vorgang = models.ForeignKey(Vorgang, on_delete=models.CASCADE)
+    datum = models.DateField(null=True, blank=True)
+    form_item = models.CharField(max_length=100, null=True, blank=True)
+    bemerkung = models.TextField(null=True, blank=True)
 
 
 class Item(models.Model):
