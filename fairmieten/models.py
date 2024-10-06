@@ -45,8 +45,8 @@ class Vorgang(models.Model):
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
     fallnummer = models.IntegerField(null=True, blank=True)
     vorgangstyp_item = models.CharField(max_length=100, null=True, blank=True) # allgemeine Beratung, Meldung, Fallbetreuung
-    datum_kontakaufnahme = models.DateField(null=True, blank=True)
-    kontakaufnahme_durch_item = models.CharField(max_length=100, null=True, blank=True) # (Betroffene Person, beschuldigte Person, unbeteiligte Person)
+    datum_kontaktaufnahme = models.DateField(null=True, blank=True)
+    kontaktaufnahme_durch_item = models.CharField(max_length=100, null=True, blank=True) # (Betroffene Person, beschuldigte Person, unbeteiligte Person)
     datum_vorfall_von = models.DateField(null=True, blank=True)
     datum_vorfall_bis = models.DateField(null=True, blank=True)
     sprache = models.CharField(max_length=100, null=True, blank=True)
@@ -77,10 +77,10 @@ class Verursacher(models.Model):
 
 class Intervention(models.Model):
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
-    vorgang_id = models.ForeignKey(Vorgang, on_delete=models.CASCADE)
-    datum = models.DateField()
-    form_item = models.CharField(max_length=100)
-    bemerkung = models.TextField()
+    vorgang = models.ForeignKey(Vorgang, on_delete=models.CASCADE)
+    datum = models.DateField(null=True, blank=True)
+    form_item = models.CharField(max_length=100, null=True, blank=True)
+    bemerkung = models.TextField(null=True, blank=True)
 
 
 class Item(models.Model):

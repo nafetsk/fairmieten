@@ -5,6 +5,7 @@ class VorgangForm(forms.ModelForm):
     class Meta:
         model = Vorgang
         fields = [
+            'datum_kontaktaufnahme',
             "fallnummer",
             "kontakaufnahme_durch_item",
             'datum_kontakaufnahme',
@@ -15,7 +16,7 @@ class VorgangForm(forms.ModelForm):
             'bezirk_item',
         ]
         widgets = {
-            'datum_kontakaufnahme': forms.DateInput(attrs={'type': 'date'}),
+            'datum_kontaktaufnahme': forms.DateInput(attrs={'type': 'date'}),
             'datum_vorfall_von': forms.DateInput(attrs={'type': 'date'}),
             'datum_vorfall_bis': forms.DateInput(attrs={'type': 'date'}),
         }
