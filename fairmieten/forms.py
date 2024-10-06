@@ -1,5 +1,5 @@
 from django import forms
-from .models import Vorgang, Person
+from .models import FormLabels, Vorgang, Person
 
 class VorgangForm(forms.ModelForm):
     class Meta:
@@ -19,6 +19,14 @@ class VorgangForm(forms.ModelForm):
             'datum_vorfall_von': forms.DateInput(attrs={'type': 'date'}),
             'datum_vorfall_bis': forms.DateInput(attrs={'type': 'date'}),
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        labels = dict(FormLabels.objects.filter(model='Vorgang').values_list('field', 'label'))
+        for field_name in self.fields:
+            self.fields[field_name].label = labels.get(field_name, field_name)            
+            #self.fields[fieldname].label.widget = forms.Select(choices=[(item.id, item.value) for item in ValueItem.objects.filter(name='kontaktaufnahme_durch_item')])
+
 
 class PersonForm(forms.ModelForm):
     class Meta:

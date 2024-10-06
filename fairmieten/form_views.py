@@ -20,6 +20,10 @@ def vorgang_erstellen(request):
 	vorgang_id = uuid.uuid4()
 	return render(request, 'add_vorgang.html', {'form_liste': form_liste, 'vorgang_id': vorgang_id})
 
+def vorgang_bearbeiten(request, vorgang_id:uuid.UUID):
+	return render(request, 'add_vorgang.html', {'form_liste': form_liste, 'vorgang_id': vorgang_id})
+
+
 def get_Instance(request, model:models.Model, id_name:str = 'id'):
 	id = request.GET.get(id_name, None)
 	if (id is None or id == 'None'): id = uuid.uuid4()
@@ -27,14 +31,23 @@ def get_Instance(request, model:models.Model, id_name:str = 'id'):
 	return instance
 
 def get_Foreign_Instance(request, model:models.Model, id_name:str = 'id'):
-	vorgang_id = request.GET.get("vorgang_id", None)
-	if (vorgang_id is None or vorgang_id == 'None'):
-		raise Exception("Vorgang ID ist erforderlich")
+	vorgang_id = get_vorgang_id(request)
 	id = request.GET.get(id_name, None)
-	if (id is None or id == 'None'): id = uuid.uuid4()
+	if (id is None or id == 'None' or id == ''): id = uuid.uuid4()
 	instance, created = model.objects.get_or_create(id=id, vorgang_id=vorgang_id)
 	return instance
 
+def get_vorgang_id(request):
+	vorgang_id = request.GET.get("vorgang_id", None)
+	if (vorgang_id is None or vorgang_id == 'None'):
+		raise Exception("Vorgang ID ist erforderlich")
+	return vorgang_id
+
+def post_or_none(request):
+	if request.method == 'POST':
+		return request.POST
+	else:
+		return None
 
 def save_form(request, form_nr:int):
 	tuple = form_liste[int(form_nr)]
@@ -47,23 +60,20 @@ def save_form(request, form_nr:int):
 
 
 def create_vorgang(request):
-	vorgang = get_Instance(request, Vorgang, "vorgang_id")
-	if request.method == 'POST':
-		form = VorgangForm(request.POST, instance=vorgang)
-		if form.is_valid():
-			form.save()
-	else:
-		form = VorgangForm()
+	form = VorgangForm(post_or_none(request), instance=get_Instance(request, Vorgang, "vorgang_id")) 
+	if request.method == 'POST' and form.is_valid():
+		form.save()
 	return render(request, 'inner_form.html', {'form': form, 'item_key': 'vorgang', 'vorgang_id': form.instance.id})
 
+
 def create_person(request):
-	person = get_Foreign_Instance(request, Person)
-	form = PersonForm(request.POST or None, instance=person)
-	if form.is_valid():
+	person, created = Person.objects.get_or_create(vorgang_id=get_vorgang_id(request))
+	form = PersonForm(post_or_none(request), instance=person)
+	if request.method == 'POST' and form.is_valid():
 		form.save()
 	return render(request, 'inner_form.html', {'form': form, 'item_key': 'person', 'vorgang_id': person.vorgang_id})
 
-def diskriminierung_form(request):
+def create_diskriminierung(request):
 	if request.method == 'POST':
 		form = PersonForm(request.POST)
 		if form.is_valid():

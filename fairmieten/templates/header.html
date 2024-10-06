@@ -5,14 +5,17 @@
 </ul>
 <ul class="sticky">
 	<li>
-		<a href="/vorgang">Vorgänge</a>
+		<a href="/vorgang/liste/" hx-get="/vorgang/liste/"
+		hx-target="#htmx-content"
+		hx-swap="innerHTML">Vorgänge</a>
 	</li>
 	<li>
 		<a href="/vorgang/neu/" hx-get="/vorgang/neu/"
 		hx-target="#htmx-content"
 		hx-swap="innerHTML">
 	   Neuen Vorgang erstellen
-	 </a>	</li>
+	 </a>	
+	</li>
 	<li>
 		<a href="/aggregation">Diagramme</a>
 	</li>

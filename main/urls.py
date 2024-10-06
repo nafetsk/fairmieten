@@ -26,11 +26,14 @@ urlpatterns = [
     path("hello/", include(hello_urls)),
     path("aggregation/", include(aggregation.urls)),
     path('vorgang/neu/', fairmieten.form_views.vorgang_erstellen, name='vorgang_erstellen'),
+    path('vorgang/edit/<uuid:vorgang_id>/', fairmieten.form_views.vorgang_bearbeiten, name='vorgang_bearbeiten'),
     path('vorgang/allgemein/', fairmieten.form_views.create_vorgang, name='create_vorgang'),
     path('vorgang/person', fairmieten.form_views.create_person, name='create_person'),
-    path('vorgang/diskriminierung', fairmieten.form_views.diskriminierung_form, name='diskriminierung_form'),
+    path('vorgang/diskriminierung', fairmieten.form_views.create_diskriminierung, name='create_diskriminierung'),
     path('', fairmieten.views.home, name='home'),
     path('vorgang/save/<int:form_nr>/', fairmieten.form_views.save_form, name='save_form'),
     path('vorgang/save/<int:form_nr>/<int:vorgang_id>|None/', fairmieten.form_views.save_form, name='save_form'),
+    path('vorgang/liste/', fairmieten.views.vorgang_liste, name='vorgang_liste'),
+    path('vorgang/detail/<uuid:vorgang_id>/', fairmieten.views.vorgang_detail, name='vorgang_detail'),
 
 ]

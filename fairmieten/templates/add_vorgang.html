@@ -8,17 +8,17 @@
 				id="nav-{{ item.key }}"
 				onclick="scrollToForm('form-{{ item.key }}')">
 				{{ item.label }}
-				{{forloop.counter0}}
 			</a>
 		</li>
 	{% endfor %}
 		  </ul>
     </aside>
 
-    <div class="inner-content" id="htmx-inner-content">
-		{% for item in form_liste %}
-		<div id="form-{{ item.key }}" class="form-container">
-		{% include 'inner_form.html' with item_key=item.key form=item.form form_nr=forloop.counter0 vorgang_id=vorgang_id %}
+    <div class="inner-content" id="htmx-inner-content" >
+		{% for item in form_liste %}		
+		<div id="form-{{ item.key }}" class="form-container" hx-get="{% url 'create_'|add:item.key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}"
+		hx-trigger="revealed once">
+		{{vorgang_id}}
 		</div>
 		{% endfor %}
     </div>
