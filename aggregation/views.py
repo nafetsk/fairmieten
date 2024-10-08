@@ -139,7 +139,7 @@ def csv_download(request: HttpRequest) -> HttpResponse:
     for vorgang in Vorgang.objects.all():
         writer.writerow([
             vorgang.id, vorgang.fallnummer, vorgang.vorgangstyp_item, 
-            vorgang.datum_kontakaufnahme, vorgang.kontakaufnahme_durch_item, 
+            vorgang.datum_kontaktaufnahme, vorgang.kontaktaufnahme_durch_item, 
             vorgang.datum_vorfall_von, vorgang.datum_vorfall_bis, 
             vorgang.sprache, vorgang.beschreibung, vorgang.bezirk_item
         ])

@@ -138,7 +138,7 @@ def create_test_data():
     vorgaenge = []
     for _ in range(20):
         vorgang = Vorgang.objects.create(
-            datum_kontakaufnahme=fake.date_between(
+            datum_kontaktaufnahme=fake.date_between(
                 start_date=start_date, end_date=end_date
             ),
             datum_vorfall_von=fake.date_between(
@@ -147,7 +147,7 @@ def create_test_data():
             datum_vorfall_bis=fake.date_between(
                 start_date=start_date, end_date=end_date
             ),
-            kontakaufnahme_durch_item=fake.random_element(
+            kontaktaufnahme_durch_item=fake.random_element(
                 elements=(
                     "Betroffene Person",
                     "beschuldigte Person",
@@ -259,7 +259,7 @@ def create_test_data():
     Charts.objects.create(
         name="Vorfälle pro Kontaktaufnahme",
         description="Vorfälle pro Kontaktaufnahme Beschreibung",
-        variable="kontakaufnahme_durch_item",
+        variable="kontaktaufnahme_durch_item",
         type=1,
         model="Vorgang",
     )
