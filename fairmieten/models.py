@@ -1,4 +1,3 @@
-from math import e
 import uuid
 from django.db import models
 from django.apps import apps
@@ -44,7 +43,7 @@ class Ergebnis(models.Model):
 class Vorgang(models.Model):
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
     fallnummer = models.IntegerField(null=True, blank=True)
-    vorgangstyp_item = models.CharField(max_length=100, null=True, blank=True) # allgemeine Beratung, Meldung, Fallbetreuung
+    vorgangstyp_item = models.CharField(max_length=100, null=True, blank=True,choices = []) # allgemeine Beratung, Meldung, Fallbetreuung
     datum_kontaktaufnahme = models.DateField(null=True, blank=True)
     kontaktaufnahme_durch_item = models.CharField(max_length=100, null=True, blank=True) # (Betroffene Person, beschuldigte Person, unbeteiligte Person)
     datum_vorfall_von = models.DateField(null=True, blank=True)
@@ -107,16 +106,20 @@ class FormTextMixin(models.Model):
 
 
 class FormValues(FormTextMixin):
+    key = models.CharField(max_length=100, default=None, null=True, blank=True)
     value = models.CharField(max_length=100)
+
+    @staticmethod
+    def get_Values(modelname):
+        values = FormValues.objects.filter(model=modelname)
+        values_dict = {}
+        for value in values:
+            if value.field not in values_dict:
+                values_dict[value.field] = []
+            values_dict[value.field].append((value.key, value.value))
+        print(values_dict)  # Ausgabe des Dictionarys
+        return values_dict
 
 class FormLabels(FormTextMixin):
     label = models.CharField(max_length=100)
 
-    @staticmethod
-    def get_Label(modelname, fieldname):
-        object = FormLabels.objects.get(model=modelname, field=fieldname)
-        if(object):
-            return object.label
-        else:
-            return fieldname
-        

@@ -7,12 +7,14 @@
 	<li>
 		<a href="/vorgang/liste/" hx-get="/vorgang/liste/"
 		hx-target="#htmx-content"
-		hx-swap="innerHTML">Vorgänge</a>
+		hx-swap="innerHTML"
+		hx-push-url="true">Vorgänge</a>
 	</li>
 	<li>
 		<a href="/vorgang/neu/" hx-get="/vorgang/neu/"
 		hx-target="#htmx-content"
-		hx-swap="innerHTML">
+		hx-swap="innerHTML"
+		hx-push-url="true">
 	   Neuen Vorgang erstellen
 	 </a>	
 	</li>

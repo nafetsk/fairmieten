@@ -18,7 +18,8 @@ RUN poetry install --no-root
 COPY . /app/
 COPY main/.env.template main/.env
 RUN poetry run python3 manage.py migrate
-RUN poetry run python manage.py shell -c "from fairmieten.test_data import create_test_data;"
+RUN poetry run python manage.py shell -c "from aggregation.test_data import create_test_data;"
+RUN poetry run python manage.py shell -c "from fairmieten import insert_initial_data;"
 
 EXPOSE 8001
 

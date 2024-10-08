@@ -1,28 +1,53 @@
 import uuid
-from datetime import datetime
 from django.shortcuts import render
-from .forms import PersonForm, VorgangForm
+from .forms import DiskriminierungForm, PersonForm, VorgangForm
 from .models import Vorgang, Person
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
-
-def vorgang_liste(request):
-    return render(request, 'vorgang_liste.html')
+# *** Reihenfolge der Formulare in der Vorgangserstellung ***
 
 form_liste = [
     {'key':'vorgang', 'label':'Allgemein', 'form': VorgangForm},
-    {'key':'person', 'label':'Person', 'form': PersonForm}
+    {'key':'person', 'label':'Person', 'form': PersonForm},
+    {'key':'diskriminierung', 'label':'Diskriminierung', 'form': DiskriminierungForm}
 ]
 
+# *** Views für die Vorgangserstellung ***
 
 def vorgang_erstellen(request):
 	vorgang_id = uuid.uuid4()
-	return render(request, 'add_vorgang.html', {'form_liste': form_liste, 'vorgang_id': vorgang_id})
+	return render(request, "add_vorgang.html", 
+               {'base': layout(request), 'form_liste': form_liste, 'vorgang_id': vorgang_id})
 
 def vorgang_bearbeiten(request, vorgang_id:uuid.UUID):
-	return render(request, 'add_vorgang.html', {'form_liste': form_liste, 'vorgang_id': vorgang_id})
+	return render(request, 'add_vorgang.html', 
+               {'base': layout(request), 'form_liste': form_liste, 'vorgang_id': vorgang_id})
 
+def create_vorgang(request):
+	form = VorgangForm(post_or_none(request), instance=get_Instance(request, Vorgang, "vorgang_id")) 
+	if request.method == 'POST' and form.is_valid():
+		form.save()
+	return render(request, 'inner_form.html', {'form': form, 'item_key': 'vorgang', 'vorgang_id': form.instance.id})
+
+def create_person(request):
+	person, created = Person.objects.get_or_create(vorgang_id=get_vorgang_id(request))
+	form = PersonForm(post_or_none(request), instance=person)
+	if request.method == 'POST' and form.is_valid():
+		form.save()
+	return render(request, 'inner_form.html', {'form': form, 'item_key': 'person', 'vorgang_id': person.vorgang_id})
+
+def create_diskriminierung(request):
+	form = DiskriminierungForm(post_or_none(request),instance=get_Instance(request, Vorgang, "vorgang_id"))
+	if request.method == 'POST' and form.is_valid():
+		form.save()
+	return render(request, 'inner_form.html', {'form': form, 'item_key': 'diskriminierung', 'vorgang_id': form.instance.id})
+
+
+
+# *** Hilfsfunktionen *******************************************
+
+def layout(request):
+    return "partial.html" if request.htmx else "base.html"
 
 def get_Instance(request, model:models.Model, id_name:str = 'id'):
 	id = request.GET.get(id_name, None)
@@ -49,6 +74,11 @@ def post_or_none(request):
 	else:
 		return None
 
+# *** End Helper *********************************
+
+
+# *** Deprecated Views (delete later) ************
+
 def save_form(request, form_nr:int):
 	tuple = form_liste[int(form_nr)]
 	VF = tuple['form']
@@ -57,31 +87,6 @@ def save_form(request, form_nr:int):
 	if form.is_valid():
 		form.save()
 	return render(request, 'inner_form.html', {'form': form, 'form_nr': form_nr})
-
-
-def create_vorgang(request):
-	form = VorgangForm(post_or_none(request), instance=get_Instance(request, Vorgang, "vorgang_id")) 
-	if request.method == 'POST' and form.is_valid():
-		form.save()
-	return render(request, 'inner_form.html', {'form': form, 'item_key': 'vorgang', 'vorgang_id': form.instance.id})
-
-
-def create_person(request):
-	person, created = Person.objects.get_or_create(vorgang_id=get_vorgang_id(request))
-	form = PersonForm(post_or_none(request), instance=person)
-	if request.method == 'POST' and form.is_valid():
-		form.save()
-	return render(request, 'inner_form.html', {'form': form, 'item_key': 'person', 'vorgang_id': person.vorgang_id})
-
-def create_diskriminierung(request):
-	if request.method == 'POST':
-		form = PersonForm(request.POST)
-		if form.is_valid():
-			form.save()
-	else:
-		form = PersonForm()
-	return render(request, 'inner_form.html', {'form': form})
-
 
 def next_form(request):
     current_index = request.GET.get('current', 0)
