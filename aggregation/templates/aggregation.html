@@ -32,16 +32,24 @@
 
 <div>
   <label for="von">Von:</label>
-  <select id="von" name="von">
+  <select id="von" name="von"
+  hx-get="/aggregation/get_chart/"
+  hx-target="#chart-container"
+  hx-include="#bis, #chart-select"
+  >
     {% for year in years %}
-      <option value="{{ year.year }}">{{ year.year }}</option>
+      <option value="{{ year.year }}" {% if forloop.first %}selected{% endif %} >{{ year.year }}</option>
     {% endfor %}
   </select>
 
   <label for="bis">Bis:</label>
-  <select id="bis" name="bis">
+  <select id="bis" name="bis"
+  hx-get="/aggregation/get_chart/"
+  hx-target="#chart-container"
+  hx-include="#von, #chart-select"
+  >
     {% for year in years %}
-      <option value="{{ year.year }}">{{ year.year }}</option>
+      <option value="{{ year.year }}" {% if forloop.last %}selected{% endif %} >{{ year.year }}</option>
     {% endfor %}
   </select>
   <a href="/aggregation/csv_download/" download="vorgang.csv">Download</a>
