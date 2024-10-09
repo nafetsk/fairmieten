@@ -1,71 +1,59 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block additional_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  // document.addEventListener('DOMContentLoaded', function() {
-  //     const select = document.getElementById('chart-select');
-  //     const von = document.getElementById('von');
-  //     const bis = document.getElementById('bis');
-
-  //     select.addEventListener('change', function() {
-  //         const chartId = this.value;
-  //         const vonValue = von.value;
-  //         const bisValue = bis.value;
-  //         const url = `/aggregation/get_chart/${chartId}?von=${vonValue}&bis=${bisValue}`;
-  //         // nur zum Debuggen
-  //         console.log(`Setting hx-get to: ${url}`); 
-  //         // das hier ist der eigentliche AJAX-Request, den müssen wir nur manuell auslösen
-  //         // weil HTMX darauf sonst nicht klar kommt
-  //         console.log("von: " + vonValue);
-  //         console.log("bis: " + bisValue);
-  //         htmx.ajax('GET', url, { target: '#chart-container' , values: { "von": vonValue, "bis": bisValue }});
-  //     });
-  // });
-  </script>
 {% endblock %}
+
 {% block additional_css %}
-  <link rel="stylesheet" href="{% static 'css/styles_aggregation.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/aggregation.css' %}" />
 {% endblock %}
 
 {% block content %}
+<div class="with-sidebar">
+<aside class="sidebar" id="sidebar">
+  <div>
+    <label for="von">Von:</label>
+    <select id="von" name="von"
+    hx-get="/aggregation/get_chart/"
+    hx-target="#chart-container"
+    hx-include="#bis, #chart-select"
+    >
+      {% for year in years %}
+        <option value="{{ year }}" {% if forloop.first %}selected{% endif %} >{{ year }}</option>
+      {% endfor %}
+    </select>
+  
+    <label for="bis">Bis:</label>
+    <select id="bis" name="bis"
+    hx-get="/aggregation/get_chart/"
+    hx-target="#chart-container"
+    hx-include="#von, #chart-select"
+    >
+      {% for year in years %}
+        <option value="{{ year }}" {% if forloop.last %}selected{% endif %} >{{ year }}</option>
+      {% endfor %}
+    </select>
+    <a href="/aggregation/csv_download/" download="vorgang.csv">Download</a>
+  </div>
+  
+  <div>
+    <label for="chart-select">Select Chart:</label>
+    <select id="chart-select" name="chart-select" 
+    hx-get="/aggregation/get_chart/"
+    hx-target="#chart-container"
+    hx-include="#von, #bis">
+      <option value="">--Select a Chart--</option>
+      {% for chart in charts %}
+        <option value="{{ chart.id }}">{{ chart.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</aside>
 
-<div>
-  <label for="von">Von:</label>
-  <select id="von" name="von"
-  hx-get="/aggregation/get_chart/"
-  hx-target="#chart-container"
-  hx-include="#bis, #chart-select"
-  >
-    {% for year in years %}
-      <option value="{{ year.year }}" {% if forloop.first %}selected{% endif %} >{{ year.year }}</option>
-    {% endfor %}
-  </select>
 
-  <label for="bis">Bis:</label>
-  <select id="bis" name="bis"
-  hx-get="/aggregation/get_chart/"
-  hx-target="#chart-container"
-  hx-include="#von, #chart-select"
-  >
-    {% for year in years %}
-      <option value="{{ year.year }}" {% if forloop.last %}selected{% endif %} >{{ year.year }}</option>
-    {% endfor %}
-  </select>
-  <a href="/aggregation/csv_download/" download="vorgang.csv">Download</a>
-</div>
 
-<div>
-  <label for="chart-select">Select Chart:</label>
-  <select id="chart-select" name="chart-select" 
-  hx-get="/aggregation/get_chart/"
-  hx-target="#chart-container"
-  hx-include="#von, #bis">
-    <option value="">--Select a Chart--</option>
-    {% for chart in charts %}
-      <option value="{{ chart.id }}">{{ chart.name }}</option>
-    {% endfor %}
-  </select>
-</div>
-    <div id="chart-container"></div>
+    <div class="inner-content" id="chart-container"></div>
+
+  </div>
 {% endblock %}

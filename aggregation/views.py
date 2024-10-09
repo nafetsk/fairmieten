@@ -79,7 +79,13 @@ def aggregation(request: HttpRequest) -> HttpResponse:
         .distinct()
         .order_by("year")
     )
-    return render(request, "aggregation.html", {"charts": charts, "years": years})
+
+    valid_years = [year['year'] for year in years if isinstance(year['year'], int) and year['year'] is not None]
+
+
+
+
+    return render(request, "aggregation.html", {"charts": charts, "years": valid_years})
 
 
 def get_chart(request: HttpRequest) -> HttpResponse:
