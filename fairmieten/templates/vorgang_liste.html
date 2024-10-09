@@ -1,0 +1,37 @@
+<div>
+    <div class="content">
+        <h1>Liste der Vorgänge</h1>
+        {% if vorgang_liste %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</a></th>
+                        <th>Vorgang</a></th>
+                        <th>Vorgangstyp</th>
+                        <th>Datum Kontaktaufnahme</th>
+                        <th>Aktionen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vorgang in vorgang_liste %}
+                        <tr>
+                            <td>{{ vorgang.id }}</td>
+                            <td>{{ vorgang.fallnummer }}</td>
+                            <td>{{ vorgang.vorgangstyp_item }}</td>
+                            <td>{{ vorgang.datum_kontakaufnahme|date:"d.m.Y" }}</td>
+                            <td>
+                                <a href="{% url 'vorgang_detail' vorgang.id %}">Details</a>
+                                <a hx-get="{% url 'vorgang_bearbeiten' vorgang.id %}"
+                                hx-target="#htmx-content"
+                                hx-swap="innerHTML">Edit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Es sind keine Vorgänge vorhanden.</p>
+        {% endif %}
+    </div>
+
+</div>

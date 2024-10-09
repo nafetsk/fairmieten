@@ -1,19 +1,66 @@
+{% extends base %}
+{% block content %}
 <div class="with-sidebar">
-    <aside class="sidebar" id="sidebar">
-      <h3>Seitenleiste</h3>
+	<aside class="sidebar" id="sidebar">
       <ul>
-        {% for key, value in form_liste %}
-        <li>{{ value }}</li>
-        {% endfor %}
-      </ul>
+		{% for item in form_liste %}
+		<li>
+			<a href="#"
+				id="nav-{{ item.key }}"
+				onclick="scrollToForm('form-{{ item.key }}')">
+				{{ item.label }}
+			</a>
+		</li>
+	{% endfor %}
+		  </ul>
     </aside>
-    
-    <div class="inner-content" id="htmx-inner-content">
-      <h2>Neuen Vorgang erstellen</h2>
-      <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Speichern</button>
-      </form>
+
+    <div class="inner-content" id="htmx-inner-content" >
+		{% for item in form_liste %}		
+		<div id="form-{{ item.key }}" class="form-container" hx-get="{% url 'create_'|add:item.key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}"
+		hx-trigger="revealed once">
+		{{vorgang_id}}
+		</div>
+		{% endfor %}
     </div>
   </div>
+
+  <script>
+	function scrollToForm(formId) {
+	  const formElement = document.getElementById(formId);
+	  const innerContent = document.querySelector('.inner-content');
+	  if (formElement && innerContent) {
+		const formRect = formElement.getBoundingClientRect();
+		const containerRect = innerContent.getBoundingClientRect();
+		const relativeTop = formRect.top - containerRect.top + innerContent.scrollTop;
+		
+		innerContent.scrollTo({
+		  top: relativeTop,
+		  behavior: 'smooth'
+		});
+	  }
+	}
+  // Intersection Observer setup
+  const formContainers = document.querySelectorAll('.form-container');
+  const navLinks = document.querySelectorAll('.sidebar a');
+
+  const observerOptions = {
+    root: document.querySelector('.inner-content'),
+    rootMargin: '0px',
+    threshold: 0.5
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const formId = entry.target.id;
+        const navId = 'nav-' + formId.split('-')[1];
+        navLinks.forEach(link => link.classList.remove('active'));
+        document.getElementById(navId).classList.add('active');
+      }
+    });
+  }, observerOptions);
+
+  formContainers.forEach(container => observer.observe(container));
+</script>
+{% endblock %}
