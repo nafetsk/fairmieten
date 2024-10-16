@@ -132,6 +132,23 @@ def get_chart(request: HttpRequest) -> HttpResponse:
 
     return render(request, "chart.html", {"data": data_json, "chart_description": chart.description, "chart_name": chart.name})
 
+def disable_year(request: HttpRequest) -> HttpResponse:
+    # selected year "von"
+    selected_year: int = int(request.GET.get("von"))
+
+    # get all relevant years from database
+    years = (
+        Vorgang.objects.annotate(year=ExtractYear("datum_vorfall_von"))
+        .values("year")
+        .distinct()
+        .order_by("year")
+    )
+
+    valid_years = [year['year'] for year in years if isinstance(year['year'], int) and year['year'] is not None]
+
+
+    return render(request, "year_options.html", {"years": valid_years, "selected_year": selected_year})
+
 def csv_download(request: HttpRequest) -> HttpResponse:
     # Create the HttpResponse object with the appropriate CSV header.
     response: HttpResponse = HttpResponse(content_type='text/csv')
@@ -156,36 +173,3 @@ def csv_download(request: HttpRequest) -> HttpResponse:
 
     return response
     
-
-# def get_data(request: HttpRequest, id: uuid) -> HttpResponse:
-#     # get Chart by id
-#     chart = Charts.objects.get(id=id)
-
-#     # get start and end year from request
-#     start_year = int(request.GET.get("von"))
-#     end_year = int(request.GET.get("bis"))
-
-#     incidents_per_variable: QuerySet = get_query_set(chart, start_year, end_year)
-
-#     # create dictionary for chart.js
-#     data: Dict[str, Any] = {
-#         "chartName": chart.name,
-#         "chartType": "bar",
-#         "xAxisName": chart.variable,
-#         "yAxisName": "Anzahl Vorfälle",
-#         "labels": [
-#             incident["x_variable"] for incident in incidents_per_variable
-#         ],  # Years on x-axis
-#         "datasets": [
-#             {
-#                 "label": "Anzahl Vorfälle",
-#                 "data": [
-#                     incident["count"] for incident in incidents_per_variable
-#                 ],  # Count of incidents on y-axis
-#                 "backgroundColor": "rgba(255, 99, 132, 0.2)",  # Bar color
-#                 "borderColor": "rgba(255, 99, 132, 1)",  # Border color
-#                 "borderWidth": 1,
-#             }
-#         ],
-#     }
-#     return JsonResponse(data)
