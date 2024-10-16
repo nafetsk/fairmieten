@@ -79,15 +79,25 @@ def aggregation(request: HttpRequest) -> HttpResponse:
         .distinct()
         .order_by("year")
     )
-    return render(request, "aggregation.html", {"charts": charts, "years": years})
+
+    valid_years = [year['year'] for year in years if isinstance(year['year'], int) and year['year'] is not None]
+
+
+
+
+    return render(request, "aggregation.html", {"charts": charts, "years": valid_years})
 
 
 def get_chart(request: HttpRequest) -> HttpResponse:
-    # get chart uuid
+    # get chart uuid, start and end year
     chart_id = request.GET.get("chart-select")
-    # get start and end year from request
     start_year = request.GET.get("von")
     end_year = request.GET.get("bis")
+
+    # exception for case with no selected chart
+    if chart_id == "" or None:
+        return HttpResponse("No chart selected")
+
 
     # get chart by id
     chart = Charts.objects.get(id=chart_id)
@@ -99,7 +109,7 @@ def get_chart(request: HttpRequest) -> HttpResponse:
     data: Dict[str, Any] = {
         "chartName": chart.name,
         "chartType": "bar",
-        "xAxisName": chart.variable,
+        "xAxisName": chart.x_label,
         "yAxisName": "Anzahl Vorfälle",
         "labels": [
             incident["x_variable"] for incident in incidents_per_variable
@@ -120,7 +130,7 @@ def get_chart(request: HttpRequest) -> HttpResponse:
     # convert dictionary to json
     data_json = json.dumps(data)
 
-    return render(request, "chart.html", {"data": data_json})
+    return render(request, "chart.html", {"data": data_json, "chart_description": chart.description, "chart_name": chart.name})
 
 def csv_download(request: HttpRequest) -> HttpResponse:
     # Create the HttpResponse object with the appropriate CSV header.
