@@ -16,7 +16,22 @@ from django.db.models.query import QuerySet
 from django.apps import apps
 import json
 import csv
+from fairmieten.form_views import layout
 
+def aggregation(request: HttpRequest) -> HttpResponse:
+    # get all charts from database
+    charts = Charts.objects.all()
+    # get all relevant years from database
+    years = (
+        Vorgang.objects.annotate(year=ExtractYear("datum_vorfall_von"))
+        .values("year")
+        .distinct()
+        .order_by("year")
+    )
+
+    valid_years = [year['year'] for year in years if isinstance(year['year'], int) and year['year'] is not None]
+    
+    return render(request, "aggregation.html", {"base": layout(request),"charts": charts, "years": valid_years})
 
 def get_query_set(chart: Charts, start_year: int, end_year: int) -> QuerySet:
     # Convert years to date format
@@ -68,24 +83,6 @@ def get_query_set(chart: Charts, start_year: int, end_year: int) -> QuerySet:
     else:
         return None
 
-
-def aggregation(request: HttpRequest) -> HttpResponse:
-    # get all charts from database
-    charts = Charts.objects.all()
-    # get all relevant years from database
-    years = (
-        Vorgang.objects.annotate(year=ExtractYear("datum_vorfall_von"))
-        .values("year")
-        .distinct()
-        .order_by("year")
-    )
-
-    valid_years = [year['year'] for year in years if isinstance(year['year'], int) and year['year'] is not None]
-
-
-
-
-    return render(request, "aggregation.html", {"charts": charts, "years": valid_years})
 
 
 def get_chart(request: HttpRequest) -> HttpResponse:

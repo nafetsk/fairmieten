@@ -19,7 +19,13 @@
 	 </a>	
 	</li>
 	<li>
-		<a href="/aggregation">Diagramme</a>
+		<a href="/aggregation"
+		hx-get="/aggregation"
+		hx-target="#htmx-content"
+		hx-swap="innerHTML"
+		hx-push-url="true">
+			Diagramme
+		</a>
 	</li>
 	<li>
 		<span>Stefan Klotz</span>
