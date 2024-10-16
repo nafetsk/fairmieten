@@ -1,17 +1,18 @@
 .header{
 	padding: 0rem;
-	position: sticky;
+	position: fixed;
 	top: 0;
 	z-index: 1000;
 	background-color: white;
-	margin-top: 1rem;
 	padding-bottom: 1rem;
 	height: 70px;
+	width: 100%;
 }
 .header li{
 	padding-top: 0;
 }
 main{
+	margin-top: 70px;
 	padding: 1rem;
 	background-color: #eefbfb;
 }
@@ -20,18 +21,19 @@ footer{
 }
 .with-sidebar {
     display: flex;
-    height: 100vh; /* Volle Bildschirmhöhe */
+    /* height: 100vh; /* Volle Bildschirmhöhe */
 	width: 100%;
 	overflow: hidden;
 }
 
 .sidebar {
-    width: 25%; /* oder eine feste Breite wie 250px */
+	position: fixed;
+    width: 250px; /* oder eine feste Breite wie 250px */
     overflow-y: auto; /* Falls die Seitenleiste länger ist als der Bildschirm */
 }
 
 .inner-content {
-    overflow-y: auto; /* Ermöglicht Scrollen innerhalb dieses Bereichs */
+	margin-left: 250px; /* oder die Breite der Seitenleiste */
     padding: 20px;
     box-sizing: border-box;
 	flex-grow: 1;
@@ -45,6 +47,6 @@ footer{
 }
 
 .sidebar a.active {
-	background-color: #f0f0f0;
-font-weight: bold;
+	background-color: #158ddeda;
+	font-weight: bold;
 }

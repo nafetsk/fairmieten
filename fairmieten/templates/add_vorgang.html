@@ -5,9 +5,8 @@
       <ul>
 		{% for item in form_liste %}
 		<li>
-			<a href="#"
-				id="nav-{{ item.key }}"
-				onclick="scrollToForm('form-{{ item.key }}')">
+			<a href="#form-{{ item.key }}"
+				id="nav-{{ item.key }}">
 				{{ item.label }}
 			</a>
 		</li>
@@ -18,49 +17,48 @@
     <div class="inner-content" id="htmx-inner-content" >
 		{% for item in form_liste %}		
 		<div id="form-{{ item.key }}" class="form-container" hx-get="{% url 'create_'|add:item.key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}"
-		hx-trigger="revealed once">
+		hx-trigger="load once">
 		{{vorgang_id}}
 		</div>
 		{% endfor %}
     </div>
   </div>
 
-  <script>
-	function scrollToForm(formId) {
-	  const formElement = document.getElementById(formId);
-	  const innerContent = document.querySelector('.inner-content');
-	  if (formElement && innerContent) {
-		const formRect = formElement.getBoundingClientRect();
-		const containerRect = innerContent.getBoundingClientRect();
-		const relativeTop = formRect.top - containerRect.top + innerContent.scrollTop;
+<script>
+	function initializeObserver() {
 		
-		innerContent.scrollTo({
-		  top: relativeTop,
-		  behavior: 'smooth'
-		});
-	  }
+		// Intersection Observer setup
+		const formContainers = document.querySelectorAll('.form-container');
+		const navLinks = document.querySelectorAll('.sidebar a');
+
+		const observerOptions = {
+			root: null,
+			rootMargin: '0px',
+			threshold: 0.6
+		};
+
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+			if (entry.isIntersecting) {
+				const formId = entry.target.id;
+				const navId = 'nav-' + formId.split('-')[1];
+				navLinks.forEach(link => link.classList.remove('active'));
+				document.getElementById(navId).classList.add('active');
+			}
+			});
+		}, observerOptions);
+
+		formContainers.forEach(container => observer.observe(container));
+
+		// Markiere den ersten Anker-Tag als aktiv
+		if (navLinks.length > 0) {
+			navLinks[0].classList.add('active');
+		}
 	}
-  // Intersection Observer setup
-  const formContainers = document.querySelectorAll('.form-container');
-  const navLinks = document.querySelectorAll('.sidebar a');
-
-  const observerOptions = {
-    root: document.querySelector('.inner-content'),
-    rootMargin: '0px',
-    threshold: 0.5
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const formId = entry.target.id;
-        const navId = 'nav-' + formId.split('-')[1];
-        navLinks.forEach(link => link.classList.remove('active'));
-        document.getElementById(navId).classList.add('active');
-      }
-    });
-  }, observerOptions);
-
-  formContainers.forEach(container => observer.observe(container));
+	initializeObserver();
+	// Event Listener for htmx:afterSwap
+	document.body.addEventListener('htmx:afterSwap', function() {
+	initializeObserver();
+	});
 </script>
 {% endblock %}
