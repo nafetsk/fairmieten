@@ -17,8 +17,8 @@
     <div class="inner-content" id="htmx-inner-content" >
 		{% for item in form_liste %}		
 		<div id="form-{{ item.key }}" class="form-container" hx-get="{% url 'create_'|add:item.key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}"
-		hx-trigger="load once">
-		{{vorgang_id}}
+		hx-trigger="revealed once">
+		<div class="form-placeholder">{{vorgang_id}}</div>
 		</div>
 		{% endfor %}
     </div>
@@ -34,7 +34,7 @@
 		const observerOptions = {
 			root: null,
 			rootMargin: '0px',
-			threshold: 0.6
+			threshold: 0.5
 		};
 
 		const observer = new IntersectionObserver((entries) => {
@@ -55,10 +55,21 @@
 			navLinks[0].classList.add('active');
 		}
 	}
-	initializeObserver();
+	function handleInputChange(event) {
+		const inputElement = event.target;
+		inputElement.classList.add('edited'); // Fügen Sie die gewünschte Klasse hinzu
+	}
+
 	// Event Listener for htmx:afterSwap
 	document.body.addEventListener('htmx:afterSwap', function() {
-	initializeObserver();
+		initializeObserver();
+		// Event Listener for input fields
+		const inputFields = document.querySelectorAll('input, textarea, select');
+		inputFields.forEach(input => {
+			console.log("add Listener to " + input.id);
+			input.addEventListener('input', handleInputChange);
+		});
 	});
+
 </script>
 {% endblock %}

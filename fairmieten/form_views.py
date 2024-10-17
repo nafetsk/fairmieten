@@ -2,6 +2,7 @@ import uuid
 from django.shortcuts import render
 from .forms import DiskriminierungForm, PersonForm, VorgangForm
 from .models import Vorgang, Person
+from .view_utils import layout
 from django.db import models
 
 # *** Reihenfolge der Formulare in der Vorgangserstellung ***
@@ -26,6 +27,7 @@ def vorgang_bearbeiten(request, vorgang_id:uuid.UUID):
 def create_vorgang(request):
 	form = VorgangForm(post_or_none(request), instance=get_Instance(request, Vorgang, "vorgang_id")) 
 	if request.method == 'POST' and form.is_valid():
+		set_created_by(request, form)
 		form.save()
 	return render(request, 'inner_form.html', {'form': form, 'item_key': 'vorgang', 'vorgang_id': form.instance.id})
 
@@ -46,8 +48,9 @@ def create_diskriminierung(request):
 
 # *** Hilfsfunktionen *******************************************
 
-def layout(request):
-    return "partial.html" if request.htmx else "base.html"
+def set_created_by(request, form):
+    if not form.instance.created_by:
+        form.instance.created_by = request.user
 
 def get_Instance(request, model:models.Model, id_name:str = 'id'):
 	id = request.GET.get(id_name, None)

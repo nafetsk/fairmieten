@@ -5,3 +5,9 @@
 	padding-top: 100px;
 	margin-top: -70px;
 }
+.form-placeholder{
+	height: 3000px;
+}
+.edited{
+	background-color: red;
+}

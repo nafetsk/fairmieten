@@ -5,6 +5,13 @@
 </ul>
 <ul class="sticky">
 	<li>
+		<a href="/vorgang/meine_liste/" hx-get="/vorgang/meine_liste/"
+		hx-target="#htmx-content"
+		hx-swap="innerHTML"
+		hx-push-url="true">Meine Vorgänge</a>
+	</li>
+
+	<li>
 		<a href="/vorgang/liste/" hx-get="/vorgang/liste/"
 		hx-target="#htmx-content"
 		hx-swap="innerHTML"
@@ -21,11 +28,16 @@
 	<li>
 		<a href="/aggregation">Diagramme</a>
 	</li>
-	<li>
-		<span>Stefan Klotz</span>
-	</li>
-	<li>
-		<a href="/logout">Abmelden</a>
-	</li>
-</ul>
+    {% if user.is_authenticated %}
+      <li>
+        <span>{{ user.username }}</span>
+      </li>
+      <li>
+        <a href="/logout">Abmelden</a>
+      </li>
+    {% else %}
+      <li>
+        <a href="/login">Anmelden</a>
+      </li>
+    {% endif %}</ul>
 </nav>

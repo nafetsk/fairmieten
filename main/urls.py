@@ -34,6 +34,8 @@ urlpatterns = [
     path('vorgang/save/<int:form_nr>/', fairmieten.form_views.save_form, name='save_form'),
     path('vorgang/save/<int:form_nr>/<int:vorgang_id>|None/', fairmieten.form_views.save_form, name='save_form'),
     path('vorgang/liste/', fairmieten.views.vorgang_liste, name='vorgang_liste'),
+    path('vorgang/meine_liste/', fairmieten.views.vorgang_meine_liste, name='vorgang_meine_liste'),
     path('vorgang/detail/<uuid:vorgang_id>/', fairmieten.views.vorgang_detail, name='vorgang_detail'),
-
-]
+    path('login/', fairmieten.views.login_view, name='login'),
+    path('logout/', fairmieten.views.logout_view, name='logout'),
+]   

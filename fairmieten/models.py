@@ -1,6 +1,7 @@
 import uuid
-from django.db import models
 from django.apps import apps
+from django.db import models
+from django.contrib.auth.models import User
 
 
 class Diskrimminierungsart(models.Model):
@@ -56,8 +57,8 @@ class Vorgang(models.Model):
     ergebnis = models.ManyToManyField(Ergebnis, blank=True)
     rechtsbereich = models.ManyToManyField(Rechtsbereich, blank=True)
     zugang_fachstelle_item = models.CharField(max_length=100, null=True,  blank=True) # (Flyer, Internet, ...)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
-# Betroffene Person
 class Person(models.Model): 
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
     alter_item = models.CharField(max_length=100) # String weil Kohorten
