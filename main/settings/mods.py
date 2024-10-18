@@ -20,7 +20,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 # False if not in os.environ because of casting above
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = ["fairmieten.ecord.de", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["https://fairmieten.ecord.de", "http://fairmieten.ecord.de", "localhost", "127.0.0.1"]
 
 # Raises Django's ImproperlyConfigured
 # exception if SECRET_KEY not in os.environ
