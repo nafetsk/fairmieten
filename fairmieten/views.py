@@ -1,16 +1,17 @@
 from uuid import UUID
+from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .view_utils import layout
 
-
 from fairmieten.models import Vorgang
 
 def home(request: HttpRequest) -> HttpResponse:
     return render(request, 'home.html')
 
+@login_required
 def vorgang_meine_liste(request: HttpRequest) -> HttpResponse:
     vorgang_liste = Vorgang.objects.filter(created_by=request.user)
     return render(request, 'vorgang_liste.html', {'layout': layout(request), 'vorgang_liste': vorgang_liste})
@@ -33,7 +34,7 @@ def login_view(request):
                 login(request, user)
                 return redirect('home')  # Redirect to the home page after successful login
     else:
-        form = AuthenticationForm()
+        form = AuthenticationForm(request)
     return render(request, 'login.html', {'form': form})
 
 def logout_view(request):
