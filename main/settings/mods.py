@@ -21,6 +21,8 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = ["fairmieten.ecord.de", "localhost", "127.0.0.1"]
+CSRF_TRUSTED_ORIGINS = ["https://fairmieten.ecord.de"]
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Raises Django's ImproperlyConfigured
 # exception if SECRET_KEY not in os.environ
