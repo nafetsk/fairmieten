@@ -1,9 +1,5 @@
-{% extends 'base.html' %}
+{% extends base %}
 {% load static %}
-
-{% block additional_js %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-{% endblock %}
 
 {% block additional_css %}
   <link rel="stylesheet" href="{% static 'css/aggregation.css' %}" />
@@ -14,6 +10,12 @@
 <aside class="sidebar" id="sidebar">
   <div>
     <label for="von">Von:</label>
+    <div id="disbale_year"
+    hx-get="/aggregation/disable_year/"
+    hx-target="#bis"
+    hx-swap="innerHTML"
+    hx-include="#von"
+    >
     <select id="von" name="von"
     hx-get="/aggregation/get_chart/"
     hx-target="#chart-container"
@@ -23,7 +25,7 @@
         <option value="{{ year }}" {% if forloop.first %}selected{% endif %} >{{ year }}</option>
       {% endfor %}
     </select>
-  
+    </div>
     <label for="bis">Bis:</label>
     <select id="bis" name="bis"
     hx-get="/aggregation/get_chart/"
@@ -34,7 +36,6 @@
         <option value="{{ year }}" {% if forloop.last %}selected{% endif %} >{{ year }}</option>
       {% endfor %}
     </select>
-    <a href="/aggregation/csv_download/" download="vorgang.csv">Download</a>
   </div>
   
   <div>
@@ -49,6 +50,7 @@
       {% endfor %}
     </select>
   </div>
+  <a href="/aggregation/csv_download/" download="vorgang.csv">Download</a>
 </aside>
 
 

@@ -22,6 +22,7 @@ def create_test_data():
     # Clear entries from each model
     Vorgang.objects.all().delete()
     Diskriminierung.objects.all().delete()
+    Diskrimminierungsart.objects.all().delete()
     Loesungsansaetze.objects.all().delete()
     Ergebnis.objects.all().delete() 
     Verursacher.objects.all().delete()

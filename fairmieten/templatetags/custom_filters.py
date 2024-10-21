@@ -4,6 +4,7 @@ from operator import attrgetter
 
 register = template.Library()
 
+
 @register.filter
 def groupby_typ(diskriminierungen):
     # Group the diskriminierungen by 'typ.name'
