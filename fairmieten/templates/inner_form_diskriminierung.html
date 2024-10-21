@@ -1,0 +1,24 @@
+{% load custom_filters %}
+
+<form id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}" 
+  hx-trigger="change delay:1000ms" hx-swap="outerHTML">
+  {% csrf_token %}
+  <div class="fieldset-container">
+    {% with form.diskriminierung.field.queryset|groupby_typ as grouped_diskriminierung %}
+      {% for diskriminierungsart, diskriminierungen in grouped_diskriminierung.items %}
+        <fieldset>
+          <legend>{{ diskriminierungsart }}</legend>
+          {% for diskriminierung in diskriminierungen %}
+            {% for checkbox in form.diskriminierung %}
+              {% if checkbox.choice_label == diskriminierung.name %}
+              <div>
+                {{ checkbox }}
+              </div>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </fieldset>
+      {% endfor %}
+    {% endwith %}
+  </div>
+</form>

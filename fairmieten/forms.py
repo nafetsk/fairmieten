@@ -62,5 +62,5 @@ class DiskriminierungForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['diskriminierung'].widget = forms.CheckboxSelectMultiple()
-        self.fields['diskriminierung'].queryset = Diskriminierung.objects.all()
-        
+        self.fields['diskriminierung'].queryset = Diskriminierung.objects.select_related('typ').all()
+        self.diskriminierung_instances = list(self.fields['diskriminierung'].queryset)
