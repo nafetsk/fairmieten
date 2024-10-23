@@ -1,0 +1,8 @@
+
+
+{% for year in years %}
+  <option value="{{ year }}" {% if forloop.last %}selected{% endif %} 
+    {% if year < selected_year %}disabled{% endif %}>
+    {{ year }}
+  </option>
+{% endfor %}

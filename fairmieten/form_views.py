@@ -5,6 +5,7 @@ from .models import Vorgang, Person
 from .view_utils import layout
 from django.db import models
 
+
 # *** Reihenfolge der Formulare in der Vorgangserstellung ***
 
 form_liste = [
@@ -42,7 +43,8 @@ def create_diskriminierung(request):
 	form = DiskriminierungForm(post_or_none(request),instance=get_Instance(request, Vorgang, "vorgang_id"))
 	if request.method == 'POST' and form.is_valid():
 		form.save()
-	return render(request, 'inner_form.html', {'form': form, 'item_key': 'diskriminierung', 'vorgang_id': form.instance.id})
+
+	return render(request, 'inner_form_diskriminierung.html', {'form': form, 'item_key': 'diskriminierung', 'vorgang_id': form.instance.id})
 
 
 
