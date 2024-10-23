@@ -17,11 +17,12 @@ RUN poetry install --no-root
 # Copy the project code into the container
 COPY . /app/
 COPY main/.env.template main/.env
-RUN poetry run python3 manage.py migrate
-RUN poetry run python manage.py shell -c "from aggregation.test_data import create_test_data;"
-RUN poetry run python manage.py shell -c "from fairmieten import insert_initial_data;"
+
+# Ensure entrypoint.sh is copied and has the correct permissions
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 EXPOSE 8001
 
-ENTRYPOINT ["poetry", "run", "python3" ,"manage.py", "runserver"]
-CMD ["0.0.0.0:8001"]
+ENTRYPOINT ["sh", "/app/entrypoint.sh"]
+CMD ["0.0.0.0","8001"]
