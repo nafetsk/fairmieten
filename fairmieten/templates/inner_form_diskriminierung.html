@@ -3,21 +3,21 @@
 <form id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}" 
   hx-trigger="change delay:1000ms" hx-swap="outerHTML">
   {% csrf_token %}
-  <div class="fieldset-container">
+  <div class="diskriminierungart-container">
     {% with form.diskriminierung.field.queryset|groupby_typ as grouped_diskriminierung %}
       {% for diskriminierungsart, diskriminierungen in grouped_diskriminierung.items %}
-        <fieldset>
-          <legend>{{ diskriminierungsart }}</legend>
+      <legend>{{ diskriminierungsart }}</legend>
+      <div class="flex">
           {% for diskriminierung in diskriminierungen %}
             {% for checkbox in form.diskriminierung %}
               {% if checkbox.choice_label == diskriminierung.name %}
-              <div>
+             <div class="flex">
                 {{ checkbox }}
-              </div>
+             </div>
               {% endif %}
             {% endfor %}
           {% endfor %}
-        </fieldset>
+            </div>
       {% endfor %}
     {% endwith %}
   </div>
