@@ -6,8 +6,8 @@
   <div class="diskriminierungart-container">
     {% with form.diskriminierung.field.queryset|groupby_typ as grouped_diskriminierung %}
       {% for diskriminierungsart, diskriminierungen in grouped_diskriminierung.items %}
-      <legend>{{ diskriminierungsart }}</legend>
-      <div class="flex">
+      <h4>{{ diskriminierungsart }}</h4>
+      <div class="flex flex-wrap gap-2">
           {% for diskriminierung in diskriminierungen %}
             {% for checkbox in form.diskriminierung %}
               {% if checkbox.choice_label == diskriminierung.name %}
