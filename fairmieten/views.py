@@ -15,12 +15,13 @@ def home(request: HttpRequest) -> HttpResponse:
 @login_required
 def vorgang_meine_liste(request: HttpRequest) -> HttpResponse:
     vorgang_liste = Vorgang.objects.filter(created_by=request.user)
-    return render(request, 'vorgang_liste.html', {'layout': layout(request), 'vorgang_liste': vorgang_liste})
+    vorgang_liste = search_and_sort(request, vorgang_liste)
+    return render(request, 'vorgang_liste.html', {'layout': layout(request), 'vorgang_liste': vorgang_liste, 'callback_name':'vorgang_meine_liste'})
 
 def vorgang_liste(request: HttpRequest) -> HttpResponse:
     vorgang_liste = Vorgang.objects.all()
     vorgang_liste = search_and_sort(request, vorgang_liste)
-    return render(request, 'vorgang_liste.html', {'layout': layout(request), 'vorgang_liste': vorgang_liste})
+    return render(request, 'vorgang_liste.html', {'layout': layout(request), 'vorgang_liste': vorgang_liste, 'callback_name':'vorgang_liste'})
 
 def search_and_sort(request: HttpRequest, vorgang_liste: Vorgang) -> Vorgang:
     
