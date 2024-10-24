@@ -22,7 +22,7 @@
 		hx-target="#htmx-content"
 		hx-swap="innerHTML"
 		hx-push-url="true">
-	   Neuen Vorgang erstellen
+	   Vorgang erstellen
 	 </a>	
 	</li>
 	<li>
@@ -35,6 +35,9 @@
 		</a>
 	</li>
     {% if user.is_authenticated %}
+	  <li>
+		<a href="/admin">admin</a>
+	  </li>
       <li>
         <span>{{ user.username }}</span>
       </li>

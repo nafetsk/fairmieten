@@ -58,6 +58,8 @@ class Vorgang(models.Model):
     rechtsbereich = models.ManyToManyField(Rechtsbereich, blank=True)
     zugang_fachstelle_item = models.CharField(max_length=100, null=True,  blank=True) # (Flyer, Internet, ...)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
 class Person(models.Model): 
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
