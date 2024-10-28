@@ -3,3 +3,4 @@ __pycache__/
 main/.env
 .venv
 .vscode
+staticfiles

@@ -17,6 +17,7 @@ django-stubs = "^5.0.4"
 faker = "^28.4.1"
 django-htmx = "^1.19.0"
 django-unfold = "^0.40.0"
+gunicorn = "^23.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
