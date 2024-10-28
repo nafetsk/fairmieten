@@ -6,7 +6,7 @@ from .main import INSTALLED_APPS, BASE_DIR, MIDDLEWARE
 
 INSTALLED_APPS = [ "unfold"] + INSTALLED_APPS + [ "environ", "fairmieten", "main.hello", "aggregation"]
 
-MIDDLEWARE += ['django_htmx.middleware.HtmxMiddleware']
+MIDDLEWARE += ['django_htmx.middleware.HtmxMiddleware', 'whitenoise.middleware.WhiteNoiseMiddleware']
 
 env = environ.Env(
     # set casting, default value
