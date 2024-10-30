@@ -63,6 +63,7 @@ class Vorgang(models.Model):
     loesungsansaetze_bemerkung = models.TextField(null=True, blank=True)
     # Ergebnis
     ergebnis = models.ManyToManyField(Ergebnis, blank=True)
+    ergebnis_bemerkung = models.TextField(null=True, blank=True)
     
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)

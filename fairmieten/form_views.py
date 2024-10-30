@@ -1,6 +1,6 @@
 import uuid
 from django.shortcuts import render
-from .forms import DiskriminierungForm, PersonForm, VorgangForm, LoesungsansaetzeForm
+from .forms import DiskriminierungForm, PersonForm, VorgangForm, LoesungsansaetzeForm, ErgebnisForm
 from .models import Vorgang, Person
 from .view_utils import layout
 from django.db import models
@@ -13,6 +13,7 @@ form_liste = [
     {"key": "person", "label": "Person", "form": PersonForm},
     {"key": "diskriminierung", "label": "Diskriminierung", "form": DiskriminierungForm},
     {"key": "loesungsansaetze", "label": "Lösungsansätze", "form": LoesungsansaetzeForm},
+    {"key": "ergebnis", "label": "Ergebnis", "form": ErgebnisForm},
 ]
 
 # *** Views für die Vorgangserstellung ***
@@ -85,6 +86,19 @@ def create_loesungsansaetze(request):
         request,
         "inner_form_loesungs.html",
         {"form": form, "item_key": "loesungsansaetze", "vorgang_id": form.instance.id},
+    )
+
+def create_ergebnis(request):
+    form = ErgebnisForm(
+        post_or_none(request), instance=get_Instance(request, Vorgang, "vorgang_id")
+    )
+    if request.method == "POST" and form.is_valid():
+        form.save()
+
+    return render(
+        request,
+        "inner_form_ergebnis.html",
+        {"form": form, "item_key": "ergebnis", "vorgang_id": form.instance.id},
     )
 
 

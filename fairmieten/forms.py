@@ -1,6 +1,15 @@
 from django import forms
-from .models import Diskriminierung, FormLabels, FormValues, Vorgang, Person, Loesungsansaetze, Rechtsbereich
-from .widgets import CustomCheckboxMultiSelectInput, CustomCheckboxMultiSelectInput_loesung
+from .models import (
+    Diskriminierung,
+    FormLabels,
+    FormValues,
+    Vorgang,
+    Person,
+    Loesungsansaetze,
+    Rechtsbereich,
+    Ergebnis,
+)
+from .widgets import CustomCheckboxMultiSelectInput
 
 
 class DataTextForm(forms.ModelForm):
@@ -82,8 +91,7 @@ class DiskriminierungForm(forms.ModelForm):
             "diskriminierung"
         ].queryset = Diskriminierung.objects.select_related("typ").all()
         self.diskriminierung_instances = list(self.fields["diskriminierung"].queryset)
-        # Die Klasse hier ist wichtig für Tailwind
-        #self.fields["diskriminierung"].widget.attrs.update({"class": "peer hidden"})
+
 
 class LoesungsansaetzeForm(forms.ModelForm):
     class Meta:
@@ -92,18 +100,24 @@ class LoesungsansaetzeForm(forms.ModelForm):
             "loesungsansaetze",
             "rechtsbereich",
             "loesungsansaetze_bemerkung",
-            ]
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Custom HTML für die Buttons der Checkboxen
         self.fields["loesungsansaetze"].widget = CustomCheckboxMultiSelectInput()
-        self.fields[
-            "loesungsansaetze"
-        ].queryset = Loesungsansaetze.objects.all()
+        self.fields["loesungsansaetze"].queryset = Loesungsansaetze.objects.all()
         self.fields["rechtsbereich"].widget = CustomCheckboxMultiSelectInput()
-        self.fields[
-            "rechtsbereich"
-        ].queryset = Rechtsbereich.objects.all()
-        # Die Klasse hier ist wichtig für Tailwind
-        #self.fields["loesungsansaetze"].widget.attrs.update({"class": "peer hidden"})
+        self.fields["rechtsbereich"].queryset = Rechtsbereich.objects.all()
+
+
+class ErgebnisForm(forms.ModelForm):
+    class Meta:
+        model = Vorgang
+        fields = ["ergebnis", "ergebnis_bemerkung"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Custom HTML für die Buttons der Checkboxen
+        self.fields["ergebnis"].widget = CustomCheckboxMultiSelectInput()
+        self.fields["ergebnis"].queryset = Ergebnis.objects.all()
