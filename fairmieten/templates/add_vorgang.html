@@ -23,8 +23,9 @@
       <ul >
 		{% for item in form_liste %}
 		<li>
-			<a href="#form-{{ item.key }}"
-				id="nav-{{ item.key }}">
+			<a href="#form-{{ item.key }}" 
+				id="nav-{{ item.key }}"
+				onclick="setActive(this)">
 				{{ item.label }}
 			</a>
 		</li>
@@ -45,26 +46,29 @@
 
 <script>
 	function initializeObserver() {
-		
 		// Intersection Observer setup
 		const formContainers = document.querySelectorAll('.form-container');
 		const navLinks = document.querySelectorAll('.sidebar a');
-
+		console.log("INITIALIZE OBSERVER");
 		const observerOptions = {
 			root: null,
 			rootMargin: '0px',
-			threshold: 0.5
+			threshold: 0.2
 		};
 
 		const observer = new IntersectionObserver((entries) => {
+			console.log(entries.length + ": "); 
 			entries.forEach(entry => {
-			if (entry.isIntersecting) {
-				const formId = entry.target.id;
-				const navId = 'nav-' + formId.split('-')[1];
-				navLinks.forEach(link => link.classList.remove('active'));
-				document.getElementById(navId).classList.add('active');
-			}
+				console.log(entry.target.id + " " + entry.isIntersecting + " " + entry.intersectionRatio);
+				if (entry.isIntersecting) {
+					//console.log("Intersecting with "+ entry.target.id); 
+					const formId = entry.target.id;
+					const navId = 'nav-' + formId.split('-')[1];
+					navLinks.forEach(link => link.classList.remove('active'));
+					document.getElementById(navId).classList.add('active');
+				}
 			});
+
 		}, observerOptions);
 
 		formContainers.forEach(container => observer.observe(container));
@@ -74,21 +78,40 @@
 			navLinks[0].classList.add('active');
 		}
 	}
+
 	function handleInputChange(event) {
 		const inputElement = event.target;
 		inputElement.classList.add('edited'); // Fügen Sie die gewünschte Klasse hinzu
 	}
 
-	// Event Listener for htmx:afterSwap
-	document.body.addEventListener('htmx:afterSwap', function() {
-		initializeObserver();
-		// Event Listener for input fields
-		const inputFields = document.querySelectorAll('input, textarea, select');
-		inputFields.forEach(input => {
-			console.log("add Listener to " + input.id);
-			input.addEventListener('input', handleInputChange);
+	function setActive(element) {
+		// Entferne die Klasse 'active' von allen Links
+		var links = document.querySelectorAll('a[id^="nav-"]');
+		links.forEach(function(link) {
+			link.classList.remove('active');
 		});
-	});
 
-</script>
+		// Füge die Klasse 'active' zum angeklickten Link hinzu
+		element.classList.add('active');
+	}
+
+	// Initialisierung beim Laden der Seite
+	document.addEventListener('DOMContentLoaded', function() {
+    	initializeObserver();
+	});
+// Event Listener for htmx:afterSwap
+  document.body.addEventListener('htmx:afterSwap', function(event) {
+    // Überprüfen, ob das nachgeladene Element die gesamte Seite ist
+    console.log("Target id:  "+event.detail.target.id);
+	if (event.detail.target.id == 'htmx-content') {
+    	//initializeObserver();
+	}
+	// Event Listener for input fields
+	const inputFields = document.querySelectorAll('input, textarea, select');
+	inputFields.forEach(input => {
+	input.addEventListener('input', handleInputChange);
+	});
+    
+  });
+  </script>
 {% endblock %}
