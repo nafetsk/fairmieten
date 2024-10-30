@@ -1,8 +1,8 @@
-from locust import HttpUser, between, task
+from locust import HttpUser, between, task, constant_throughput
 
 
 class WebsiteUser(HttpUser):
-    wait_time = between(5, 15)
+    wait_time = constant_throughput(1)
         
     @task
     def index(self):
