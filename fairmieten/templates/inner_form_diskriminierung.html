@@ -3,23 +3,23 @@
 <form class="inner-form-diskrimminierung" id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}" 
   hx-trigger="change delay:1000ms" hx-swap="outerHTML">
   {% csrf_token %}
-  <div class="diskriminierungart-container ">
+  <div class="diskriminierungart-container">
     {% with form.diskriminierung.field.queryset|groupby_typ as grouped_diskriminierung %}
       {% for diskriminierungsart, diskriminierungen in grouped_diskriminierung.items %}
       <div class="diskriminierungart-row mb-2">
-      <legend>{{ diskriminierungsart }}</legend>
-      <div class="flex button-row">
-        {% for diskriminierung in diskriminierungen %}
-          {% for checkbox in form.diskriminierung %}
-            {% if checkbox.choice_label == diskriminierung.name %}
-            <div class="flex">
-              {{ checkbox }}
-            </div>
-            {% endif %}
+        <label>{{ diskriminierungsart }}</label>
+        <div class="flex flex-wrap gap-2 button-row">
+          {% for diskriminierung in diskriminierungen %}
+            {% for checkbox in form.diskriminierung %}
+              {% if checkbox.choice_label == diskriminierung.name %}
+              <div class="flex">
+                {{ checkbox }}
+              </div>
+              {% endif %}
+            {% endfor %}
           {% endfor %}
-        {% endfor %}
+        </div>
       </div>
-    </div>
     {% endfor %}
     {% endwith %}
   </div>
