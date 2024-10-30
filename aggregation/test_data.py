@@ -147,6 +147,7 @@ def create_test_data():
     vorgaenge = []
     for _ in range(20):
         vorgang = Vorgang.objects.create(
+            fallnummer=fake.random_int(min=1000, max=9999),
             datum_kontaktaufnahme=fake.date_between(
                 start_date=start_date, end_date=end_date
             ),
@@ -380,7 +381,15 @@ def create_test_data():
         type=4,
         model="Intervention",
     )
-
+    
+    Charts.objects.create(
+        name="Vorfälle pro Anzahl der Interventionen",
+        description="Vorfälle pro Anzahl der Interventionen Beschreibung",
+        x_label="Anzahl Intervention",
+        variable="intervention",
+        type=5,
+        model="Vorgang",
+    )
 
 
 
