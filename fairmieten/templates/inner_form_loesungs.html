@@ -1,0 +1,32 @@
+<form class="inner-form-custom-checkbox" id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}" 
+  hx-trigger="change delay:1000ms" hx-swap="outerHTML">
+  {% csrf_token %}
+
+  <div class="custom-checkbox-row mb-2">
+    <label> {{ form.loesungsansaetze.label }} </label>
+    <div class="flex flex-wrap gap-2 button-row">
+      {% for checkbox in form.loesungsansaetze %}
+        <div class="flex">
+          {{ checkbox }}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+
+    <label> {{ form.rechtsbereich.label }} </label>
+    <div class="flex flex-wrap gap-2 button-row">
+      {% for checkbox in form.rechtsbereich %}
+        <div class="flex">
+          {{ checkbox }}
+        </div>
+      {% endfor %}
+    </div>
+
+    <label> {{ form.loesungsansaetze_bemerkung.label }} </label>
+    {{ form.loesungsansaetze_bemerkung }}
+
+
+    </div>
+  </div>
+</form>
