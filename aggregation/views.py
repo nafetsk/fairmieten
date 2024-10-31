@@ -8,6 +8,7 @@ from fairmieten.models import (
     Diskriminierung,
     Loesungsansaetze,
     Ergebnis,
+    Rechtsbereich,
 )
 from .models import Charts
 from django.db.models.functions import ExtractYear
@@ -222,7 +223,24 @@ def csv_download(request: HttpRequest) -> HttpResponse:
 
     # Get all Diskriminierung names to use as dynamic column headers
     diskriminierung_list = list(Diskriminierung.objects.all())
-    diskriminierung_names = [f"Diskriminierung_{d.name}" for d in diskriminierung_list]
+    diskriminierung_names = [f"diskriminierung_{d.name}" for d in diskriminierung_list]
+
+    # Diskriminierungsart
+    diskriminierungsart_list = list(Diskrimminierungsart.objects.all())
+    diskriminierungsart_names = [f"diskriminierungsart_{d.name}" for d in diskriminierungsart_list]
+
+    # Get all Lösungsansätze
+    loesungsansaetze_list = list(Loesungsansaetze.objects.all())
+    loesungsansaetze_names = [f"loesungsansaetze_{d.name}" for d in loesungsansaetze_list]
+
+    # Get all Ergebnis
+    ergebnis_list = list(Ergebnis.objects.all())
+    ergebnis_names = [f"ergebnis_{d.name}" for d in ergebnis_list]
+
+    # Get all Rechtsbereich
+    rechtsbereich_list = list(Rechtsbereich.objects.all())
+    rechtsbereich_names = [f"rechtsbereich_{d.name}" for d in rechtsbereich_list]
+
 
     # Write the header row
     writer.writerow(
@@ -248,19 +266,60 @@ def csv_download(request: HttpRequest) -> HttpResponse:
             "Anzahl Interventionen",
             # Diskriminierung dumys
             *diskriminierung_names,
+            # Diskriminierungsart
+            *diskriminierungsart_names,
+            # Loesungsansaetze
+            *loesungsansaetze_names,
+            # Ergebnis
+            *ergebnis_names,
+            # Rechtsbereich
+            *rechtsbereich_names,
+
         ]
     )
     # Für Aggregierte Columns
     queryset = Vorgang.objects.select_related("person").annotate(
         intervention_count=Count("intervention"),
         # Dictionary Comprehension mit key: has_diskriminierung_{d.id} und value: True/False
-        **{
+        **{ # Diskriminierung dummy columns
             f"has_diskriminierung_{d.id}": Exists( 
                 Vorgang.diskriminierung.through.objects.filter(
                     diskriminierung_id=d.id, vorgang_id=OuterRef("pk")
                 )
             )
             for d in diskriminierung_list
+        },
+        **{  # Diskrimminierungsart dummy columns
+            f"has_diskrimminierungsart_{da.id}": Exists(
+                Vorgang.diskriminierung.through.objects.filter(
+                    diskriminierung__typ_id=da.id, vorgang_id=OuterRef("pk")
+                )
+            )
+            for da in diskriminierungsart_list
+        },
+        **{  # Loesungsansaetze dummy columns
+            f"has_loesungsansatz_{l.id}": Exists(
+                Vorgang.loesungsansaetze.through.objects.filter(
+                    loesungsansaetze_id=l.id, vorgang_id=OuterRef("pk")
+                )
+            )
+            for l in loesungsansaetze_list
+        },
+        **{  # Ergebnis dummy columns
+            f"has_ergebnis_{e.id}": Exists(
+                Vorgang.ergebnis.through.objects.filter(
+                    ergebnis_id=e.id, vorgang_id=OuterRef("pk")
+                )
+            )
+            for e in ergebnis_list
+        },
+        **{  # Rechtsbereich dummy columns
+            f"has_rechtsbereich_{r.id}": Exists(
+                Vorgang.rechtsbereich.through.objects.filter(
+                    rechtsbereich_id=r.id, vorgang_id=OuterRef("pk")
+                )
+            )
+            for r in rechtsbereich_list
         },
     )
 
@@ -297,6 +356,30 @@ def csv_download(request: HttpRequest) -> HttpResponse:
             for d in diskriminierung_list
         ]
 
-        writer.writerow(row + diskriminierung_data)
+        # Add Diskriminierungsart dummy columns
+        diskriminierungsart_data = [
+            getattr(vorgang, f"has_diskrimminierungsart_{da.id}")
+            for da in diskriminierungsart_list
+        ]
+
+        # Add Loesungsansaetze dummy columns
+        loesungsansaetze_data = [
+            getattr(vorgang, f"has_loesungsansatz_{l.id}")
+            for l in loesungsansaetze_list
+        ]
+
+        # Add Ergebnis dummy columns
+        ergebnis_data = [
+            getattr(vorgang, f"has_ergebnis_{e.id}")
+            for e in ergebnis_list
+        ]
+
+        # Add Rechtsbereich dummy columns
+        rechtsbereich_data = [
+            getattr(vorgang, f"has_rechtsbereich_{r.id}")
+            for r in rechtsbereich_list
+        ]
+
+        writer.writerow(row + diskriminierung_data + diskriminierungsart_data + loesungsansaetze_data + ergebnis_data + rechtsbereich_data)
 
     return response
