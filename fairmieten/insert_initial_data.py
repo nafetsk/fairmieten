@@ -1,6 +1,10 @@
 from .models import FormLabels, FormValues
 
 def setup():
+	# delete all existing entries
+	FormLabels.objects.all().delete()
+	FormValues.objects.all().delete()
+
 	labels = {}	
 	labels['Vorgang'] = {
 		'fallnummer':'Fallnummer',
@@ -23,7 +27,7 @@ def setup():
 	values = {}	
 	values['Vorgang'] = {
 		'kontaktaufnahme_durch_item': 
-      		{'Verwandter': 'Verwandter', 'Bereuer': 'Bereuer', 'Person selbst': 'Person selbst'},
+      		{'Betroffene Person': 'Betroffene Person', 'beschuldigte Person': 'beschuldigte Person', 'unbeteiligte Person': 'unbeteiligte Person'},
   		'bezirk_item': 
         	{'Treptow': 'Treptow', 'Neukölln': 'Neukölln', 'Kreuzberg': 'Kreuzberg'}
 	}
@@ -34,10 +38,15 @@ def setup():
         	{'divers': 'divers', 'weiblich': 'weiblich', 'männlich': 'männlich', 'keine Angabe': 'keine Angabe'}
 	}
 
+
+
 	for model in values:
 		for fieldname, value_dict in values[model].items():
+			encoding_counter = 0
 			for key, value in value_dict.items():
 				print("Try to set value for", model, "->", fieldname, "->", key)
-				FormValues.objects.create(model=model, key=key, value=value, field=fieldname)
+				# increment encoding for each value
+				encoding_counter += 1
+				FormValues.objects.create(model=model, key=key, value=value, field=fieldname, encoding=encoding_counter)
  
 setup()

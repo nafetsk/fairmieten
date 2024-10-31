@@ -9,6 +9,7 @@ from fairmieten.models import (
     Loesungsansaetze,
     Ergebnis,
     Rechtsbereich,
+    FormValues,
 )
 from .models import Charts
 from django.db.models.functions import ExtractYear
@@ -213,11 +214,43 @@ def disable_year(request: HttpRequest) -> HttpResponse:
         {"years": valid_years, "selected_year": selected_year},
     )
 
+def create_codebook():
+    # Retrieve all FormValues from the database
+    form_values = FormValues.objects.all()
+
+    # Initialize the codebook dictionary
+    codebook = {}
+
+    # Group the FormValues by their field and create the nested dictionary
+    for form_value in form_values:
+        field = form_value.field
+        encoding = form_value.encoding
+        value = form_value.value
+
+        if field not in codebook:
+            codebook[field] = {}
+        
+        codebook[field][encoding] = value
+
+    return codebook
+
+
+def _get_coded_value(value, codebook, category):
+    # Reverse lookup to find the code for the given value
+    for code, label in codebook.get(category, {}).items():
+        if label == value:
+            return code
+    
+    # If no matching code is found, return the original value
+    return value
 
 def csv_download(request: HttpRequest) -> HttpResponse:
     # Create the HttpResponse object with the appropriate CSV header.
     response: HttpResponse = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = 'attachment; filename="vorgang.csv"'
+
+    # Create codebook
+    codebook = create_codebook()
 
     writer = csv.writer(response)
 
@@ -331,7 +364,8 @@ def csv_download(request: HttpRequest) -> HttpResponse:
             vorgang.fallnummer,
             vorgang.vorgangstyp_item,
             vorgang.datum_kontaktaufnahme,
-            vorgang.kontaktaufnahme_durch_item,
+            _get_coded_value(vorgang.kontaktaufnahme_durch_item, codebook, "kontaktaufnahme_durch_item"),
+            #vorgang.kontaktaufnahme_durch_item,
             vorgang.datum_vorfall_von,
             vorgang.datum_vorfall_bis,
             vorgang.sprache,
@@ -341,7 +375,8 @@ def csv_download(request: HttpRequest) -> HttpResponse:
             # Person
             vorgang.person.alter_item,
             vorgang.person.anzahl_kinder,
-            vorgang.person.gender_item,
+            #vorgang.person.gender_item,
+            _get_coded_value(vorgang.person.gender_item, codebook, "gender_item"),
             vorgang.person.betroffen_item,
             vorgang.person.prozeskostenuebernahme_item,
             # Protokoll
@@ -382,4 +417,15 @@ def csv_download(request: HttpRequest) -> HttpResponse:
 
         writer.writerow(row + diskriminierung_data + diskriminierungsart_data + loesungsansaetze_data + ergebnis_data + rechtsbereich_data)
 
+    return response
+
+def codebook_download(request: HttpRequest) -> HttpResponse:
+    codebook = create_codebook()
+    
+    response = HttpResponse(
+        json.dumps(codebook, indent=2), 
+        content_type='application/json'
+    )
+    response['Content-Disposition'] = 'attachment; filename="codebook.json"'
+    
     return response

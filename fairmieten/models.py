@@ -2,6 +2,7 @@ import uuid
 from django.apps import apps
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Max
 
 
 class Diskrimminierungsart(models.Model):
@@ -119,6 +120,8 @@ class FormTextMixin(models.Model):
 class FormValues(FormTextMixin):
     key = models.CharField(max_length=100, default=None, null=True, blank=True)
     value = models.CharField(max_length=100)
+    # Encoding für csv-Export auto incrementing
+    encoding = models.IntegerField(default=0)
 
     @staticmethod
     def get_Values(modelname):

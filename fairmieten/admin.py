@@ -20,7 +20,7 @@ class FormLabelsAdmin(unfold.admin.ModelAdmin):
     ordering = ('model', 'field')
 
 class FormValuesAdmin(admin.ModelAdmin):
-    list_display = ('model', 'field', 'key', 'value')
+    list_display = ('model', 'field', 'key', 'value', 'encoding')
     search_fields = ('model', 'field', 'value')  # Ermöglicht die Suche nach 'field' und 'label'
     ordering = ('model', 'field')
 
