@@ -1,0 +1,5 @@
+<select hx-get="/vorgang/liste/?{{request.META.QUERY_STRING}}" hx-target="#htmx-content" name="suche.{{name}}" class="h-12" name="{{name}}">
+	{% for value, label in values %}
+		<option value="{{ value }}">{{ label }}</option>
+	{% endfor %}
+</select>

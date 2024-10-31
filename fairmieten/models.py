@@ -134,6 +134,16 @@ class FormValues(FormTextMixin):
         print(values_dict)  # Ausgabe des Dictionarys
         return values_dict
 
+    @staticmethod
+    def get_field_values(field_name):
+        values = FormValues.objects.filter(field=field_name)
+        if not values:
+            return None
+        choices = []
+        for value in values:
+            choices.append((value.key, value.value))
+        return choices
+
 class FormLabels(FormTextMixin):
     label = models.CharField(max_length=100)
 

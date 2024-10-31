@@ -40,4 +40,5 @@ urlpatterns = [
     path('vorgang/detail/<uuid:vorgang_id>/', fairmieten.views.vorgang_detail, name='vorgang_detail'),
     path('login/', fairmieten.views.login_view, name='login'),
     path('logout/', fairmieten.views.logout_view, name='logout'),
+    path('htmx/such_feld/', fairmieten.views.such_feld, name='such_feld'),
 ]   
