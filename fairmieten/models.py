@@ -43,6 +43,7 @@ class Ergebnis(models.Model):
 
 class Vorgang(models.Model):
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
+    # Allgemein
     fallnummer = models.IntegerField(null=True, blank=True)
     vorgangstyp_item = models.CharField(max_length=100, null=True, blank=True) # allgemeine Beratung, Meldung, Fallbetreuung
     datum_kontaktaufnahme = models.DateField(null=True, blank=True)
@@ -52,11 +53,18 @@ class Vorgang(models.Model):
     sprache = models.CharField(max_length=100, null=True, blank=True)
     beschreibung = models.TextField(null=True, blank=True)
     bezirk_item = models.CharField(max_length=100, null=True, blank=True)
-    diskriminierung = models.ManyToManyField(Diskriminierung, blank=True)
-    loesungsansaetze = models.ManyToManyField(Loesungsansaetze, blank=True)
-    ergebnis = models.ManyToManyField(Ergebnis, blank=True)
-    rechtsbereich = models.ManyToManyField(Rechtsbereich, blank=True)
+    # TODO: DAs hier muss noch ins Formular
     zugang_fachstelle_item = models.CharField(max_length=100, null=True,  blank=True) # (Flyer, Internet, ...)
+    # Diskriminierung
+    diskriminierung = models.ManyToManyField(Diskriminierung, blank=True)
+    # Loesungsansaetze
+    loesungsansaetze = models.ManyToManyField(Loesungsansaetze, blank=True)
+    rechtsbereich = models.ManyToManyField(Rechtsbereich, blank=True)
+    loesungsansaetze_bemerkung = models.TextField(null=True, blank=True)
+    # Ergebnis
+    ergebnis = models.ManyToManyField(Ergebnis, blank=True)
+    ergebnis_bemerkung = models.TextField(null=True, blank=True)
+    
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)

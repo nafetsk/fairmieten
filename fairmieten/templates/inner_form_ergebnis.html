@@ -1,0 +1,22 @@
+<form class="inner-form-ergebnis" id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}" 
+  hx-trigger="change delay:1000ms" hx-swap="outerHTML">
+  {% csrf_token %}
+
+  <div class="custom-checkbox-row mb-2">
+    <label> {{ form.ergebnis.label }} </label>
+    <div class="flex flex-wrap gap-2 button-row">
+      {% for checkbox in form.ergebnis %}
+        <div class="flex">
+          {{ checkbox }}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+    <label> {{ form.ergebnis_bemerkung.label }} </label>
+    {{ form.ergebnis_bemerkung }}
+
+
+    </div>
+  </div>
+</form>
