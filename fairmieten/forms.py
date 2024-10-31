@@ -59,6 +59,7 @@ class VorgangForm(DataTextForm):
             "sprache",
             "beschreibung",
             "bezirk_item",
+            "zugang_fachstelle_item",
         ]
         widgets = {
             "datum_kontaktaufnahme": forms.DateInput(attrs={"type": "date"}),
