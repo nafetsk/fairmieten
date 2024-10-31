@@ -1,18 +1,38 @@
 {% extends layout %}
+{% load custom_filters %}
 {% block content %}
+
+
 <div>
     <div class="content">
-        <!-- Suchfeld -->
-        <input type="text" hx-get="{% url callback_name %}" hx-target="#htmx-content" name="fallnummer" placeholder="Fallnummer suchen" value="{{ request.GET.fallnummer }}">
-        <button type="button" hx-get="{% url callback_name %}" hx-target="#htmx-content" >Reset</button>
+        <div class="flex gap-2">
+            <select class="w-auto p-2 bg-white h-12" hx-get="{% url 'such_feld' %}?{{request.META.QUERY_STRING}}" hx-target="#such-input-feld" name="meta.feld_name">
+                <option value="fallnummer">Fallnummer</option>
+                <option value="sprache">Sprache</option>
+                <option value="bezirk_item">Bezirk</option>
+            </select>
+            <span id="such-input-feld">
+                <input class="h-12 bg-white p-2" type="text" hx-get="{% url callback_name %}?{{request.META.QUERY_STRING}}" hx-target="#htmx-content" name="fallnummer" placeholder="Fallnummer suchen" value="{{ request.GET.fallnummer }}">
+            </span>
+        </div>
+        <div class="flex gap-2">
+            {% for key, value in request.GET.items %}
+                {% if key|slice:"5" == 'suche' or key == "sort_by" %}
+                    <button class="w-auto cursor-pointer rounded-lg border-2 py-1 px-4  text-black-200 border-black whitespace-nowrap" >{{ key }}:{{ value }}<a hx-target="#htmx-content" hx-get="{% url callback_name %}?{{ request.GET|params_minus:key }}"> x</a> </button>
+                {% endif %}
+            {% endfor %}
+            <button class="w-auto cursor-pointer rounded-lg border-2 py-1 px-4  text-black-200 border-black whitespace-nowrap" type="button" hx-get="{% url callback_name %}" hx-target="#htmx-content" >reset all</button>
+        </div>
 
         {% if vorgang_liste %}
             <table>
                 <thead>
                     <tr>
-                        <th><a hx-target="#htmx-content" hx-get="{% url callback_name %}?sort_by=fallnummer&fallnummer={{ request.GET.fallnummer }}">Vorgang</a></th>
-                        <th><a hx-target="#htmx-content" hx-get="{% url callback_name %}?sort_by=vorgangstyp&fallnummer={{ request.GET.fallnummer }}">Vorgangstyp</a></th>
-                        <th><a hx-target="#htmx-content" hx-get="{% url callback_name %}?sort_by=datum_kontaktaufnahme&fallnummer={{ request.GET.fallnummer }}">Datum Kontaktaufnahme</a></th>
+                        <th><a href="#" hx-target="#htmx-content" hx-get="{% url callback_name %}?{% params_plus request.GET 'sort_by' 'fallnummer' %}">Vorgang</a></th>
+                        <th><a href="#" hx-target="#htmx-content" hx-get="{% url callback_name %}?{% params_plus request.GET 'sort_by' 'bezirk' %}">Bezirk</a></th>
+                        <th><a href="#" hx-target="#htmx-content" hx-get="{% url callback_name %}?{% params_plus request.GET 'sort_by' 'sprache' %}">Sprache</a></th>
+                        <th><a href="#" hx-target="#htmx-content" hx-get="{% url callback_name %}?{% params_plus request.GET 'sort_by' 'vorgangstyp' %}">Vorgangstyp</a></th>
+                        <th><a href="#" hx-target="#htmx-content" hx-get="{% url callback_name %}?{% params_plus request.GET 'sort_by' 'datum_kontaktaufnahme' %}">Datum Kontaktaufnahme</a></th>
                         <th>Aktionen</th>
                     </tr>
                 </thead>
@@ -20,6 +40,8 @@
                     {% for vorgang in vorgang_liste %}
                         <tr>
                             <td>{{ vorgang.fallnummer }}</td>
+                            <td>{{ vorgang.bezirk }}</td>
+                            <td>{{ vorgang.sprache }}</td>
                             <td>{{ vorgang.vorgangstyp }}</td>
                             <td>{{ vorgang.datum_kontaktaufnahme|date:"d.m.Y" }}</td>
                             <td>
@@ -34,8 +56,8 @@
             <div class="pagination">
                 <span class="step-links">
                     {% if vorgang_liste.has_previous %}
-                        <a hx-get="{% url callback_name %}?page=1&fallnummer={{ request.GET.fallnummer }}" hx-target="#htmx-content">&laquo; </a>
-                        <a hx-get="{% url callback_name %}?page={{ vorgang_liste.previous_page_number }}&fallnummer={{ request.GET.fallnummer }}" hx-target="#htmx-content">&lsaquo;</a>
+                        <a hx-get="{% url callback_name %}?{% params_plus request.GET 'page' 1 %}" hx-target="#htmx-content">&laquo; </a>
+                        <a hx-get="{% url callback_name %}?{% params_plus request.GET 'page' vorgang_liste.previous_page_number %}" hx-target="#htmx-content">&lsaquo;</a>
                     {% endif %}
 
                     <span class="current">
@@ -43,8 +65,8 @@
                     </span>
 
                     {% if vorgang_liste.has_next %}
-                        <a hx-get="{% url callback_name %}?page={{ vorgang_liste.next_page_number }}&fallnummer={{ request.GET.fallnummer }}" hx-target="#htmx-content">&rsaquo; </a>
-                        <a hx-get="{% url callback_name %}?page={{ vorgang_liste.paginator.num_pages }}&fallnummer={{ request.GET.fallnummer }}" hx-target="#htmx-content"> &raquo;</a>
+                        <a hx-get="{% url callback_name %}?{% params_plus request.GET 'page' vorgang_liste.next_page_number %}" hx-target="#htmx-content">&rsaquo; </a>
+                        <a hx-get="{% url callback_name %}?{% params_plus request.GET 'page' vorgang_liste.paginator.num_pages %}" hx-target="#htmx-content"> &raquo;</a>
                     {% endif %}
                 </span>
             </div>git 

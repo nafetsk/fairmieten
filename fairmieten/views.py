@@ -1,3 +1,4 @@
+from os import name
 from uuid import UUID
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
@@ -5,6 +6,8 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
+from django import forms
+from .models import FormValues
 from .view_utils import layout
 
 from fairmieten.models import Vorgang
@@ -25,11 +28,17 @@ def vorgang_liste(request: HttpRequest) -> HttpResponse:
 
 def search_and_sort(request: HttpRequest, vorgang_liste: Vorgang) -> Vorgang:
     
+    
     # Suchfunktion
-    query = request.GET.get('fallnummer', None)
-    if query:
-        vorgang_liste = vorgang_liste.filter(fallnummer__icontains=query)
-
+    for key, value in request.GET.items():
+        if key.startswith('suche.'):
+            suchfeld = key.split('suche.')[1]
+            vorgang_liste = vorgang_liste.filter(**{suchfeld: value})
+    
+    #query = request.GET.get('fallnummer', None)
+        #if query:
+        #    vorgang_liste = vorgang_liste.filter(fallnummer__icontains=query)
+        
     # Sortierung
     sort_by = request.GET.get('sort_by', 'created')  # Standard-Sortierung
     vorgang_liste = vorgang_liste.order_by(sort_by)
@@ -46,6 +55,15 @@ def search_and_sort(request: HttpRequest, vorgang_liste: Vorgang) -> Vorgang:
 
     return vorgang_liste
 
+def such_feld(request: HttpRequest) -> HttpResponse:
+    such_input_name = request.GET.get("meta.feld_name", None)
+    if not such_input_name:
+        return HttpRequest("such_input_name is required")
+    values = FormValues.get_field_values(field_name=such_input_name)
+    if not values:
+        return render(request, 'such_input_feld.html', { "name" : such_input_name})
+    else:
+       return render(request, 'such_select_feld.html', {"name" : such_input_name, 'values': values})
 
 def vorgang_detail(request: HttpRequest, vorgang_id: UUID) -> HttpResponse:
     return render(request, 'vorgang_detail.html')
