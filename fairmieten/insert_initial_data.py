@@ -10,7 +10,7 @@ from .models import (
 )
 
 
-def setup():
+def setup(apps, schema_editor):
     # Labels
     FormLabels.objects.all().delete()
 

@@ -32,8 +32,8 @@ def create_superuser(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    replaces = [('fairmieten', '0001_initial'), ('fairmieten', '0002_charts'), ('fairmieten', '0003_remove_charts_description'), ('fairmieten', '0004_remove_vorgang_diskriminierungsart'), ('fairmieten', '0005_person_remove_vorgang_plz_and_more'), ('fairmieten', '0006_vorgang_kontakaufnahme_durch_item_and_more'), ('fairmieten', '0007_alter_charts_id_alter_diskriminierung_id_and_more'), ('fairmieten', '0008_remove_vorgang_person_person_vorgang'), ('fairmieten', '0006_remove_charts_name_remove_charts_url_and_more'), ('fairmieten', '0007_charts_name'), ('fairmieten', '0009_merge_20241001_0920'), ('fairmieten', '0010_delete_charts'), ('fairmieten', '0011_rechtsbereich_person_betroffen_item_and_more'), ('fairmieten', '0012_rename_vorgang_id_intervention_vorgang_and_more'), ('fairmieten', '0015_merge_20241006_0951'), ('fairmieten', '0016_rename_datum_kontakaufnahme_vorgang_datum_kontaktaufnahme_and_more'), ('fairmieten', '0014_formlabel_data'), ('fairmieten', '0012_alter_vorgang_bezirk_item_alter_vorgang_sprache'), ('fairmieten', '0013_formlabels_formvalues_alter_person_vorgang'), ('fairmieten', '0015_merge_20241006_1701'), ('fairmieten', '0016_formvalues_key'), ('fairmieten', '0017_vorgang_created_by'), ('fairmieten', '0018_create_superuser'), ('fairmieten', '0019_vorgang_created_vorgang_modified'), ('fairmieten', '0020_vorgang_loesungsansaetze_bemerkung'), ('fairmieten', '0021_vorgang_ergebnis_bemerkung'), ('fairmieten', '0022_formvalues_encoding'), ('fairmieten', '0023_diskriminierungsform_and_more')]
-
+    initial = True
+    
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
