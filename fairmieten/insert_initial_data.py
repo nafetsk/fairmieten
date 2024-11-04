@@ -6,8 +6,9 @@ from .models import (
     Diskriminierungsform,
     Loesungsansaetze,
     Ergebnis,
-    Rechtsbereich
+    Rechtsbereich,
 )
+from aggregation.models import Charts
 
 
 def setup(apps, schema_editor):
@@ -295,3 +296,149 @@ def setup(apps, schema_editor):
     for rechtsbereich in rechtsbereiche:
         Rechtsbereich.objects.create(name=rechtsbereich)
 
+    # Charts
+    Charts.objects.create(
+        name="Vorfälle pro Sprache",
+        description="In welcher Sprache hat die Beratung stattgefunden?",
+        x_label="Sprache",
+        variable="sprache",
+        type=1,
+        model="Vorgang",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Bezirk",
+        description="In welchen Berliner Bezirken hat eine Diskriminierung stattgefunden?",
+        x_label="Bezirk",
+        variable="bezirk_item",
+        type=1,
+        model="Vorgang",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Diskriminierung",
+        description="Vorfälle pro Diskriminierung Beschreibung",
+        x_label="Diskriminierung",
+        variable="diskriminierung",
+        type=2,
+        model="Diskriminierung",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Kontaktaufnahme",
+        description="Neben betroffenen Personen, kommen in die Beratung auch unbeteiligte Personen und beschuldigte Personen. Unbeteiligte Personen sind z.B. Freund*innen, Zeug*innen oder auch ehrenamtliche Betreuer*innen, die z.B. eine betroffene Person konkret unterstützen.",
+        x_label="Kontaktaufnahme",
+        variable="kontaktaufnahme_durch_item",
+        type=1,
+        model="Vorgang",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Lösungsansatz",
+        description="Vorfälle pro Lösungsansatz Beschreibung",
+        x_label="Lösungsansatz",
+        variable="loesungsansaetze",
+        type=2,
+        model="Loesungsansaetze",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Ergebnis",
+        description="Vorfälle pro Ergebnis Beschreibung",
+        x_label="Ergebnis",
+        variable="ergebnis",
+        type=2,
+        model="Ergebnis",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Jahr",
+        description="Wann hat die Diskriminierung stattgefunden?",
+        x_label="Jahr",
+        variable="datum_vorfall_von",
+        type=3,
+        model="Vorgang",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Vorgangstyp",
+        description="Das Dokumentationssystem unterscheidet zwischen drei Typen der Beratung: Allgemeine Beratung, Meldung und Fallbetreuung.",
+        x_label="Vorgangstyp",
+        variable="vorgangstyp_item",
+        type=1,
+        model="Vorgang",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Alter",
+        description="Welcher Altersgruppe gehört die betroffene Person an?",
+        x_label="Alter",
+        variable="alter_item",
+        type=4,
+        model="Person",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Geschlecht",
+        description="Mit welchem Geschlecht stellt sich die ratsuchende Person vor?",
+        x_label="Geschlecht",
+        variable="gender_item",
+        type=4,
+        model="Person",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro verursachenden Unternehmentyp",
+        description="Vorfälle pro Unternehmsentyp Beschreibung",
+        x_label="Unternehmestyp",
+        variable="unternehmenstyp_item",
+        type=4,
+        model="Verursacher",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro verursachenden Personentyp",
+        description="Diskriminierungen im Bereich Wohnen erfolgen zum Beispiel durch Wohnungseigentümer*innen, Wohnungsverwalter*innen, Hausmeister*innen, Nachbar*innen, (öffentliche) Institutionen, Makler*innen, etc. ",
+        x_label="Personentyp",
+        variable="personentyp_item",
+        type=4,
+        model="Verursacher",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Rechtsbereich",
+        description="Vorfälle pro Rechtsbereich Beschreibung",
+        x_label="Rechtsbereich",
+        variable="rechtsbereich",
+        type=2,
+        model="Rechtsbereich",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Betroffenheit",
+        description="Wer ist die betroffene Person? Eine alleinstehende Person, eine Familie oder vielleicht ein alleinerziehender Vater?",
+        x_label="Betroffenheit",
+        variable="betroffen_item",
+        type=4,
+        model="Person",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Prozesskostenübernahme",
+        description="Ist die Übernahme von Prozesskosten wahrscheinlich?",
+        x_label="Prozesskostenübernahme",
+        variable="prozeskostenuebernahme_item",
+        type=4,
+        model="Person",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Zugang zur Fachstelle",
+        description="Durch welche Kommunikationskanäle (z.B. Flyer, Medien, Verweisberatung, Veranstaltungen) hat die ratsuchende Person von der Fachstelle erfahren?",
+        x_label="Zugang Fachstelle",
+        variable="zugang_fachstelle_item",
+        type=1,
+        model="Vorgang",
+    )
+    Charts.objects.create(
+        name="Vorfälle pro Art der Intervention",
+        description="Vorfälle pro Intervention Beschreibung",
+        x_label="Intervention",
+        variable="form_item",
+        type=4,
+        model="Intervention",
+    )
+    
+    Charts.objects.create(
+        name="Vorfälle pro Anzahl der Interventionen",
+        description="Vorfälle pro Anzahl der Interventionen Beschreibung",
+        x_label="Anzahl Intervention",
+        variable="intervention",
+        type=5,
+        model="Vorgang",
+    )

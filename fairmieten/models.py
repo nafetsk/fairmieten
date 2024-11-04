@@ -152,6 +152,7 @@ class FormValues(FormTextMixin):
         for value in values:
             choices.append((value.key, value.value))
         return choices
+    
 
 class FormLabels(FormTextMixin):
     label = models.CharField(max_length=100)
