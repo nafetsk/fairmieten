@@ -7,6 +7,7 @@ from .models import (
     Loesungsansaetze,
     Ergebnis,
     Rechtsbereich,
+    Vorgangstyp,
 )
 from aggregation.models import Charts
 
@@ -295,6 +296,17 @@ def setup(apps, schema_editor):
     ]
     for rechtsbereich in rechtsbereiche:
         Rechtsbereich.objects.create(name=rechtsbereich)
+
+    #Vorgangstyp
+    Vorgangstyp.objects.all().delete()
+    vorgangstypen = [
+        "Allgemeine Beratung",
+        "Meldung",
+        "Fallbetreuung",
+    ]
+    for vorgangstyp in vorgangstypen:
+        Vorgangstyp.objects.create(name=vorgangstyp)
+
 
     # Charts
     Charts.objects.create(

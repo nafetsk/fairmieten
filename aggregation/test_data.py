@@ -1,7 +1,6 @@
 import random
 from faker import Faker
 from fairmieten.models import (
-    Diskrimminierungsart,
     Diskriminierung,
     Vorgang,
     Loesungsansaetze,
@@ -11,13 +10,14 @@ from fairmieten.models import (
     Rechtsbereich,
     Intervention,
     FormValues,
+    Vorgangstyp,
 )
 from datetime import datetime, timedelta
 
 def custom_random_element(field_name):
     options = FormValues.get_field_values(field_name)
     if options:
-        first_elements = [option[0] for option in options]
+        first_elements = [option[1] for option in options]
         return random.choice(first_elements)
     return None
 
@@ -36,7 +36,7 @@ def create_test_data():
     end_date = datetime.today()
     start_date = end_date - timedelta(days=4 * 365)
 
-
+    list_vorgangstyp = list(Vorgangstyp.objects.all())
 
     vorgaenge = []
     for _ in range(20):
@@ -61,12 +61,8 @@ def create_test_data():
             bezirk_item=fake.random_element(
                 elements=custom_random_element("bezirk_item")
             ),
-            vorgangstyp_item=fake.random_element(
-                elements=(
-                    "allgemeine Beratung",
-                    "Meldung",
-                    "Fallbetreuung",
-                )
+            vorgangstyp=fake.random_element(
+                elements=list_vorgangstyp
             ),
             zugang_fachstelle_item=fake.random_element(
                 elements=custom_random_element("zugang_fachstelle_item")
