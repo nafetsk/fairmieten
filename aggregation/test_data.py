@@ -11,6 +11,7 @@ from fairmieten.models import (
     Intervention,
     FormValues,
     Vorgangstyp,
+    Diskriminierungsform,
 )
 from datetime import datetime, timedelta
 
@@ -41,6 +42,7 @@ def create_test_data():
     loesungsansaetze_list = list(Loesungsansaetze.objects.all())
     ergebnisse_list = list(Ergebnis.objects.all())
     rechtsbereiche_list = list(Rechtsbereich.objects.all())
+    diskriminierungsform_list = list(Diskriminierungsform.objects.all())
 
     vorgaenge = []
     for _ in range(20):
@@ -82,14 +84,17 @@ def create_test_data():
 
     # Create test data for Person
     for vorgang in vorgaenge:
-        Person.objects.create(
+        person = Person.objects.create(
             alter_item=custom_random_element("alter_item"),
             anzahl_kinder=fake.random_int(min=0, max=5),
             gender_item=custom_random_element("gender_item"),
             vorgang=vorgang,
             prozeskostenuebernahme_item=custom_random_element("prozeskostenuebernahme_item"),
             betroffen_item=custom_random_element("betroffen_item"),
+            bereich_diskriminierung_item=custom_random_element("bereich_diskriminierung_item"),
         )
+        person.diskriminierungsform.set(random.sample(diskriminierungsform_list, k=2))
+
 
     # create test data for Intervention
     for vorgang in vorgaenge:

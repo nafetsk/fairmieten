@@ -10,6 +10,7 @@ from fairmieten.models import (
     Ergebnis,
     Rechtsbereich,
     FormValues,
+    Diskriminierungsform,
 )
 from .models import Charts
 from django.db.models.functions import ExtractYear
@@ -284,6 +285,12 @@ def csv_download(request):
         f"diskriminierungsart_{transform_name(d.name)}" for d in diskriminierungsart_list
     ]
 
+    # Diskriminierungsform
+    diskriminierungsform_list = list(Diskriminierungsform.objects.all())
+    diskriminierungsform_names = [
+        f"diskriminierungsform_{transform_name(d.name)}" for d in diskriminierungsform_list
+    ]
+
     # Get all Lösungsansätze
     loesungsansaetze_list = list(Loesungsansaetze.objects.all())
     loesungsansaetze_names = [
@@ -320,10 +327,13 @@ def csv_download(request):
             "prozesskostenuebernahme",
             # Aggregierte Columns
             "anzahl_interventionen",
+            "bereich_der_diskriminierung",
             # Diskriminierung dumys
             *diskriminierung_names,
             # Diskriminierungsart
             *diskriminierungsart_names,
+            # Diskriminierungsform
+            *diskriminierungsform_names,
             # Loesungsansaetze
             *loesungsansaetze_names,
             # Ergebnis
@@ -352,6 +362,16 @@ def csv_download(request):
             )
             for da in diskriminierungsart_list
         },
+        # **{  # Diskriminierungsform dummy columns
+        #     f"has_diskriminierungsform_{df.id}": Exists(
+        #         # TODO if person is not null
+        #         Vorgang.person.diskriminierungsform.through.objects.filter(
+        #             diskriminierungsform_id=df.id, person_id=OuterRef("person_id")
+        #         )
+        #     )
+        #     for df in diskriminierungsform_list
+        # },
+
         **{  # Loesungsansaetze dummy columns
             f"has_loesungsansatz_{l.id}": Exists(
                 Vorgang.loesungsansaetze.through.objects.filter(
@@ -407,7 +427,8 @@ def csv_download(request):
             _get_coded_value(vorgang.person.prozeskostenuebernahme_item, codebook, 'prozeskostenuebernahme_item') if hasattr(vorgang, 'person') else '',
             # Protokoll
             vorgang.intervention_count,
-            # Art der Intervention
+            # Bereich der Diskriminierung
+            _get_coded_value(vorgang.person.bereich_diskriminierung_item, codebook, 'bereich_diskriminierung_item') if hasattr(vorgang, 'person') else '',
         ]
 
         # Add Diskriminierung dummy columns
@@ -439,10 +460,17 @@ def csv_download(request):
             getattr(vorgang, f"has_rechtsbereich_{r.id}") for r in rechtsbereich_list
         ]
 
+        # Diskriminierungsform dummy columns
+        # diskriminierungsform_data = [
+        #     getattr(vorgang, f"has_diskriminierungsform_{df.id}")
+        #     for df in diskriminierungsform_list
+        # ]
+
         writer.writerow(
             row
             + diskriminierung_data
             + diskriminierungsart_data
+            #+ diskriminierungsform_data
             + loesungsansaetze_data
             + ergebnis_data
             + rechtsbereich_data
