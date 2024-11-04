@@ -1,14 +1,23 @@
 import uuid
+from typing import Type
 from django.shortcuts import render
 from .forms import DiskriminierungForm, PersonForm, VorgangForm, LoesungsansaetzeForm, ErgebnisForm
-from .models import Vorgang, Person
+from .models import Vorgang, Person, Vorgangstyp
 from .view_utils import layout
 from django.db import models
 
 
 # *** Reihenfolge der Formulare in der Vorgangserstellung ***
+form_liste:list[list] = [[],[],[]]
 
-form_liste = [
+
+form_liste[1] = [
+    {"key": "vorgang", "label": "Allgemein", "form": VorgangForm},
+    {"key": "person", "label": "Person", "form": PersonForm},
+    {"key": "diskriminierung", "label": "Diskriminierung", "form": DiskriminierungForm},
+]
+
+form_liste[2] = [
     {"key": "vorgang", "label": "Allgemein", "form": VorgangForm},
     {"key": "person", "label": "Person", "form": PersonForm},
     {"key": "diskriminierung", "label": "Diskriminierung", "form": DiskriminierungForm},
@@ -16,23 +25,24 @@ form_liste = [
     {"key": "ergebnis", "label": "Ergebnis", "form": ErgebnisForm},
 ]
 
+
 # *** Views für die Vorgangserstellung ***
 
 
-def vorgang_erstellen(request):
+def vorgang_erstellen(request, type_nr = 2):
     vorgang_id = uuid.uuid4()
     return render(
         request,
         "add_vorgang.html",
-        {"base": layout(request), "form_liste": form_liste, "vorgang_id": vorgang_id},
+        {"base": layout(request), "form_liste": form_liste[type_nr], "vorgang_id": vorgang_id, "type_nr": type_nr },
     )
 
 
-def vorgang_bearbeiten(request, vorgang_id: uuid.UUID):
+def vorgang_bearbeiten(request, vorgang_id: uuid.UUID, type_nr = 3):
     return render(
         request,
         "add_vorgang.html",
-        {"base": layout(request), "form_liste": form_liste, "vorgang_id": vorgang_id},
+        {"base": layout(request), "form_liste": form_liste[type_nr], "vorgang_id": vorgang_id, "type_nr": type_nr},
     )
 
 
@@ -42,6 +52,7 @@ def create_vorgang(request):
     )
     if request.method == "POST" and form.is_valid():
         set_created_by(request, form)
+        set_vorgangstyp(request, form)
         form.save()
     return render(
         request,
@@ -58,8 +69,12 @@ def create_person(request):
     return render(
         request,
         "inner_form.html",
-        {"form": form, "item_key": "person", "vorgang_id": person.vorgang_id},
+        {"form": form, "item_key": "person", "vorgang_id": person.vorgang.id},
     )
+
+def set_vorgangstyp(request, form):
+    type_nr = request.GET.get("type_nr", 2)
+    form.instance.vorgangstyp = Vorgangstyp.objects.get(id=type_nr)
 
 
 def create_diskriminierung(request):
@@ -110,7 +125,7 @@ def set_created_by(request, form):
         form.instance.created_by = request.user
 
 
-def get_Instance(request, model: models.Model, id_name: str = "id"):
+def get_Instance(request, model: Type[models.Model], id_name: str = "id"):
     id = request.GET.get(id_name, None)
     if id is None or id == "None":
         id = uuid.uuid4()
