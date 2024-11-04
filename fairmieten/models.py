@@ -19,6 +19,13 @@ class Diskriminierung(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Diskriminierungsform(models.Model):
+    id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 class Loesungsansaetze(models.Model):
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
@@ -78,6 +85,8 @@ class Person(models.Model):
     vorgang = models.OneToOneField(Vorgang, on_delete=models.CASCADE, null=True, blank=True)
     betroffen_item = models.CharField(max_length=100, null=True, blank=True) # (Alleinstehend, Familie, usw.)
     prozeskostenuebernahme_item = models.CharField(max_length=100, null=True, blank=True) # (Ja, Nein, zu prüfen, anderes)
+    bereich_diskriminierung_item = models.CharField(max_length=100, null=True, blank=True) # (Wohnungssuche, Gewerbe)
+    diskriminierungsform = models.ManyToManyField(Diskriminierungsform, blank=True) # (Unmittelbar, mittelbar, usw.)
 
 # Verursacher
 class Verursacher(models.Model):
