@@ -37,6 +37,10 @@ def create_test_data():
     start_date = end_date - timedelta(days=4 * 365)
 
     list_vorgangstyp = list(Vorgangstyp.objects.all())
+    diskriminierungen_list = list(Diskriminierung.objects.all())
+    loesungsansaetze_list = list(Loesungsansaetze.objects.all())
+    ergebnisse_list = list(Ergebnis.objects.all())
+    rechtsbereiche_list = list(Rechtsbereich.objects.all())
 
     vorgaenge = []
     for _ in range(20):
@@ -51,28 +55,15 @@ def create_test_data():
             datum_vorfall_bis=fake.date_between(
                 start_date=start_date, end_date=end_date
             ),
-            kontaktaufnahme_durch_item=fake.random_element(
-                elements=custom_random_element("kontaktaufnahme_durch_item")
-            ),
-            sprache=fake.random_element(
-                elements=custom_random_element("sprache")
-            ),
+            kontaktaufnahme_durch_item=custom_random_element("kontaktaufnahme_durch_item"),
+            sprache=custom_random_element("sprache"),
             beschreibung=fake.text(),
-            bezirk_item=fake.random_element(
-                elements=custom_random_element("bezirk_item")
-            ),
+            bezirk_item=custom_random_element("bezirk_item"),
             vorgangstyp=fake.random_element(
                 elements=list_vorgangstyp
             ),
-            zugang_fachstelle_item=fake.random_element(
-                elements=custom_random_element("zugang_fachstelle_item")
-            ),
+            zugang_fachstelle_item=custom_random_element("zugang_fachstelle_item"),
         )
-
-        diskriminierungen_list = list(Diskriminierung.objects.all())
-        loesungsansaetze_list = list(Loesungsansaetze.objects.all())
-        ergebnisse_list = list(Ergebnis.objects.all())
-        rechtsbereiche_list = list(Rechtsbereich.objects.all())
 
         vorgang.diskriminierung.set(random.sample(diskriminierungen_list, k=3))
         vorgang.loesungsansaetze.set(random.sample(loesungsansaetze_list, k=2))

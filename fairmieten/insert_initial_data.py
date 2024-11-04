@@ -27,6 +27,7 @@ def setup(apps, schema_editor):
         "sprache": "Sprache",
         "beschreibung": "Beschreibung",
         "zugang_fachstelle_item": "Wie haben Sie von der Fachstelle erfahren?",
+        "vorgangstyp": "Vorgangstyp",
     }
     labels["Person"] = {
         "alter_item": "Altersgruppe",
@@ -97,6 +98,11 @@ def setup(apps, schema_editor):
             "Spanisch": "Spanisch",
             "Rumänisch": "Rumänisch",
             "Arabisch": "Arabisch",
+        },
+        "vorgangstyp": {
+            "Allgemeine Beratung": "Allgemeine Beratung",
+            "Meldung": "Meldung",
+            "Fallbetreuung": "Fallbetreuung",
         },
     }
     values["Person"] = {

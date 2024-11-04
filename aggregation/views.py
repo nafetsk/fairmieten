@@ -22,6 +22,7 @@ from fairmieten.form_views import layout
 from django.db.models import IntegerField
 from django.db.models import OuterRef, Subquery, Exists
 from django.db.models.functions import Coalesce
+import unicodedata
 
 
 def aggregation(request: HttpRequest) -> HttpResponse:
@@ -48,7 +49,7 @@ def aggregation(request: HttpRequest) -> HttpResponse:
     )
 
 
-def get_query_set(chart: Charts, start_year: int, end_year: int) -> QuerySet:
+def get_query_set(chart: Charts, start_year, end_year):
     # Convert years to date format
     start_date = f"{start_year}-01-01"
     end_date = f"{end_year}-12-31"
@@ -152,7 +153,7 @@ def get_chart(request: HttpRequest) -> HttpResponse:
     chart = Charts.objects.get(id=chart_id)
 
     # get data for chart
-    incidents_per_variable: QuerySet = get_query_set(chart, start_year, end_year)
+    incidents_per_variable= get_query_set(chart, start_year, end_year)
 
     # create dictionary for chart.js
     data: Dict[str, Any] = {
@@ -214,6 +215,7 @@ def disable_year(request: HttpRequest) -> HttpResponse:
         {"years": valid_years, "selected_year": selected_year},
     )
 
+
 def create_codebook():
     # Retrieve all FormValues from the database
     form_values = FormValues.objects.all()
@@ -229,7 +231,7 @@ def create_codebook():
 
         if field not in codebook:
             codebook[field] = {}
-        
+
         codebook[field][encoding] = value
 
     return codebook
@@ -240,11 +242,29 @@ def _get_coded_value(value, codebook, category):
     for code, label in codebook.get(category, {}).items():
         if label == value:
             return code
-    
+
     # If no matching code is found, return the original value
     return value
 
-def csv_download(request: HttpRequest) -> HttpResponse:
+
+def transform_name(name):
+    # Create a translation table for special characters
+    translation_table = str.maketrans({
+        'ä': 'ae',
+        'ö': 'oe',
+        'ü': 'ue',
+        'ß': 'ss',
+        ' ': '_',
+    })
+    # Normalize the name to decompose special characters
+    normalized_name = unicodedata.normalize('NFKD', name)
+    # Translate the name using the translation table and convert to lowercase
+    transformed_name = normalized_name.translate(translation_table).lower()
+    # Remove any remaining non-ASCII characters
+    transformed_name = ''.join(c for c in transformed_name if c.isascii())
+    return transformed_name
+
+def csv_download(request):
     # Create the HttpResponse object with the appropriate CSV header.
     response: HttpResponse = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = 'attachment; filename="vorgang.csv"'
@@ -256,47 +276,50 @@ def csv_download(request: HttpRequest) -> HttpResponse:
 
     # Get all Diskriminierung names to use as dynamic column headers
     diskriminierung_list = list(Diskriminierung.objects.all())
-    diskriminierung_names = [f"diskriminierung_{d.name}" for d in diskriminierung_list]
+    diskriminierung_names = [f"diskriminierung_{transform_name(d.name)}" for d in diskriminierung_list]
 
     # Diskriminierungsart
     diskriminierungsart_list = list(Diskrimminierungsart.objects.all())
-    diskriminierungsart_names = [f"diskriminierungsart_{d.name}" for d in diskriminierungsart_list]
+    diskriminierungsart_names = [
+        f"diskriminierungsart_{transform_name(d.name)}" for d in diskriminierungsart_list
+    ]
 
     # Get all Lösungsansätze
     loesungsansaetze_list = list(Loesungsansaetze.objects.all())
-    loesungsansaetze_names = [f"loesungsansaetze_{d.name}" for d in loesungsansaetze_list]
+    loesungsansaetze_names = [
+        f"loesungsansaetze_{transform_name(d.name)}" for d in loesungsansaetze_list
+    ]
 
     # Get all Ergebnis
     ergebnis_list = list(Ergebnis.objects.all())
-    ergebnis_names = [f"ergebnis_{d.name}" for d in ergebnis_list]
+    ergebnis_names = [f"ergebnis_{transform_name(d.name)}" for d in ergebnis_list]
 
     # Get all Rechtsbereich
     rechtsbereich_list = list(Rechtsbereich.objects.all())
-    rechtsbereich_names = [f"rechtsbereich_{d.name}" for d in rechtsbereich_list]
-
+    rechtsbereich_names = [f"rechtsbereich_{transform_name(d.name)}" for d in rechtsbereich_list]
 
     # Write the header row
     writer.writerow(
         [
             # Vorgang
-            "ID",
-            "Fallnummer",
-            "Vorgangstyp",
-            "Datum Kontakaufnahme",
-            "Kontakaufnahme Durch",
-            "Datum Vorfall Von",
-            "Datum Vorfall Bis",
-            "Sprache",
-            "Bezirk",
-            "Zugang",
+            "id",
+            "fallnummer",
+            "vorgangstyp",
+            "datum_kontakaufnahme",
+            "kontakaufnahme_durch",
+            "datum_vorfall_von",
+            "datum_vorfall_bis",
+            "sprache",
+            "bezirk",
+            "zugang",
             # Person
-            "Alter",
-            "Anzahl Kinder",
-            "Geschlecht",
-            "Betroffen",
-            "Prozeskostenuebernahme",
+            "alter",
+            "anzahl_kinder",
+            "geschlecht",
+            "betroffen",
+            "prozesskostenuebernahme",
             # Aggregierte Columns
-            "Anzahl Interventionen",
+            "anzahl_interventionen",
             # Diskriminierung dumys
             *diskriminierung_names,
             # Diskriminierungsart
@@ -307,15 +330,14 @@ def csv_download(request: HttpRequest) -> HttpResponse:
             *ergebnis_names,
             # Rechtsbereich
             *rechtsbereich_names,
-
         ]
     )
     # Für Aggregierte Columns
     queryset = Vorgang.objects.select_related("person").annotate(
         intervention_count=Count("intervention"),
         # Dictionary Comprehension mit key: has_diskriminierung_{d.id} und value: True/False
-        **{ # Diskriminierung dummy columns
-            f"has_diskriminierung_{d.id}": Exists( 
+        **{  # Diskriminierung dummy columns
+            f"has_diskriminierung_{d.id}": Exists(
                 Vorgang.diskriminierung.through.objects.filter(
                     diskriminierung_id=d.id, vorgang_id=OuterRef("pk")
                 )
@@ -362,23 +384,27 @@ def csv_download(request: HttpRequest) -> HttpResponse:
             # Vorgang
             vorgang.id,
             vorgang.fallnummer,
-            vorgang.vorgangstyp_item,
+            _get_coded_value(vorgang.vorgangstyp.name, codebook, "vorgangstyp"),
             vorgang.datum_kontaktaufnahme,
-            _get_coded_value(vorgang.kontaktaufnahme_durch_item, codebook, "kontaktaufnahme_durch_item"),
-            #vorgang.kontaktaufnahme_durch_item,
+            _get_coded_value(
+                vorgang.kontaktaufnahme_durch_item,
+                codebook,
+                "kontaktaufnahme_durch_item",
+            ),
+            # vorgang.kontaktaufnahme_durch_item,
             vorgang.datum_vorfall_von,
             vorgang.datum_vorfall_bis,
-            vorgang.sprache,
-            vorgang.bezirk_item,
-            vorgang.zugang_fachstelle_item,
+            _get_coded_value(vorgang.sprache, codebook, "sprache"),
+            _get_coded_value(vorgang.bezirk_item, codebook, "bezirk_item"),
+            _get_coded_value(vorgang.zugang_fachstelle_item,codebook, "zugang_fachstelle_item"),
             # Diskriminierung
             # Person
-            vorgang.person.alter_item,
-            vorgang.person.anzahl_kinder,
-            #vorgang.person.gender_item,
-            _get_coded_value(vorgang.person.gender_item, codebook, "gender_item"),
-            vorgang.person.betroffen_item,
-            vorgang.person.prozeskostenuebernahme_item,
+            _get_coded_value(vorgang.person.alter_item, codebook, 'alter_item') if hasattr(vorgang, 'person') else '',
+            getattr(vorgang.person, 'anzahl_kinder', '') if hasattr(vorgang, 'person') else '',
+            # vorgang.person.gender_item,
+            _get_coded_value(vorgang.person.gender_item, codebook, "gender_item") if hasattr(vorgang, 'person') else '',
+            _get_coded_value(vorgang.person.betroffen_item, codebook, 'betroffen_item') if hasattr(vorgang, 'person') else '',
+            _get_coded_value(vorgang.person.prozeskostenuebernahme_item, codebook, 'prozeskostenuebernahme_item') if hasattr(vorgang, 'person') else '',
             # Protokoll
             vorgang.intervention_count,
             # Art der Intervention
@@ -405,27 +431,32 @@ def csv_download(request: HttpRequest) -> HttpResponse:
 
         # Add Ergebnis dummy columns
         ergebnis_data = [
-            getattr(vorgang, f"has_ergebnis_{e.id}")
-            for e in ergebnis_list
+            getattr(vorgang, f"has_ergebnis_{e.id}") for e in ergebnis_list
         ]
 
         # Add Rechtsbereich dummy columns
         rechtsbereich_data = [
-            getattr(vorgang, f"has_rechtsbereich_{r.id}")
-            for r in rechtsbereich_list
+            getattr(vorgang, f"has_rechtsbereich_{r.id}") for r in rechtsbereich_list
         ]
 
-        writer.writerow(row + diskriminierung_data + diskriminierungsart_data + loesungsansaetze_data + ergebnis_data + rechtsbereich_data)
+        writer.writerow(
+            row
+            + diskriminierung_data
+            + diskriminierungsart_data
+            + loesungsansaetze_data
+            + ergebnis_data
+            + rechtsbereich_data
+        )
 
     return response
 
+
 def codebook_download(request: HttpRequest) -> HttpResponse:
     codebook = create_codebook()
-    
+
     response = HttpResponse(
-        json.dumps(codebook, indent=2), 
-        content_type='application/json'
+        json.dumps(codebook, indent=2), content_type="application/json"
     )
-    response['Content-Disposition'] = 'attachment; filename="codebook.json"'
-    
+    response["Content-Disposition"] = 'attachment; filename="codebook.json"'
+
     return response
