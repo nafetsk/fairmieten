@@ -233,6 +233,26 @@ class Migration(migrations.Migration):
             model_name='person',
             name='diskriminierungsform',
             field=models.ManyToManyField(blank=True, to='fairmieten.diskriminierungsform'),
+        ),        migrations.CreateModel(
+            name='Vorgangstyp',
+            fields=[
+                ('id', models.AutoField(editable=False, primary_key=True, serialize=False)),
+                ('name', models.CharField(max_length=100)),
+            ],
+        ),
+        migrations.RemoveField(
+            model_name='vorgang',
+            name='vorgangstyp_item',
+        ),
+        migrations.AlterField(
+            model_name='formvalues',
+            name='encoding',
+            field=models.IntegerField(default=0),
+        ),
+        migrations.AddField(
+            model_name='vorgang',
+            name='vorgangstyp',
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='fairmieten.vorgangstyp'),
         ),
         migrations.RunPython(
             code=setup,
