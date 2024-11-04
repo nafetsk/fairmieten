@@ -1,6 +1,14 @@
-from .models import FormLabels, FormValues
+from .models import FormLabels, FormValues, Vorgangstyp
 
 def setup():
+
+	# delete all existing entries
+	Vorgangstyp.objects.all().delete()
+
+	Vorgangstyp.objects.create(name='Beratung')
+	Vorgangstyp.objects.create(name='Meldung')
+	Vorgangstyp.objects.create(name='Fallbetreuung')
+
 	# delete all existing entries
 	FormLabels.objects.all().delete()
 	FormValues.objects.all().delete()

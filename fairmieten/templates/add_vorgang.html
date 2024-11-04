@@ -21,6 +21,18 @@
 <div class="with-sidebar vorgang_neu">
 	<aside class="sidebar" id="sidebar">
       <ul >
+		<li>
+		<div class="radio-button-group">
+			<div>
+				<input hx-get="/vorgang/edit/{{vorgang_id}}/1/" hx-target="#htmx-content" type="radio" id="option1" name="radio-group" value="option1" {% if type_nr == 1 %}checked{% endif %}>
+				<label for="option1" class="button">Meldung</label>
+			</div>
+			<div>
+				<input hx-get="/vorgang/edit/{{vorgang_id}}/2/" hx-target="#htmx-content" type="radio" id="option2" name="radio-group" value="option2" {% if type_nr == 2 %}checked{% endif %}>
+				<label for="option2" class="button">Fallbetreuung</label>
+			</div>
+		</div>
+		</li>
 		{% for item in form_liste %}
 		<li>
 			<a href="#form-{{ item.key }}" 
