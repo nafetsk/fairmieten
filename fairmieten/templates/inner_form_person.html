@@ -1,0 +1,48 @@
+<form class="inner-form-person" id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}" 
+  hx-trigger="change delay:1000ms" hx-swap="outerHTML">
+  {% csrf_token %}
+
+
+<div class="flex">
+  <label class="basis-1/4 text-right mr-4"> {{ form.alter_item.label }} </label>
+  <span class="basis-3/4">
+  {{ form.alter_item }}
+  </span>
+</div>
+
+<div class="flex">
+  <label class="basis-1/4 text-right mr-4"> {{ form.anzahl_kinder.label }} </label>
+  <span class="basis-3/4">
+  {{ form.anzahl_kinder }}
+  </span>
+</div>
+
+<div class="flex">
+  <label class="basis-1/4 text-right mr-4"> {{ form.gender_item.label }} </label>
+  <span class="basis-3/4">
+  {{ form.gender_item }}
+  </span>
+</div>
+
+<div class="flex">
+  <label class="basis-1/4 text-right mr-4"> {{ form.bereich_diskriminierung_item.label }} </label>
+  <span class="basis-3/4">
+  {{ form.bereich_diskriminierung_item }}
+  </span>
+</div>
+
+
+  <div class="flex custom-checkbox-row mb-2">
+    <label class="basis-1/4 text-right mr-4"> {{ form.diskriminierungsform.label }} </label>
+    <div class="basis-3/4 flex flex-wrap gap-2 button-row">
+      {% for checkbox in form.diskriminierungsform %}
+        <div class="flex">
+          {{ checkbox }}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+
+  </div>
+</form>

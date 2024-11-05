@@ -57,7 +57,8 @@ def get_query_set(chart: Charts, start_year, end_year):
 
     # Filtere die Vorgänge basierend auf dem Zeitraum
     time_filter = Vorgang.objects.filter(
-        datum_vorfall_von__gte=start_date, datum_vorfall_von__lte=end_date
+        datum_vorfall_von__gte=start_date, 
+        datum_vorfall_von__lte=end_date
     )
 
     if chart.type == 1:  # Variable ist einfaches Feld in Vorgang
@@ -66,10 +67,8 @@ def get_query_set(chart: Charts, start_year, end_year):
             .annotate(count=Count("id"))
             .order_by(chart.variable)
         )
-    elif (
-        chart.type == 2
-    ):  # Variable ist M2M Feld in Vorgang, Vorgang verweist auf ein anderes Modell
-        # modell_name: str = chart.variable.capitalize()
+    elif chart.type == 2:  # Variable ist M2M Feld in Vorgang, Vorgang verweist auf ein anderes Modell
+
         modell_class = apps.get_model("fairmieten", chart.model)
 
         # Filter the related Vorgang instances based on the date range
@@ -136,6 +135,22 @@ def get_query_set(chart: Charts, start_year, end_year):
         )
 
         return result
+    
+    elif chart.type == 6:  # Diskriminierungsform
+        modell_class = apps.get_model("fairmieten", chart.model)
+
+        # TODO
+        filtered_person = modell_class.objects.all()
+
+        return filtered_person.annotate(
+            count=Count("person")
+        ).values(
+            "count",
+            x_variable=F(
+                "name"
+            ),  # hier wird "name" in x_variable umbenannt, damit alles wieder einheitlich ist
+        )
+
     else:
         return None
 
@@ -154,7 +169,7 @@ def get_chart(request: HttpRequest) -> HttpResponse:
     chart = Charts.objects.get(id=chart_id)
 
     # get data for chart
-    incidents_per_variable= get_query_set(chart, start_year, end_year)
+    incidents_per_variable = get_query_set(chart, start_year, end_year)
 
     # create dictionary for chart.js
     data: Dict[str, Any] = {
@@ -250,20 +265,23 @@ def _get_coded_value(value, codebook, category):
 
 def transform_name(name):
     # Create a translation table for special characters
-    translation_table = str.maketrans({
-        'ä': 'ae',
-        'ö': 'oe',
-        'ü': 'ue',
-        'ß': 'ss',
-        ' ': '_',
-    })
+    translation_table = str.maketrans(
+        {
+            "ä": "ae",
+            "ö": "oe",
+            "ü": "ue",
+            "ß": "ss",
+            " ": "_",
+        }
+    )
     # Normalize the name to decompose special characters
-    normalized_name = unicodedata.normalize('NFKD', name)
+    normalized_name = unicodedata.normalize("NFKD", name)
     # Translate the name using the translation table and convert to lowercase
     transformed_name = normalized_name.translate(translation_table).lower()
     # Remove any remaining non-ASCII characters
-    transformed_name = ''.join(c for c in transformed_name if c.isascii())
+    transformed_name = "".join(c for c in transformed_name if c.isascii())
     return transformed_name
+
 
 def csv_download(request):
     # Create the HttpResponse object with the appropriate CSV header.
@@ -277,18 +295,22 @@ def csv_download(request):
 
     # Get all Diskriminierung names to use as dynamic column headers
     diskriminierung_list = list(Diskriminierung.objects.all())
-    diskriminierung_names = [f"diskriminierung_{transform_name(d.name)}" for d in diskriminierung_list]
+    diskriminierung_names = [
+        f"diskriminierung_{transform_name(d.name)}" for d in diskriminierung_list
+    ]
 
     # Diskriminierungsart
     diskriminierungsart_list = list(Diskrimminierungsart.objects.all())
     diskriminierungsart_names = [
-        f"diskriminierungsart_{transform_name(d.name)}" for d in diskriminierungsart_list
+        f"diskriminierungsart_{transform_name(d.name)}"
+        for d in diskriminierungsart_list
     ]
 
     # Diskriminierungsform
     diskriminierungsform_list = list(Diskriminierungsform.objects.all())
     diskriminierungsform_names = [
-        f"diskriminierungsform_{transform_name(d.name)}" for d in diskriminierungsform_list
+        f"diskriminierungsform_{transform_name(d.name)}"
+        for d in diskriminierungsform_list
     ]
 
     # Get all Lösungsansätze
@@ -303,7 +325,9 @@ def csv_download(request):
 
     # Get all Rechtsbereich
     rechtsbereich_list = list(Rechtsbereich.objects.all())
-    rechtsbereich_names = [f"rechtsbereich_{transform_name(d.name)}" for d in rechtsbereich_list]
+    rechtsbereich_names = [
+        f"rechtsbereich_{transform_name(d.name)}" for d in rechtsbereich_list
+    ]
 
     # Write the header row
     writer.writerow(
@@ -371,7 +395,6 @@ def csv_download(request):
         #     )
         #     for df in diskriminierungsform_list
         # },
-
         **{  # Loesungsansaetze dummy columns
             f"has_loesungsansatz_{l.id}": Exists(
                 Vorgang.loesungsansaetze.through.objects.filter(
@@ -416,19 +439,41 @@ def csv_download(request):
             vorgang.datum_vorfall_bis,
             _get_coded_value(vorgang.sprache, codebook, "sprache"),
             _get_coded_value(vorgang.bezirk_item, codebook, "bezirk_item"),
-            _get_coded_value(vorgang.zugang_fachstelle_item,codebook, "zugang_fachstelle_item"),
+            _get_coded_value(
+                vorgang.zugang_fachstelle_item, codebook, "zugang_fachstelle_item"
+            ),
             # Diskriminierung
             # Person
-            _get_coded_value(vorgang.person.alter_item, codebook, 'alter_item') if hasattr(vorgang, 'person') else '',
-            getattr(vorgang.person, 'anzahl_kinder', '') if hasattr(vorgang, 'person') else '',
+            _get_coded_value(vorgang.person.alter_item, codebook, "alter_item")
+            if hasattr(vorgang, "person")
+            else "",
+            getattr(vorgang.person, "anzahl_kinder", "")
+            if hasattr(vorgang, "person")
+            else "",
             # vorgang.person.gender_item,
-            _get_coded_value(vorgang.person.gender_item, codebook, "gender_item") if hasattr(vorgang, 'person') else '',
-            _get_coded_value(vorgang.person.betroffen_item, codebook, 'betroffen_item') if hasattr(vorgang, 'person') else '',
-            _get_coded_value(vorgang.person.prozeskostenuebernahme_item, codebook, 'prozeskostenuebernahme_item') if hasattr(vorgang, 'person') else '',
+            _get_coded_value(vorgang.person.gender_item, codebook, "gender_item")
+            if hasattr(vorgang, "person")
+            else "",
+            _get_coded_value(vorgang.person.betroffen_item, codebook, "betroffen_item")
+            if hasattr(vorgang, "person")
+            else "",
+            _get_coded_value(
+                vorgang.person.prozeskostenuebernahme_item,
+                codebook,
+                "prozeskostenuebernahme_item",
+            )
+            if hasattr(vorgang, "person")
+            else "",
             # Protokoll
             vorgang.intervention_count,
             # Bereich der Diskriminierung
-            _get_coded_value(vorgang.person.bereich_diskriminierung_item, codebook, 'bereich_diskriminierung_item') if hasattr(vorgang, 'person') else '',
+            _get_coded_value(
+                vorgang.person.bereich_diskriminierung_item,
+                codebook,
+                "bereich_diskriminierung_item",
+            )
+            if hasattr(vorgang, "person")
+            else "",
         ]
 
         # Add Diskriminierung dummy columns
@@ -470,7 +515,7 @@ def csv_download(request):
             row
             + diskriminierung_data
             + diskriminierungsart_data
-            #+ diskriminierungsform_data
+            # + diskriminierungsform_data
             + loesungsansaetze_data
             + ergebnis_data
             + rechtsbereich_data

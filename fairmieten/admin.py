@@ -11,6 +11,7 @@ from .models import (
     Intervention,
     Person,
     Verursacher,
+    Diskriminierungsform,
 )
 from aggregation.models import Charts
 
@@ -36,5 +37,6 @@ admin.site.register(FormLabels,FormLabelsAdmin)
 admin.site.register(Charts)
 admin.site.register(Person)
 admin.site.register(Verursacher)
+admin.site.register(Diskriminierungsform)
 
 

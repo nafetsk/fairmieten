@@ -127,6 +127,12 @@ def setup(apps, schema_editor):
             "zu prüfen": "zu prüfen",
             "anderes": "anderes",
         },
+        "bereich_diskriminierung_item": {
+            "Wohnungssuche": "Wohnungssuche",
+            "im bestehenden Wohnverhältnis": "im bestehenden Wohnverhältnis",
+            "Gewerbe": "Gewerbe",
+            "anderes": "anderes",
+        },
     }
     values["Verursacher"] = {
         "unternehmenstyp_item": {
@@ -147,12 +153,6 @@ def setup(apps, schema_editor):
             "Unterkunfsleitung": "Unterkunfsleitung",
             "Freier Träger": "Freier Träger",
             "Internetplattform": "Internetplattform",
-            "anderes": "anderes",
-        },
-        "bereich_diskriminierung_item": {
-            "Wohnungssuche": "Wohnungssuche",
-            "im bestehenden Wohnverhältnis": "im bestehenden Wohnverhältnis",
-            "Gewerbe": "Gewerbe",
             "anderes": "anderes",
         },
     }
@@ -375,9 +375,9 @@ def setup(apps, schema_editor):
         name="Vorfälle pro Vorgangstyp",
         description="Das Dokumentationssystem unterscheidet zwischen drei Typen der Beratung: Allgemeine Beratung, Meldung und Fallbetreuung.",
         x_label="Vorgangstyp",
-        variable="vorgangstyp_item",
-        type=1,
-        model="Vorgang",
+        variable="vorgangstyp",
+        type=2,
+        model="Vorgangstyp",
     )
     Charts.objects.create(
         name="Vorfälle pro Alter",
@@ -459,4 +459,22 @@ def setup(apps, schema_editor):
         variable="intervention",
         type=5,
         model="Vorgang",
+    )
+
+    Charts.objects.create(
+        name="Bereich der Diskriminierung",
+        description="Diskriminierungen auf dem Wohnungsmarkt finden statt bei der Wohnungssuche (Vermietung und Vermittlung) und in bestehenden Wohnverhältnissen.",
+        x_label="Bereich der Diskriminierung",
+        variable="bereich_diskriminierung_item",
+        type=4,
+        model="Person",
+    )
+    # TODO
+    Charts.objects.create(
+        name="Form der Diskriminierung",
+        description="Diskriminierungen auf dem Wohnungsmarkt treten in sehr unterschiedlichen Formen auf. Neben den direkten Formen, die meist zumindest von den Betroffenen klar als Diskriminierung wahrgenommen werden, sind weitere Formen von Diskriminierung zu unterscheiden, die schwieriger zu erkennen und zu bekämpfen sind. ",
+        x_label="Form der Diskriminierung",
+        variable="diskriminierungsform",
+        type=6,
+        model="Diskriminierungsform",
     )

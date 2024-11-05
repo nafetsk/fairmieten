@@ -68,7 +68,7 @@ def create_person(request):
         form.save()
     return render(
         request,
-        "inner_form.html",
+        "inner_form_person.html",
         {"form": form, "item_key": "person", "vorgang_id": person.vorgang.id},
     )
 
