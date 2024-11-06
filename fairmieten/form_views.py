@@ -38,7 +38,7 @@ def vorgang_erstellen(request, type_nr = 2):
     )
 
 
-def vorgang_bearbeiten(request, vorgang_id: uuid.UUID, type_nr = 3):
+def vorgang_bearbeiten(request, vorgang_id: uuid.UUID, type_nr = 2):
     return render(
         request,
         "add_vorgang.html",
@@ -57,7 +57,7 @@ def create_vorgang(request):
     return render(
         request,
         "inner_form.html",
-        {"form": form, "item_key": "vorgang", "vorgang_id": form.instance.id},
+        {"form": form, "item_key": "vorgang", "vorgang_id": get_vorgang_id(request)},
     )
 
 
@@ -68,8 +68,13 @@ def create_person(request):
         form.save()
     return render(
         request,
+<<<<<<< Updated upstream
         "inner_form.html",
         {"form": form, "item_key": "person", "vorgang_id": person.vorgang.id},
+=======
+        "inner_form_person.html",
+        {"form": form, "item_key": "person", "vorgang_id": get_vorgang_id(request)},
+>>>>>>> Stashed changes
     )
 
 def set_vorgangstyp(request, form):
@@ -87,7 +92,7 @@ def create_diskriminierung(request):
     return render(
         request,
         "inner_form_diskriminierung.html",
-        {"form": form, "item_key": "diskriminierung", "vorgang_id": form.instance.id},
+        {"form": form, "item_key": "diskriminierung", "vorgang_id": get_vorgang_id(request)},
     )
 
 def create_loesungsansaetze(request):
@@ -100,7 +105,7 @@ def create_loesungsansaetze(request):
     return render(
         request,
         "inner_form_loesungs.html",
-        {"form": form, "item_key": "loesungsansaetze", "vorgang_id": form.instance.id},
+        {"form": form, "item_key": "loesungsansaetze", "vorgang_id": get_vorgang_id(request)},
     )
 
 def create_ergebnis(request):
@@ -113,7 +118,7 @@ def create_ergebnis(request):
     return render(
         request,
         "inner_form_ergebnis.html",
-        {"form": form, "item_key": "ergebnis", "vorgang_id": form.instance.id},
+        {"form": form, "item_key": "ergebnis", "vorgang_id": get_vorgang_id(request)},
     )
 
 
