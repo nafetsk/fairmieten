@@ -2,7 +2,7 @@ import uuid
 from typing import Type
 from django.shortcuts import render
 from .forms import DiskriminierungForm, PersonForm, VorgangForm, LoesungsansaetzeForm, ErgebnisForm
-from .models import Vorgang, Person, Vorgangstyp
+from .models import Vorgang, Vorgangstyp
 from .view_utils import layout
 from django.db import models
 
@@ -62,14 +62,13 @@ def create_vorgang(request):
 
 
 def create_person(request):
-    person, created = Person.objects.get_or_create(vorgang_id=get_vorgang_id(request))
-    form = PersonForm(post_or_none(request), instance=person)
+    form = PersonForm(post_or_none(request), instance=get_Instance(request, Vorgang, "vorgang_id"))
     if request.method == "POST" and form.is_valid():
         form.save()
     return render(
         request,
         "inner_form_person.html",
-        {"form": form, "item_key": "person", "vorgang_id": person.vorgang.id},
+        {"form": form, "item_key": "person", "vorgang_id": form.instance.id},
     )
 
 def set_vorgangstyp(request, form):

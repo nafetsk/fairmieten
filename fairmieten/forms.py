@@ -4,7 +4,6 @@ from .models import (
     FormLabels,
     FormValues,
     Vorgang,
-    Person,
     Loesungsansaetze,
     Rechtsbereich,
     Ergebnis,
@@ -71,7 +70,7 @@ class VorgangForm(DataTextForm):
 
 class PersonForm(DataTextForm):
     class Meta:
-        model = Person
+        model = Vorgang
         fields = [
             "alter_item",
             "anzahl_kinder",

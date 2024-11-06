@@ -28,8 +28,6 @@ def setup(apps, schema_editor):
         "beschreibung": "Beschreibung",
         "zugang_fachstelle_item": "Wie haben Sie von der Fachstelle erfahren?",
         "vorgangstyp": "Vorgangstyp",
-    }
-    labels["Person"] = {
         "alter_item": "Altersgruppe",
         "anzahl_kinder": "Anzahl der Kinder",
         "gender_item": "Geschlecht",
@@ -104,8 +102,6 @@ def setup(apps, schema_editor):
             "Meldung": "Meldung",
             "Fallbetreuung": "Fallbetreuung",
         },
-    }
-    values["Person"] = {
         "alter_item": {"1": "0-17", "2": "18-24", "3": "25-35", "4": "35-45"},
         "gender_item": {
             "divers": "divers",
@@ -384,16 +380,16 @@ def setup(apps, schema_editor):
         description="Welcher Altersgruppe gehört die betroffene Person an?",
         x_label="Alter",
         variable="alter_item",
-        type=4,
-        model="Person",
+        type=1,
+        model="Vorgang",
     )
     Charts.objects.create(
         name="Vorfälle pro Geschlecht",
         description="Mit welchem Geschlecht stellt sich die ratsuchende Person vor?",
         x_label="Geschlecht",
         variable="gender_item",
-        type=4,
-        model="Person",
+        type=1,
+        model="Vorgang",
     )
     Charts.objects.create(
         name="Vorfälle pro verursachenden Unternehmentyp",
@@ -424,16 +420,16 @@ def setup(apps, schema_editor):
         description="Wer ist die betroffene Person? Eine alleinstehende Person, eine Familie oder vielleicht ein alleinerziehender Vater?",
         x_label="Betroffenheit",
         variable="betroffen_item",
-        type=4,
-        model="Person",
+        type=1,
+        model="Vorgang",
     )
     Charts.objects.create(
         name="Vorfälle pro Prozesskostenübernahme",
         description="Ist die Übernahme von Prozesskosten wahrscheinlich?",
         x_label="Prozesskostenübernahme",
         variable="prozeskostenuebernahme_item",
-        type=4,
-        model="Person",
+        type=1,
+        model="Vorgang",
     )
     Charts.objects.create(
         name="Vorfälle pro Zugang zur Fachstelle",
@@ -466,15 +462,14 @@ def setup(apps, schema_editor):
         description="Diskriminierungen auf dem Wohnungsmarkt finden statt bei der Wohnungssuche (Vermietung und Vermittlung) und in bestehenden Wohnverhältnissen.",
         x_label="Bereich der Diskriminierung",
         variable="bereich_diskriminierung_item",
-        type=4,
-        model="Person",
+        type=1,
+        model="Vorgang",
     )
-    # TODO
     Charts.objects.create(
         name="Form der Diskriminierung",
         description="Diskriminierungen auf dem Wohnungsmarkt treten in sehr unterschiedlichen Formen auf. Neben den direkten Formen, die meist zumindest von den Betroffenen klar als Diskriminierung wahrgenommen werden, sind weitere Formen von Diskriminierung zu unterscheiden, die schwieriger zu erkennen und zu bekämpfen sind. ",
         x_label="Form der Diskriminierung",
         variable="diskriminierungsform",
-        type=6,
+        type=2,
         model="Diskriminierungsform",
     )

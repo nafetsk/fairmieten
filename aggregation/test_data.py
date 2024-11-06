@@ -6,7 +6,6 @@ from fairmieten.models import (
     Loesungsansaetze,
     Ergebnis,
     Verursacher,
-    Person,
     Rechtsbereich,
     Intervention,
     FormValues,
@@ -29,7 +28,6 @@ fake = Faker()
 def create_test_data():
     # Clear entries from each model
     Vorgang.objects.all().delete()
-    Person.objects.all().delete()
     
     # Create Vorgang instances
 
@@ -65,13 +63,20 @@ def create_test_data():
                 elements=list_vorgangstyp
             ),
             zugang_fachstelle_item=custom_random_element("zugang_fachstelle_item"),
+            alter_item=custom_random_element("alter_item"),
+            anzahl_kinder=fake.random_int(min=0, max=5),
+            gender_item=custom_random_element("gender_item"),
+            prozeskostenuebernahme_item=custom_random_element("prozeskostenuebernahme_item"),
+            betroffen_item=custom_random_element("betroffen_item"),
+            bereich_diskriminierung_item=custom_random_element("bereich_diskriminierung_item"),
         )
 
         vorgang.diskriminierung.set(random.sample(diskriminierungen_list, k=3))
         vorgang.loesungsansaetze.set(random.sample(loesungsansaetze_list, k=2))
         vorgang.ergebnis.set(random.sample(ergebnisse_list, k=1))
         vorgang.rechtsbereich.set(random.sample(rechtsbereiche_list, k=2))
-    
+        vorgang.diskriminierungsform.set(random.sample(diskriminierungsform_list, k=2))
+
         vorgaenge.append(vorgang)
 
     # Create test data for Verursacher
@@ -81,19 +86,7 @@ def create_test_data():
             personentyp_item=custom_random_element("personentyp_item"),
             vorgang=vorgang
         )
-
-    # Create test data for Person
-    for vorgang in vorgaenge:
-        person = Person.objects.create(
-            alter_item=custom_random_element("alter_item"),
-            anzahl_kinder=fake.random_int(min=0, max=5),
-            gender_item=custom_random_element("gender_item"),
-            vorgang=vorgang,
-            prozeskostenuebernahme_item=custom_random_element("prozeskostenuebernahme_item"),
-            betroffen_item=custom_random_element("betroffen_item"),
-            bereich_diskriminierung_item=custom_random_element("bereich_diskriminierung_item"),
-        )
-        person.diskriminierungsform.set(random.sample(diskriminierungsform_list, k=2))
+        
 
 
     # create test data for Intervention

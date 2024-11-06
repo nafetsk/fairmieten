@@ -9,7 +9,6 @@ from .models import (
     Ergebnis,
     Vorgang,
     Intervention,
-    Person,
     Verursacher,
     Diskriminierungsform,
 )
@@ -35,7 +34,6 @@ admin.site.register(Intervention)
 admin.site.register(FormValues, FormValuesAdmin)
 admin.site.register(FormLabels,FormLabelsAdmin)
 admin.site.register(Charts)
-admin.site.register(Person)
 admin.site.register(Verursacher)
 admin.site.register(Diskriminierungsform)
 
