@@ -47,7 +47,7 @@
 
     <div class="inner-content" id="htmx-inner-content" >
 		{% for item in form_liste %}		
-		<div id="form-{{ item.key }}" class="form-container" hx-get="{% url 'create_'|add:item.key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}"
+		<div id="form-{{ item.key }}" class="form-container" hx-get="{% url 'create_'|add:item.key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}&&type_nr={{type_nr}}"
 		hx-trigger="revealed once">
 		<div class="form-placeholder">{{vorgang_id}}</div>
 		</div>
