@@ -4,10 +4,10 @@ from .models import (
     FormLabels,
     FormValues,
     Vorgang,
-    Person,
     Loesungsansaetze,
     Rechtsbereich,
     Ergebnis,
+    Diskriminierungsform,
 )
 from .widgets import CustomCheckboxMultiSelectInput
 
@@ -70,13 +70,21 @@ class VorgangForm(DataTextForm):
 
 class PersonForm(DataTextForm):
     class Meta:
-        model = Person
+        model = Vorgang
         fields = [
             "alter_item",
             "anzahl_kinder",
             "gender_item",
+            "bereich_diskriminierung_item",
+            "diskriminierungsform",
         ]
         widgets = {"anzahl_kinder": forms.NumberInput(attrs={"min": 0})}
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields["diskriminierungsform"].widget = CustomCheckboxMultiSelectInput()
+        self.fields["diskriminierungsform"].queryset = Diskriminierungsform.objects.all()
 
 
 class DiskriminierungForm(forms.ModelForm):

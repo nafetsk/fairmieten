@@ -27,6 +27,13 @@ class Diskriminierung(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Diskriminierungsform(models.Model):
+    id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False) 
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 class Loesungsansaetze(models.Model):
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False)
@@ -62,8 +69,17 @@ class Vorgang(models.Model):
     sprache = models.CharField(max_length=100, null=True, blank=True)
     beschreibung = models.TextField(null=True, blank=True)
     bezirk_item = models.CharField(max_length=100, null=True, blank=True)
-    # TODO: DAs hier muss noch ins Formular
     zugang_fachstelle_item = models.CharField(max_length=100, null=True,  blank=True) # (Flyer, Internet, ...)
+
+    # Betroffene Person
+    alter_item = models.CharField(max_length=100, null=True, blank=True) # String weil Kohorten
+    anzahl_kinder = models.IntegerField(null=True, blank=True)
+    gender_item = models.CharField(max_length=100, null=True, blank=True)
+    betroffen_item = models.CharField(max_length=100, null=True, blank=True) # (Alleinstehend, Familie, usw.)
+    prozeskostenuebernahme_item = models.CharField(max_length=100, null=True, blank=True) # (Ja, Nein, zu prüfen, anderes)
+    bereich_diskriminierung_item = models.CharField(max_length=100, null=True, blank=True) # (Wohnungssuche, Gewerbe)
+    diskriminierungsform = models.ManyToManyField(Diskriminierungsform, blank=True) # (Unmittelbar, mittelbar, usw.)
+
     # Diskriminierung
     diskriminierung = models.ManyToManyField(Diskriminierung, blank=True)
     # Loesungsansaetze
@@ -77,15 +93,6 @@ class Vorgang(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-
-class Person(models.Model):
-    id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False)
-    alter_item = models.CharField(max_length=100) # String weil Kohorten
-    anzahl_kinder = models.IntegerField(null=True, blank=True)
-    gender_item = models.CharField(max_length=100)
-    vorgang = models.OneToOneField(Vorgang, on_delete=models.CASCADE, null=True, blank=True)
-    betroffen_item = models.CharField(max_length=100, null=True, blank=True) # (Alleinstehend, Familie, usw.)
-    prozeskostenuebernahme_item = models.CharField(max_length=100, null=True, blank=True) # (Ja, Nein, zu prüfen, anderes)
 
 # Verursacher
 class Verursacher(models.Model):
@@ -151,6 +158,7 @@ class FormValues(FormTextMixin):
         for value in values:
             choices.append((value.key, value.value))
         return choices
+    
 
 class FormLabels(FormTextMixin):
     label = models.CharField(max_length=100)
