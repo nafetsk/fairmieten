@@ -67,13 +67,8 @@ def create_person(request):
         form.save()
     return render(
         request,
-<<<<<<< Updated upstream
-        "inner_form_person.html",
-        {"form": form, "item_key": "person", "vorgang_id": form.instance.id},
-=======
         "inner_form_person.html",
         {"form": form, "item_key": "person", "vorgang_id": get_vorgang_id(request)},
->>>>>>> Stashed changes
     )
 
 def set_vorgangstyp(request, form):
