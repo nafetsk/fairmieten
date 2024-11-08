@@ -1,28 +1,35 @@
+import logging
+from tkinter import N
 import uuid
 from typing import Type
 from django.shortcuts import render
-from .forms import DiskriminierungForm, PersonForm, VorgangForm, LoesungsansaetzeForm, ErgebnisForm
-from .models import Vorgang, Vorgangstyp
+from .forms import BeratungForm, DiskriminierungForm, PersonForm, VerursacherForm, VorgangForm, LoesungsansaetzeForm, ErgebnisForm
+from .models import Verursacher, Vorgang, Vorgangstyp
 from .view_utils import layout
 from django.db import models
 
 
 # *** Reihenfolge der Formulare in der Vorgangserstellung ***
-form_liste:list[list] = [[],[],[]]
-
+form_liste:list[list] = [[],[],[],[]]
 
 form_liste[1] = [
-    {"key": "vorgang", "label": "Allgemein", "form": VorgangForm},
-    {"key": "person", "label": "Person", "form": PersonForm},
-    {"key": "diskriminierung", "label": "Diskriminierung", "form": DiskriminierungForm},
+    {"key": "beratung", "label": "Allgemein", "form": BeratungForm},
 ]
 
 form_liste[2] = [
     {"key": "vorgang", "label": "Allgemein", "form": VorgangForm},
     {"key": "person", "label": "Person", "form": PersonForm},
     {"key": "diskriminierung", "label": "Diskriminierung", "form": DiskriminierungForm},
+    {"key": "verursacher", "label": "Verursacher", "form": VerursacherForm},
+]
+
+form_liste[3] = [
+    {"key": "vorgang", "label": "Allgemein", "form": VorgangForm},
+    {"key": "person", "label": "Person", "form": PersonForm},
+    {"key": "diskriminierung", "label": "Diskriminierung", "form": DiskriminierungForm},
     {"key": "loesungsansaetze", "label": "Lösungsansätze", "form": LoesungsansaetzeForm},
     {"key": "ergebnis", "label": "Ergebnis", "form": ErgebnisForm},
+    {"key": "verursacher", "label": "Verursacher", "form": VerursacherForm},
 ]
 
 
@@ -45,6 +52,20 @@ def vorgang_bearbeiten(request, vorgang_id: uuid.UUID, type_nr = 2):
         {"base": layout(request), "form_liste": form_liste[type_nr], "vorgang_id": vorgang_id, "type_nr": type_nr},
     )
 
+def create_beratung(request):
+    form = BeratungForm(
+        post_or_none(request), instance=get_Instance(request, Vorgang, "vorgang_id")
+    )
+    if request.method == "POST" and form.is_valid():
+        set_created_by(request, form)
+        set_vorgangstyp(request, form)
+        form.save()
+    return render(
+        request,
+        "inner_form.html",
+        {"form": form, "item_key": "vorgang", "vorgang_id": get_vorgang_id(request), "type_nr": request.GET.get("type_nr", 2)},
+    )
+
 
 def create_vorgang(request):
     form = VorgangForm(
@@ -57,7 +78,7 @@ def create_vorgang(request):
     return render(
         request,
         "inner_form.html",
-        {"form": form, "item_key": "vorgang", "vorgang_id": get_vorgang_id(request)},
+        {"form": form, "item_key": "vorgang", "vorgang_id": get_vorgang_id(request), "type_nr": request.GET.get("type_nr", 2)},
     )
 
 
@@ -71,10 +92,6 @@ def create_person(request):
         {"form": form, "item_key": "person", "vorgang_id": get_vorgang_id(request)},
     )
 
-def set_vorgangstyp(request, form):
-    type_nr = request.GET.get("type_nr", 2)
-    form.instance.vorgangstyp = Vorgangstyp.objects.get(id=type_nr)
-
 
 def create_diskriminierung(request):
     form = DiskriminierungForm(
@@ -82,7 +99,6 @@ def create_diskriminierung(request):
     )
     if request.method == "POST" and form.is_valid():
         form.save()
-
     return render(
         request,
         "inner_form_diskriminierung.html",
@@ -115,6 +131,35 @@ def create_ergebnis(request):
         {"form": form, "item_key": "ergebnis", "vorgang_id": get_vorgang_id(request)},
     )
 
+def create_verursacher(request):
+    vorgang_id = get_vorgang_id(request)
+    
+    if request.method == "POST":
+        dict = request.POST
+        verursacher = Verursacher.objects.filter(id=dict['id']).first() if dict['id'] else None
+        if verursacher:
+            form = VerursacherForm(dict, instance=verursacher)
+        else:
+            form = VerursacherForm(dict)
+            form.instance.vorgang_id = vorgang_id
+        form.save()
+
+    # Daten für die Darstellung der Formulare bereitstellen
+    forms = []
+    vorgang = Vorgang.objects.filter(id=vorgang_id).first()
+    if vorgang:
+        die_verursacher = Verursacher.objects.filter(vorgang=vorgang)
+        forms = [VerursacherForm(instance=verursacher) for verursacher in die_verursacher]
+    forms.append(VerursacherForm())
+    
+    return render(
+        request,
+        "inner_form_verursacher.html",
+        {"forms": forms, "item_key": "verursacher", "vorgang_id": vorgang_id},
+    )
+
+
+
 
 # *** Hilfsfunktionen *******************************************
 
@@ -123,13 +168,21 @@ def set_created_by(request, form):
     if not form.instance.created_by:
         form.instance.created_by = request.user
 
+def set_vorgangstyp(request, form):
+    type_nr = request.GET.get("type_nr", 2)
+    form.instance.vorgangstyp = Vorgangstyp.objects.get(id=type_nr)
+    form.save()
+
 
 def get_Instance(request, model: Type[models.Model], id_name: str = "id"):
     id = request.GET.get(id_name, None)
-    if id is None or id == "None":
-        id = uuid.uuid4()
-    instance, created = model.objects.get_or_create(id=id)
-    return instance
+    if request.method == "POST":
+        if id is None or id == "None":
+            id = uuid.uuid4()
+        instance, created = model.objects.get_or_create(id=id)
+        return instance
+    else:
+        return model.objects.filter(id=id).first()
 
 
 def get_Foreign_Instance(request, model: models.Model, id_name: str = "id"):
@@ -153,6 +206,18 @@ def post_or_none(request):
         return request.POST
     else:
         return None
+
+def transpose_dict(data):
+    keys = [key for key in data.keys() if key != 'csrfmiddlewaretoken']
+    num_items = len(data.getlist(keys[0]))  # Annahme: alle Listen haben die gleiche Länge
+    logging.info(num_items)
+
+    # Erstelle die Liste von Dictionaries
+    result = [
+        {key: data.getlist(key)[i] for key in keys}
+        for i in range(num_items)
+    ]
+    return result
 
 
 # *** End Helper *********************************

@@ -1,0 +1,30 @@
+
+	<div class="flex">
+		<label class="basis-1/4 mr-4"> _ </label>
+		<label class="basis-1/4">Unternehmenstyp</label>
+		<label class="basis-1/4 ml-4">Personentyp</label>
+	</div>
+
+	{% for form in forms %}
+
+		<form class="inner-form-ergebnis mb-0" id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}" 
+		hx-trigger="change delay:1000ms" hx-target="#form-verursacher">
+		{% csrf_token %}
+	
+		<!-- Verstecktes Feld für die ID -->
+			{%if form.instance.id %}
+				<input type="hidden" name="id" value="{{ form.instance.id }}">
+			{% endif %}
+			<div class="verursacher-row flex">
+				<label class="basis-1/4 text-right">{{ forloop.counter }}</label>
+				{% for bound_field in form %}
+					<select class="basis-1/4 ml-4" name="{{ bound_field.name }}">
+						{% for key, choice in bound_field.field.choices %}
+							<option value="{{ key }}" {% if key == field.value %}selected{% endif %}>{{ choice }}</option>
+						{% endfor %}
+					</select>
+				{% endfor %}
+			</div>
+		</form>
+	{% endfor %}
+

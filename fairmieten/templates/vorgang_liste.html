@@ -45,8 +45,9 @@
                             <td>{{ vorgang.vorgangstyp }}</td>
                             <td>{{ vorgang.datum_kontaktaufnahme|date:"d.m.Y" }}</td>
                             <td>
-                                <a href="{% url 'vorgang_detail' vorgang.id %}">Details</a>
-                                <a href="{% url 'vorgang_bearbeiten' vorgang.id %}">Edit</a>
+                                <a href="#" hx-get="{% url 'vorgang_detail' vorgang.id %}" hx-target="#htmx-content">Details</a> | 
+                                <a href="#" hx-get="{% url 'vorgang_bearbeiten' vorgang.id vorgang.vorgangstyp.id %}" hx-push-url="true" hx-target="#htmx-content">Edit</a> | 
+                                <a href="#" hx-get="{% url 'delete_vorgang' vorgang.id %}" hx-target="#htmx-content">Delete</a>
                             </td>
                         </tr>
                     {% endfor %}

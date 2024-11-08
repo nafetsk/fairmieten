@@ -1,8 +1,11 @@
+import logging
 from django import forms
 from .models import (
     Diskriminierung,
     FormLabels,
     FormValues,
+    Intervention,
+    Verursacher,
     Vorgang,
     Loesungsansaetze,
     Rechtsbereich,
@@ -22,6 +25,7 @@ class DataTextForm(forms.ModelForm):
             )
         )
         values_dict = FormValues.get_Values(self.Meta.model.__name__)
+
         for field_name in self.fields:
             if field_name.endswith("_item") and field_name in values_dict:
                 self.fields[field_name] = forms.ChoiceField(
@@ -31,9 +35,7 @@ class DataTextForm(forms.ModelForm):
 
         # Überprüfe, ob das Feld einen Wert aus der Datenbank hat
         for field_name in self.fields:
-            if (
-                self.instance and self.instance.pk is not None
-            ):  # Überprüfen, ob das Objekt existiert
+            if (self.instance and self.instance.pk is not None ):  # Überprüfen, ob das Objekt existiert
                 field_value = getattr(self.instance, field_name, None)
                 if (
                     field_value is not None and field_value != ""
@@ -45,6 +47,21 @@ class DataTextForm(forms.ModelForm):
                     self.fields[field_name].widget.attrs["class"] = " ".join(
                         filter(None, [current_class, "from_database"])
                     )
+
+
+class BeratungForm(DataTextForm):
+    class Meta:
+        model = Vorgang
+        fields = [
+            "fallnummer",
+            "kontaktaufnahme_durch_item",
+            "datum_kontaktaufnahme",
+            "beschreibung",
+            "zugang_fachstelle_item",
+        ]
+        widgets = {
+            "datum_kontaktaufnahme": forms.DateInput(attrs={"type": "date"}),
+        }
 
 
 class VorgangForm(DataTextForm):
@@ -130,3 +147,17 @@ class ErgebnisForm(forms.ModelForm):
         # Custom HTML für die Buttons der Checkboxen
         self.fields["ergebnis"].widget = CustomCheckboxMultiSelectInput()
         self.fields["ergebnis"].queryset = Ergebnis.objects.all()
+
+# Form für Verursacher
+class VerursacherForm(DataTextForm):
+    class Meta:
+        model = Verursacher
+        fields = ['unternehmenstyp_item', 'personentyp_item']
+
+
+# Form für Intervention
+class InterventionForm(DataTextForm):
+    class Meta:
+        model = Intervention
+        fields = ['datum', 'form_item', 'bemerkung']
+

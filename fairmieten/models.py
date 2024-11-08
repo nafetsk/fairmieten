@@ -146,7 +146,6 @@ class FormValues(FormTextMixin):
             if value.field not in values_dict:
                 values_dict[value.field] = []
             values_dict[value.field].append((value.key, value.value))
-        print(values_dict)  # Ausgabe des Dictionarys
         return values_dict
 
     @staticmethod

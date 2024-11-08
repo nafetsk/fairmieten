@@ -1,4 +1,4 @@
-<form class="inner-form" id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}" 
+<form class="inner-form" id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}&type_nr={{type_nr}}" 
   hx-trigger="change delay:1000ms" hx-swap="outerHTML">
   {% csrf_token %}
   {{ form.as_p }}

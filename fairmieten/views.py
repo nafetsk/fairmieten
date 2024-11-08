@@ -27,6 +27,11 @@ def vorgang_liste(request: HttpRequest) -> HttpResponse:
     vorgang_liste = search_and_sort(request, vorgang_liste)
     return render(request, 'vorgang_liste.html', {'layout': layout(request), 'vorgang_liste': vorgang_liste, 'callback_name':'vorgang_liste'})
 
+def delete_vorgang(request: HttpRequest, vorgang_id: UUID) -> HttpResponse:
+    vorgang = Vorgang.objects.get(id=vorgang_id)
+    vorgang.delete()
+    return redirect('vorgang_liste')
+
 def search_and_sort(request: HttpRequest, vorgang_liste: QuerySet[Vorgang, Vorgang]) -> Page[Vorgang]:
 
     # Suchfunktion

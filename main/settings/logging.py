@@ -9,7 +9,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "console": {
-            "format": "[%(asctime)s][%(levelname)8s][%(name)16.16s]@[%(lineno)5s]$ %(message)s"
+            "format": "[%(levelname)s]@%(filename)s:%(lineno)s-> %(message)s"
         },
     },
     "handlers": {
@@ -20,12 +20,12 @@ LOGGING = {
     },
     "root": {
         "handlers": ["console"],
-        "level": "WARNING",
+        "level": "INFO",
         "propagate": False,
     },
     "loggers": {
         "django.server": {
-            "level": "WARNING",
+            "level": "INFO",
             "handlers": ["console"],
             "propagate": False,
         },
