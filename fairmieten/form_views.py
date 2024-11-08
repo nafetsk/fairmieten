@@ -1,5 +1,4 @@
 import logging
-from tkinter import N
 import uuid
 from typing import Type
 from django.shortcuts import render
