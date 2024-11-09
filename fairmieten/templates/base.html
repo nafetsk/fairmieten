@@ -10,18 +10,14 @@
     <script
       src="https://cdn.jsdelivr.net/npm/chart.js"
     ></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     {% block additional_js %}
 	  {% endblock %}
     {% block additional_css %}
     {% endblock %}
+    <link rel="stylesheet" href="{% static 'css/t_output.css' %}" />
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
     <link rel="stylesheet" href="{% static 'css/forms.css' %}" />
 
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
-    />
   </head>
   <body>
     <div class="header">

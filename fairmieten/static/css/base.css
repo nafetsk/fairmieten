@@ -33,7 +33,6 @@ footer{
 }
 
 .inner-content {
-	margin-left: 250px; /* oder die Breite der Seitenleiste */
     padding: 20px;
     box-sizing: border-box;
 	flex-grow: 1;
