@@ -111,6 +111,14 @@ python-versions = ">=3.8"
 django = ">=3.2"
 
 [[package]]
+name = "django-widget-tweaks"
+version = "1.5.0"
+description = "Tweak the form field rendering in templates, not in python-level form definitions."
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[[package]]
 name = "faker"
 version = "28.4.1"
 description = "Faker is a Python package that generates fake data for you."
@@ -259,7 +267,7 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "627ee8b8a09b306f80bf7a36b5b36863516dc4d10af63b85e37fb9e48fc1476d"
+content-hash = "939e0009af6f470104b1c10bd33501001dd764ff9356eb09a8f4934971b8f522"
 
 [metadata.files]
 asgiref = [
@@ -293,6 +301,10 @@ django-stubs-ext = [
 django-unfold = [
     {file = "django_unfold-0.40.0-py3-none-any.whl", hash = "sha256:5038463cedb8e8110774f738bab0b50fbe51b269d7e9a2d4c0b6478a9f9d9d91"},
     {file = "django_unfold-0.40.0.tar.gz", hash = "sha256:84d2255d63d7cf4917f6cbe8a8caca2eed5d9175576a994d3d3f9b47381e19a0"},
+]
+django-widget-tweaks = [
+    {file = "django-widget-tweaks-1.5.0.tar.gz", hash = "sha256:1c2180681ebb994e922c754804c7ffebbe1245014777ac47897a81f57cc629c7"},
+    {file = "django_widget_tweaks-1.5.0-py3-none-any.whl", hash = "sha256:a41b7b2f05bd44d673d11ebd6c09a96f1d013ee98121cb98c384fe84e33b881e"},
 ]
 faker = [
     {file = "Faker-28.4.1-py3-none-any.whl", hash = "sha256:e59c01d1e8b8e20a83255ab8232c143cb2af3b4f5ab6a3f5ce495f385ad8ab4c"},

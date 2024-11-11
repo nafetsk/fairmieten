@@ -4,7 +4,7 @@ from django.templatetags.static import static
 from .main import INSTALLED_APPS, BASE_DIR, MIDDLEWARE
 
 
-INSTALLED_APPS = [ "unfold"] + INSTALLED_APPS + [ "environ", "fairmieten", "main.hello", "aggregation"]
+INSTALLED_APPS = [ "unfold"] + INSTALLED_APPS + [ "environ", "fairmieten", "main.hello", "aggregation", "widget_tweaks"]
 
 MIDDLEWARE += ['django_htmx.middleware.HtmxMiddleware', 'whitenoise.middleware.WhiteNoiseMiddleware']
 
