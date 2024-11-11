@@ -35,6 +35,8 @@ def setup(apps, schema_editor):
         "prozeskostenuebernahme_item": "Prozesskostenübernahme",
         "bereich_diskriminierung_item": "Bereich der Diskriminierung",
         "diskriminierungsform": "Form der Diskriminierung",
+        "ergebnis": "Ergebnis",
+        "rechtsbereich": "Rechtsbereich",
         "ergebnis_bemerkung": "Ergebnis Bemerkung",
         "loesungsansaetze_bemerkung": "Lösungsansätze Bemerkung",
         "loesungsansaetze": "Lösungsansätze",
@@ -314,7 +316,7 @@ def setup(apps, schema_editor):
 
     # Charts
     Charts.objects.create(
-        name="Vorfälle pro Sprache",
+        name="Sprache",
         description="In welcher Sprache hat die Beratung stattgefunden?",
         x_label="Sprache",
         variable="sprache_item",
@@ -322,7 +324,7 @@ def setup(apps, schema_editor):
         model="Vorgang",
     )
     Charts.objects.create(
-        name="Vorfälle pro Bezirk",
+        name="Bezirk des Vorfalls",
         description="In welchen Berliner Bezirken hat eine Diskriminierung stattgefunden?",
         x_label="Bezirk",
         variable="bezirk_item",
@@ -330,15 +332,15 @@ def setup(apps, schema_editor):
         model="Vorgang",
     )
     Charts.objects.create(
-        name="Vorfälle pro Diskriminierung",
-        description="Vorfälle pro Diskriminierung Beschreibung",
+        name="Diskriminierungsmerkmal",
+        description="Diskriminierungen auf dem Wohnungsmarkt erfolgen aufgrund von Zuschreibungen bezüglich eines oder sich überschneidender Merkmale, die überwiegend im Allgemeinen Gleichbehandlungsgesetz (AGG) als Diskriminierungsmerkmale anerkannt sind. Eine präzise Zuordnung einer Diskriminierung zu einem bestimmten Diskriminierungsmerkmal ist allerdings häufig nicht einfach, beziehungsweise die Gründe, aus denen Diskriminierungen erfolgen, sind häufig nicht klar voneinander abzugrenzen. Das Dokumentationssystem stellt zur Auswahl alle im AGG genannten Diskriminierungsmerkmale und benennt einzelne vom AGG nicht geschützte Merkmale, wie zum Beispiel die soziale Lage.",
         x_label="Diskriminierung",
         variable="diskriminierung",
         type=2,
         model="Diskriminierung",
     )
     Charts.objects.create(
-        name="Vorfälle pro Kontaktaufnahme",
+        name="Kontaktaufnahme",
         description="Neben betroffenen Personen, kommen in die Beratung auch unbeteiligte Personen und beschuldigte Personen. Unbeteiligte Personen sind z.B. Freund*innen, Zeug*innen oder auch ehrenamtliche Betreuer*innen, die z.B. eine betroffene Person konkret unterstützen.",
         x_label="Kontaktaufnahme",
         variable="kontaktaufnahme_durch_item",
@@ -346,7 +348,7 @@ def setup(apps, schema_editor):
         model="Vorgang",
     )
     Charts.objects.create(
-        name="Vorfälle pro Lösungsansatz",
+        name="Lösungsansatz",
         description="Vorfälle pro Lösungsansatz Beschreibung",
         x_label="Lösungsansatz",
         variable="loesungsansaetze",
@@ -354,7 +356,7 @@ def setup(apps, schema_editor):
         model="Loesungsansaetze",
     )
     Charts.objects.create(
-        name="Vorfälle pro Ergebnis",
+        name="Abschluss/Ergebnis",
         description="Vorfälle pro Ergebnis Beschreibung",
         x_label="Ergebnis",
         variable="ergebnis",
@@ -362,7 +364,7 @@ def setup(apps, schema_editor):
         model="Ergebnis",
     )
     Charts.objects.create(
-        name="Vorfälle pro Jahr",
+        name="Jahr des Vorfalls",
         description="Wann hat die Diskriminierung stattgefunden?",
         x_label="Jahr",
         variable="datum_vorfall_von",
@@ -370,7 +372,7 @@ def setup(apps, schema_editor):
         model="Vorgang",
     )
     Charts.objects.create(
-        name="Vorfälle pro Vorgangstyp",
+        name="Vorgangstyp",
         description="Das Dokumentationssystem unterscheidet zwischen drei Typen der Beratung: Allgemeine Beratung, Meldung und Fallbetreuung.",
         x_label="Vorgangstyp",
         variable="vorgangstyp",
@@ -378,7 +380,7 @@ def setup(apps, schema_editor):
         model="Vorgangstyp",
     )
     Charts.objects.create(
-        name="Vorfälle pro Alter",
+        name="Alter",
         description="Welcher Altersgruppe gehört die betroffene Person an?",
         x_label="Alter",
         variable="alter_item",
@@ -386,7 +388,7 @@ def setup(apps, schema_editor):
         model="Vorgang",
     )
     Charts.objects.create(
-        name="Vorfälle pro Geschlecht",
+        name="Geschlecht",
         description="Mit welchem Geschlecht stellt sich die ratsuchende Person vor?",
         x_label="Geschlecht",
         variable="gender_item",
@@ -394,15 +396,15 @@ def setup(apps, schema_editor):
         model="Vorgang",
     )
     Charts.objects.create(
-        name="Vorfälle pro verursachenden Unternehmentyp",
-        description="Vorfälle pro Unternehmsentyp Beschreibung",
+        name="Verursachenden Unternehmentyp",
+        description="Bei den Wohnungseigentümer*innen und den Wohnungsverwaltungen wird weiter unterschieden, ob diese als privat, kommunal, genossenschaftlich, oder als sozialer Träger zu verstehen sind.",
         x_label="Unternehmestyp",
         variable="unternehmenstyp_item",
         type=4,
         model="Verursacher",
     )
     Charts.objects.create(
-        name="Vorfälle pro verursachenden Personentyp",
+        name="Verursachenden Personentyp",
         description="Diskriminierungen im Bereich Wohnen erfolgen zum Beispiel durch Wohnungseigentümer*innen, Wohnungsverwalter*innen, Hausmeister*innen, Nachbar*innen, (öffentliche) Institutionen, Makler*innen, etc. ",
         x_label="Personentyp",
         variable="personentyp_item",
@@ -410,15 +412,15 @@ def setup(apps, schema_editor):
         model="Verursacher",
     )
     Charts.objects.create(
-        name="Vorfälle pro Rechtsbereich",
-        description="Vorfälle pro Rechtsbereich Beschreibung",
+        name="Relevanter Rechtsbereich",
+        description="Auch wenn das Allgemeine Gleichbehandlungsgesetz die rechtliche Grundlage für das Diskriminierungsverbot beim Zugang zu Wohnraum oder im bestehenden Wohnverhältnis ist, gibt es weitere Gesetze, die eine Rolle spielen. ",
         x_label="Rechtsbereich",
         variable="rechtsbereich",
         type=2,
         model="Rechtsbereich",
     )
     Charts.objects.create(
-        name="Vorfälle pro Betroffenheit",
+        name="Betroffenheit",
         description="Wer ist die betroffene Person? Eine alleinstehende Person, eine Familie oder vielleicht ein alleinerziehender Vater?",
         x_label="Betroffenheit",
         variable="betroffen_item",
@@ -426,7 +428,7 @@ def setup(apps, schema_editor):
         model="Vorgang",
     )
     Charts.objects.create(
-        name="Vorfälle pro Prozesskostenübernahme",
+        name="Prozesskostenübernahme",
         description="Ist die Übernahme von Prozesskosten wahrscheinlich?",
         x_label="Prozesskostenübernahme",
         variable="prozeskostenuebernahme_item",
@@ -434,7 +436,7 @@ def setup(apps, schema_editor):
         model="Vorgang",
     )
     Charts.objects.create(
-        name="Vorfälle pro Zugang zur Fachstelle",
+        name="Zugang zur Fachstelle",
         description="Durch welche Kommunikationskanäle (z.B. Flyer, Medien, Verweisberatung, Veranstaltungen) hat die ratsuchende Person von der Fachstelle erfahren?",
         x_label="Zugang Fachstelle",
         variable="zugang_fachstelle_item",
@@ -442,8 +444,8 @@ def setup(apps, schema_editor):
         model="Vorgang",
     )
     Charts.objects.create(
-        name="Vorfälle pro Art der Intervention",
-        description="Vorfälle pro Intervention Beschreibung",
+        name="Art der Intervention",
+        description="Zu den Interventionen der Beratungsstelle gehören unter anderem, das Verfassen von Beschwerdebriefen, die Begleitung zu Gesprächen, das Vermitteln von Rechtsanwält*innen, als auch eine Beistandschaft vor Gericht nach § 23 AGG.",
         x_label="Intervention",
         variable="form_item",
         type=4,
@@ -451,8 +453,8 @@ def setup(apps, schema_editor):
     )
 
     Charts.objects.create(
-        name="Vorfälle pro Anzahl der Interventionen",
-        description="Vorfälle pro Anzahl der Interventionen Beschreibung",
+        name="Anzahl der Interventionen",
+        description="Wieviele Interventionen hat es pro Vorgang gegeben?",
         x_label="Anzahl Intervention",
         variable="intervention",
         type=5,
