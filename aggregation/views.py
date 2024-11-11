@@ -22,6 +22,7 @@ from django.db.models import IntegerField
 from django.db.models import OuterRef, Subquery, Exists
 from django.db.models.functions import Coalesce
 import unicodedata
+from datetime import datetime
 
 
 def aggregation(request: HttpRequest) -> HttpResponse:
@@ -268,7 +269,8 @@ def transform_name(name):
 def csv_download(request):
     # Create the HttpResponse object with the appropriate CSV header.
     response: HttpResponse = HttpResponse(content_type="text/csv")
-    response["Content-Disposition"] = 'attachment; filename="vorgang.csv"'
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    response["Content-Disposition"] = f'attachment; filename="data_{current_date}.csv"'
 
     # Create codebook
     codebook = create_codebook()
