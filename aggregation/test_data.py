@@ -36,6 +36,7 @@ def create_test_data():
     start_date = end_date - timedelta(days=4 * 365)
 
     list_vorgangstyp = list(Vorgangstyp.objects.all())
+    print(list_vorgangstyp)
     diskriminierungen_list = list(Diskriminierung.objects.all())
     loesungsansaetze_list = list(Loesungsansaetze.objects.all())
     ergebnisse_list = list(Ergebnis.objects.all())
