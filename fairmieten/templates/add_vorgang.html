@@ -1,46 +1,44 @@
 {% extends base %}
 {% block content %}
 
-<div class="with-sidebar vorgang_neu">
-	<aside class="sidebar hidden md:block" id="sidebar">
-      <ul >
-		<li>
+<div class="with-sidebar vorgang_neu flex flex-col md:flex-row">
+	<aside class="sidebar md:fixed" id="sidebar">
 		<div class="radio-button-group">
 			<div>
-				<input hx-get="/vorgang/edit/{{vorgang_id}}/1/" hx-target="#htmx-content" type="radio" id="option1" name="radio-group" value="option1" {% if type_nr == 1 %}checked{% endif %}>
+				<input hx-get="/vorgang/edit/{{vorgang_id}}/1/" hx-target="#htmx-content" type="radio" name="radio-group"  {% if type_nr == 1 %}checked{% endif %}>
 				<label for="option1" class="button">Beratung</label>
 			</div>
 			<div>
-				<input hx-get="/vorgang/edit/{{vorgang_id}}/2/" hx-target="#htmx-content" type="radio" id="option1" name="radio-group" value="option1" {% if type_nr == 2 %}checked{% endif %}>
+				<input hx-get="/vorgang/edit/{{vorgang_id}}/2/" hx-target="#htmx-content" type="radio" name="radio-group"  {% if type_nr == 2 %}checked{% endif %}>
 				<label for="option1" class="button">Meldung</label>
 			</div>
 			<div>
-				<input hx-get="/vorgang/edit/{{vorgang_id}}/3/" hx-target="#htmx-content" type="radio" id="option2" name="radio-group" value="option2" {% if type_nr == 3 %}checked{% endif %}>
+				<input hx-get="/vorgang/edit/{{vorgang_id}}/3/" hx-target="#htmx-content" type="radio" name="radio-group"  {% if type_nr == 3 %}checked{% endif %}>
 				<label for="option2" class="button">Fallbetreuung</label>
 			</div>
 		</div>
-		</li>
-		{% for item in form_liste %}
-		<li>
-			<a href="#form-{{ item.key }}" 
-				id="nav-{{ item.key }}"
-				onclick="setActive(this)">
-				{{ item.label }}
-			</a>
-		</li>
-	{% endfor %}
-		  </ul>
+		<ul class="hidden md:block">
+			{% for item in form_liste %}
+			<li>
+				<a href="#form-{{ item.key }}" 
+					id="nav-{{ item.key }}"
+					onclick="setActive(this)">
+					{{ item.label }}
+				</a>
+			</li>
+			{% endfor %}
+		</ul>
     </aside>
 
     <div class="inner-content" id="htmx-inner-content" >
 		{% for item in form_liste %}		
-		<div id="form-{{ item.key }}" class="form-container" hx-get="{% url 'create_'|add:item.key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}&&type_nr={{type_nr}}"
+		<div id="form-{{ item.key }}" class="form-container md:pt-24 md:-mt-16" hx-get="{% url 'create_'|add:item.key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}&&type_nr={{type_nr}}"
 		hx-trigger="load once">
 		<div class="form-placeholder">{{vorgang_id}}</div>
 		</div>
 		{% endfor %}
     </div>
-  </div>
+</div>
 
 
 <script>

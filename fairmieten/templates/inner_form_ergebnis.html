@@ -2,8 +2,8 @@
   hx-trigger="change delay:1000ms" hx-swap="outerHTML">
   {% csrf_token %}
 
-  <div class="flex custom-checkbox-row mb-2">
-    <label class="basis-1/4 text-right mr-4"> {{ form.ergebnis.label }} </label>
+  <div class="flex flex-col lg:flex-row custom-checkbox-row mb-2">
+    <label class="basis-1/4 lg:text-right mr-4"> {{ form.ergebnis.label }} </label>
     <div class="basis-3/4 flex flex-wrap gap-2 button-row">
       {% for checkbox in form.ergebnis %}
         <div class="flex">
@@ -13,8 +13,8 @@
     </div>
   </div>
 
-  <div class="flex">
-    <label class="basis-1/4 text-right mr-4"> {{ form.ergebnis_bemerkung.label }} </label>
+  <div class="flex flex-col lg:flex-row">
+    <label class="basis-1/4 lg:text-right mr-4"> {{ form.ergebnis_bemerkung.label }} </label>
     <span class="basis-3/4">
     {{ form.ergebnis_bemerkung }}
     </span>

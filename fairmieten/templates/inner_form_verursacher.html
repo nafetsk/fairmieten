@@ -1,6 +1,7 @@
 
+	<label class="lg:hidden"><b>Verursacher</b></label>
 	<div class="flex">
-		<label class="basis-1/4 mr-4"> _ </label>
+		<label class="basis-1/4 mr-4 lg:text-right hidden lg:block"><b>Verursacher</b></label>
 		<label class="basis-1/4">Unternehmenstyp</label>
 		<label class="basis-1/4 ml-4">Personentyp</label>
 	</div>
@@ -16,7 +17,7 @@
 				<input type="hidden" name="id" value="{{ form.instance.id }}">
 			{% endif %}
 			<div class="verursacher-row flex">
-				<label class="basis-1/4 text-right">{{ forloop.counter }}</label>
+				<label class="basis-1/4 text-right hidden lg:block">{{ forloop.counter }}</label>
 				{% for bound_field in form %}
 					<select class="basis-1/4 ml-4" name="{{ bound_field.name }}">
 						{% for key, choice in bound_field.field.choices %}

@@ -164,5 +164,5 @@ class InterventionForm(DataTextForm):
         fields = ['datum', 'form_item', 'bemerkung']
         widgets = {
             "datum": forms.DateInput(attrs={"type": "date"}),
-            "bemerkung": forms.Textarea(attrs={"rows": 5}),
+            "bemerkung": forms.Textarea(attrs={"rows": 2}),
         }
