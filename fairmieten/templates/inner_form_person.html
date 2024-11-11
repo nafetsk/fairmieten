@@ -3,37 +3,20 @@
   {% csrf_token %}
 
 
-<div class="flex">
-  <label class="basis-1/4 text-right mr-4"> {{ form.alter_item.label }} </label>
-  <span class="basis-3/4">
-  {{ form.alter_item }}
-  </span>
-</div>
-
-<div class="flex">
-  <label class="basis-1/4 text-right mr-4"> {{ form.anzahl_kinder.label }} </label>
-  <span class="basis-3/4">
-  {{ form.anzahl_kinder }}
-  </span>
-</div>
-
-<div class="flex">
-  <label class="basis-1/4 text-right mr-4"> {{ form.gender_item.label }} </label>
-  <span class="basis-3/4">
-  {{ form.gender_item }}
-  </span>
-</div>
-
-<div class="flex">
-  <label class="basis-1/4 text-right mr-4"> {{ form.bereich_diskriminierung_item.label }} </label>
-  <span class="basis-3/4">
-  {{ form.bereich_diskriminierung_item }}
-  </span>
-</div>
+{% for field in form %}
+  {% if field.name != 'diskriminierungsform' %}
+    <div class="flex flex-col lg:flex-row">
+      <label class="basis-1/4 lg:text-right mr-4"> {{ field.label }} </label>
+      <span class="basis-3/4">
+      {{ field }}
+      </span>
+    </div>
+  {% endif %}
+{% endfor %}
 
 
-  <div class="flex custom-checkbox-row mb-2">
-    <label class="basis-1/4 text-right mr-4"> {{ form.diskriminierungsform.label }} </label>
+  <div class="flex flex-col lg:flex-row custom-checkbox-row mb-2">
+    <label class="basis-1/4 lg:text-right mr-4"> {{ form.diskriminierungsform.label }} </label>
     <div class="basis-3/4 flex flex-wrap gap-2 button-row">
       {% for checkbox in form.diskriminierungsform %}
         <div class="flex">

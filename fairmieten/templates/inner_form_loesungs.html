@@ -2,29 +2,23 @@
   hx-trigger="change delay:1000ms" hx-swap="outerHTML">
   {% csrf_token %}
 
-  <div class="flex custom-checkbox-row mb-2">
-    <label class="basis-1/4 text-right mr-4"> {{ form.loesungsansaetze.label }} </label>
-    <div class="basis-3/4 flex flex-wrap gap-2 button-row">
-      {% for checkbox in form.loesungsansaetze %}
-        <div class="flex">
-          {{ checkbox }}
+  {% for field in form %}
+    {% if field.name != 'loesungsansaetze_bemerkung' %}
+      <div class="flex flex-col lg:flex-row custom-checkbox-row mb-2">
+        <label class="basis-1/4 lg:text-right mr-4"> {{ field.label }} </label>
+        <div class="basis-3/4 flex flex-wrap gap-2 button-row">
+          {% for checkbox in field %}
+            <div class="flex">
+              {{ checkbox }}
+            </div>
+          {% endfor %}
         </div>
-      {% endfor %}
-    </div>
-  </div>
+      </div>
+    {% endif %}
+  {% endfor %}
 
-  <div class="flex">
-    <label class="basis-1/4 text-right mr-4"> {{ form.rechtsbereich.label }} </label>
-    <div class="basis-3/4 flex flex-wrap gap-2 button-row">
-      {% for checkbox in form.rechtsbereich %}
-        <div class="flex">
-          {{ checkbox }}
-        </div>
-      {% endfor %}
-    </div>
-  </div>
-  <div class="flex">
-    <label class="basis-1/4 text-right mr-4"> {{ form.loesungsansaetze_bemerkung.label }} </label>
+  <div class="flex flex-col lg:flex-row">
+    <label class="basis-1/4 lg:text-right mr-4"> {{ form.loesungsansaetze_bemerkung.label }} </label>
     <span class="basis-3/4">
     {{ form.loesungsansaetze_bemerkung }}
     </span>

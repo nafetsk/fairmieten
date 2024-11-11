@@ -408,7 +408,8 @@ def csv_download(request):
             # Vorgang
             vorgang.id,
             vorgang.fallnummer,
-            _get_coded_value(vorgang.vorgangstyp, codebook, "vorgangstyp") if hasattr(vorgang, "vorgangstyp") else "",
+            # TODO Kodierung funktioniert hier noch nicht richtig
+            _get_coded_value(vorgang.vorgangstyp.name, codebook, "vorgangstyp") if hasattr(vorgang, "vorgangstyp") else "",
             vorgang.datum_kontaktaufnahme,
             _get_coded_value(
                 vorgang.kontaktaufnahme_durch_item,
@@ -418,7 +419,7 @@ def csv_download(request):
             # vorgang.kontaktaufnahme_durch_item,
             vorgang.datum_vorfall_von,
             vorgang.datum_vorfall_bis,
-            _get_coded_value(vorgang.sprache, codebook, "sprache"),
+            _get_coded_value(vorgang.sprache_item, codebook, "sprache_item"),
             _get_coded_value(vorgang.bezirk_item, codebook, "bezirk_item"),
             _get_coded_value(
                 vorgang.zugang_fachstelle_item, codebook, "zugang_fachstelle_item"

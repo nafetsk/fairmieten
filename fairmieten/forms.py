@@ -19,6 +19,7 @@ class DataTextForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        #print(self.Meta.model.__name__)
         labels = dict(
             FormLabels.objects.filter(model=self.Meta.model.__name__).values_list(
                 "field", "label"
@@ -31,6 +32,7 @@ class DataTextForm(forms.ModelForm):
                 self.fields[field_name] = forms.ChoiceField(
                     choices=values_dict[field_name], required=False
                 )
+            #print(field_name)
             self.fields[field_name].label = labels.get(field_name, field_name)
 
         # Überprüfe, ob das Feld einen Wert aus der Datenbank hat
@@ -73,7 +75,7 @@ class VorgangForm(DataTextForm):
             "datum_kontaktaufnahme",
             "datum_vorfall_von",
             "datum_vorfall_bis",
-            "sprache",
+            "sprache_item",
             "beschreibung",
             "bezirk_item",
             "zugang_fachstelle_item",
@@ -104,7 +106,7 @@ class PersonForm(DataTextForm):
         self.fields["diskriminierungsform"].queryset = Diskriminierungsform.objects.all()
 
 
-class DiskriminierungForm(forms.ModelForm):
+class DiskriminierungForm(DataTextForm):
     class Meta:
         model = Vorgang
         fields = ["diskriminierung"]
@@ -119,7 +121,7 @@ class DiskriminierungForm(forms.ModelForm):
         self.diskriminierung_instances = list(self.fields["diskriminierung"].queryset)
 
 
-class LoesungsansaetzeForm(forms.ModelForm):
+class LoesungsansaetzeForm(DataTextForm):
     class Meta:
         model = Vorgang
         fields = [
@@ -137,7 +139,7 @@ class LoesungsansaetzeForm(forms.ModelForm):
         self.fields["rechtsbereich"].queryset = Rechtsbereich.objects.all()
 
 
-class ErgebnisForm(forms.ModelForm):
+class ErgebnisForm(DataTextForm):
     class Meta:
         model = Vorgang
         fields = ["ergebnis", "ergebnis_bemerkung"]
@@ -162,5 +164,5 @@ class InterventionForm(DataTextForm):
         fields = ['datum', 'form_item', 'bemerkung']
         widgets = {
             "datum": forms.DateInput(attrs={"type": "date"}),
-            "bemerkung": forms.Textarea(attrs={"rows": 5}),
+            "bemerkung": forms.Textarea(attrs={"rows": 2}),
         }

@@ -3644,6 +3644,14 @@ video {
   margin-right: 1rem;
 }
 
+.mb-28{
+  margin-bottom: 7rem;
+}
+
+.-mt-16{
+  margin-top: -4rem;
+}
+
 .block{
   display: block;
 }
@@ -3676,6 +3684,10 @@ video {
   flex-basis: 25%;
 }
 
+.basis-2\/4{
+  flex-basis: 50%;
+}
+
 .basis-3\/4{
   flex-basis: 75%;
 }
@@ -3688,6 +3700,10 @@ video {
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
+}
+
+.flex-col{
+  flex-direction: column;
 }
 
 .flex-wrap{
@@ -3757,6 +3773,10 @@ video {
   padding-bottom: 0.75rem;
 }
 
+.pt-24{
+  padding-top: 6rem;
+}
+
 .text-right{
   text-align: right;
 }
@@ -3783,16 +3803,26 @@ video {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.vorgang_neu .inner-form p, .diskriminierungart-container .diskriminierungart-row{
+  display: flex;
+  flex-direction: column;
+}
+
 @media (min-width: 1024px){
   .vorgang_neu .inner-form p, .diskriminierungart-container .diskriminierungart-row{
-    display: flex;
+    flex-direction: row;
   }
 }
 
 .vorgang_neu .inner-form label, .vorgang_neu .inner-form-diskrimminierung label{
   margin-right: 1rem;
   flex-basis: 25%;
-  text-align: right;
+}
+
+@media (min-width: 1024px){
+  .vorgang_neu .inner-form label, .vorgang_neu .inner-form-diskrimminierung label{
+    text-align: right;
+  }
 }
 
 .vorgang_neu .inner-form-diskrimminierung .button-row{
@@ -3840,8 +3870,54 @@ video {
 }
 
 @media (min-width: 768px){
+  .md\:fixed{
+    position: fixed;
+  }
+
+  .md\:mb-0{
+    margin-bottom: 0px;
+  }
+
+  .md\:-mt-16{
+    margin-top: -4rem;
+  }
+
   .md\:block{
     display: block;
+  }
+
+  .md\:hidden{
+    display: none;
+  }
+
+  .md\:flex-row{
+    flex-direction: row;
+  }
+
+  .md\:pt-24{
+    padding-top: 6rem;
+  }
+
+  .md\:pt-44{
+    padding-top: 11rem;
+  }
+}
+
+@media (min-width: 1024px){
+  .lg\:block{
+    display: block;
+  }
+
+  .lg\:hidden{
+    display: none;
+  }
+
+  .lg\:flex-row{
+    flex-direction: row;
+  }
+
+  .lg\:text-right{
+    text-align: right;
   }
 }
 

@@ -56,7 +56,7 @@ def create_test_data():
                 start_date=start_date, end_date=end_date
             ),
             kontaktaufnahme_durch_item=custom_random_element("kontaktaufnahme_durch_item"),
-            sprache=custom_random_element("sprache"),
+            sprache_item=custom_random_element("sprache_item"),
             beschreibung=fake.text(),
             bezirk_item=custom_random_element("bezirk_item"),
             vorgangstyp=fake.random_element(
