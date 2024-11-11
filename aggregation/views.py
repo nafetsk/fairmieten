@@ -22,6 +22,7 @@ from django.db.models import IntegerField
 from django.db.models import OuterRef, Subquery, Exists
 from django.db.models.functions import Coalesce
 import unicodedata
+from datetime import datetime
 
 
 def aggregation(request: HttpRequest) -> HttpResponse:
@@ -60,7 +61,7 @@ def get_query_set(chart: Charts, start_year, end_year):
     )
 
     if chart.type == 1:  # Variable ist einfaches Feld in Vorgang
-        return (
+        result = (
             time_filter.values(x_variable=F(chart.variable))
             .annotate(count=Count("id"))
             .order_by(chart.variable)
@@ -75,7 +76,7 @@ def get_query_set(chart: Charts, start_year, end_year):
             vorgang__datum_vorfall_bis__lte=end_date,
         )
 
-        return filtered_vorgang.annotate(
+        result = filtered_vorgang.annotate(
             count=Count("vorgang")
         ).values(
             "count",
@@ -84,7 +85,7 @@ def get_query_set(chart: Charts, start_year, end_year):
             ),  # hier wird "name" in x_variable umbenannt, damit alles wieder einheitlich ist
         )
     elif chart.type == 3:  # Variable ist Jahr
-        return (
+        result = (
             time_filter.annotate(year=ExtractYear(chart.variable))
             .values(x_variable=F("year"))
             .annotate(count=Count("id"))
@@ -98,7 +99,7 @@ def get_query_set(chart: Charts, start_year, end_year):
         )
 
         # Group by the specified variable and count the related Vorgang instances
-        return (
+        result = (
             filtered_vorgang.values(chart.variable)
             .annotate(count=Count("vorgang"))
             .values(
@@ -131,11 +132,9 @@ def get_query_set(chart: Charts, start_year, end_year):
                 count=Count("id")
             )  # Count occurrences for each unique intervention count
         )
-
-        return result
     else:
         return None
-
+    return result.exclude(x_variable=None)
 
 def get_chart(request: HttpRequest) -> HttpResponse:
     # get chart uuid, start and end year
@@ -168,9 +167,6 @@ def get_chart(request: HttpRequest) -> HttpResponse:
                 "data": [
                     incident["count"] for incident in incidents_per_variable
                 ],  # Count of incidents on y-axis
-                "backgroundColor": "rgba(255, 99, 132, 0.2)",  # Bar color
-                "borderColor": "rgba(255, 99, 132, 1)",  # Border color
-                "borderWidth": 1,
             }
         ],
     }
@@ -268,7 +264,8 @@ def transform_name(name):
 def csv_download(request):
     # Create the HttpResponse object with the appropriate CSV header.
     response: HttpResponse = HttpResponse(content_type="text/csv")
-    response["Content-Disposition"] = 'attachment; filename="vorgang.csv"'
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    response["Content-Disposition"] = f'attachment; filename="data_{current_date}.csv"'
 
     # Create codebook
     codebook = create_codebook()
@@ -409,7 +406,7 @@ def csv_download(request):
             vorgang.id,
             vorgang.fallnummer,
             # TODO Kodierung funktioniert hier noch nicht richtig
-            _get_coded_value(vorgang.vorgangstyp.name, codebook, "vorgangstyp") if hasattr(vorgang, "vorgangstyp") else "",
+            _get_coded_value(vorgang.vorgangstyp.name, codebook, "vorgangstyp") if vorgang.vorgangstyp else "",
             vorgang.datum_kontaktaufnahme,
             _get_coded_value(
                 vorgang.kontaktaufnahme_durch_item,

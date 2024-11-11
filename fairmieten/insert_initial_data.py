@@ -364,7 +364,7 @@ def setup(apps = None, schema_editor = None):
     )
     Charts.objects.create(
         name="Abschluss/Ergebnis",
-        description="Vorfälle pro Ergebnis Beschreibung",
+        description="Anhand der Ziele der Betroffenen, wird gezeigt, welche Ergebnisse erreicht werden konnten und zu welchem Abschluss ein Fall gegeben falls gekommen ist.",
         x_label="Ergebnis",
         variable="ergebnis",
         type=2,
