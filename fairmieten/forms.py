@@ -31,6 +31,8 @@ class DataTextForm(forms.ModelForm):
                 self.fields[field_name] = forms.ChoiceField(
                     choices=values_dict[field_name], required=False
                 )
+            if field_name == "loesungsansaetze_bemerkung":
+                print("dict_result:" + labels.get(field_name, field_name))
             self.fields[field_name].label = labels.get(field_name, field_name)
 
         # Überprüfe, ob das Feld einen Wert aus der Datenbank hat
@@ -73,7 +75,7 @@ class VorgangForm(DataTextForm):
             "datum_kontaktaufnahme",
             "datum_vorfall_von",
             "datum_vorfall_bis",
-            "sprache",
+            "sprache_item",
             "beschreibung",
             "bezirk_item",
             "zugang_fachstelle_item",

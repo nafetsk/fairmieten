@@ -24,7 +24,7 @@ def setup(apps, schema_editor):
         "datum_vorfall_von": "Datum Vorfall von",
         "bezirk_item": "Bezirk",
         "datum_vorfall_bis": "Datum Vorfall bis",
-        "sprache": "Sprache",
+        "sprache_item": "Sprache",
         "beschreibung": "Beschreibung",
         "zugang_fachstelle_item": "Wie haben Sie von der Fachstelle erfahren?",
         "vorgangstyp": "Vorgangstyp",
@@ -35,6 +35,9 @@ def setup(apps, schema_editor):
         "prozeskostenuebernahme_item": "Prozesskostenübernahme",
         "bereich_diskriminierung_item": "Bereich der Diskriminierung",
         "diskriminierungsform": "Form der Diskriminierung",
+        "ergebnis_bemerkung": "Ergebnis Bemerkung",
+        "loesungsansaetze_bemerkung": "Lösungsansätze Bemerkung",
+        "loesungsansaetze": "Lösungsansätze",
     }
     labels["Verursacher"] = {
         "unternehmenstyp_item": "Unternehmenstyp",
@@ -88,7 +91,7 @@ def setup(apps, schema_editor):
             "Presse": "Presse",
             "anderes": "anderes",
         },
-        "sprache": {
+        "sprache_item": {
             "Deutsch": "Deutsch",
             "Englisch": "Englisch",
             "Türkisch": "Türkisch",
@@ -299,7 +302,7 @@ def setup(apps, schema_editor):
     for rechtsbereich in rechtsbereiche:
         Rechtsbereich.objects.create(name=rechtsbereich)
 
-    #Vorgangstyp
+    # Vorgangstyp
     Vorgangstyp.objects.all().delete()
     vorgangstypen = [
         "Allgemeine Beratung",
@@ -309,13 +312,12 @@ def setup(apps, schema_editor):
     for vorgangstyp in vorgangstypen:
         Vorgangstyp.objects.create(name=vorgangstyp)
 
-
     # Charts
     Charts.objects.create(
         name="Vorfälle pro Sprache",
         description="In welcher Sprache hat die Beratung stattgefunden?",
         x_label="Sprache",
-        variable="sprache",
+        variable="sprache_item",
         type=1,
         model="Vorgang",
     )
@@ -447,7 +449,7 @@ def setup(apps, schema_editor):
         type=4,
         model="Intervention",
     )
-    
+
     Charts.objects.create(
         name="Vorfälle pro Anzahl der Interventionen",
         description="Vorfälle pro Anzahl der Interventionen Beschreibung",

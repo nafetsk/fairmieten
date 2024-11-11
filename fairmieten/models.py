@@ -65,7 +65,7 @@ class Vorgang(models.Model):
     kontaktaufnahme_durch_item = models.CharField(max_length=100, null=True, blank=True) # (Betroffene Person, beschuldigte Person, unbeteiligte Person)
     datum_vorfall_von = models.DateField(null=True, blank=True)
     datum_vorfall_bis = models.DateField(null=True, blank=True)
-    sprache = models.CharField(max_length=100, null=True, blank=True)
+    sprache_item = models.CharField(max_length=100, null=True, blank=True)
     beschreibung = models.TextField(null=True, blank=True)
     bezirk_item = models.CharField(max_length=100, null=True, blank=True)
     zugang_fachstelle_item = models.CharField(max_length=100, null=True,  blank=True) # (Flyer, Internet, ...)
@@ -134,7 +134,7 @@ class FormTextMixin(models.Model):
 class FormValues(FormTextMixin):
     key = models.CharField(max_length=100, default=None, null=True, blank=True)
     value = models.CharField(max_length=100)
-    # Encoding für csv-Export auto incrementing
+    # Encoding für csv-Export
     encoding = models.IntegerField(default=0)
 
     @staticmethod

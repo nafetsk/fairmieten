@@ -418,7 +418,7 @@ def csv_download(request):
             # vorgang.kontaktaufnahme_durch_item,
             vorgang.datum_vorfall_von,
             vorgang.datum_vorfall_bis,
-            _get_coded_value(vorgang.sprache, codebook, "sprache"),
+            _get_coded_value(vorgang.sprache_item, codebook, "sprache_item"),
             _get_coded_value(vorgang.bezirk_item, codebook, "bezirk_item"),
             _get_coded_value(
                 vorgang.zugang_fachstelle_item, codebook, "zugang_fachstelle_item"
