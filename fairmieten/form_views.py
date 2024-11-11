@@ -2,8 +2,8 @@ import logging
 import uuid
 from typing import Type
 from django.shortcuts import render
-from .forms import BeratungForm, DiskriminierungForm, PersonForm, VerursacherForm, VorgangForm, LoesungsansaetzeForm, ErgebnisForm
-from .models import Verursacher, Vorgang, Vorgangstyp
+from .forms import BeratungForm, DiskriminierungForm, InterventionForm, PersonForm, VerursacherForm, VorgangForm, LoesungsansaetzeForm, ErgebnisForm
+from .models import Intervention, Verursacher, Vorgang, Vorgangstyp
 from .view_utils import layout
 from django.db import models
 
@@ -26,9 +26,10 @@ form_liste[3] = [
     {"key": "vorgang", "label": "Allgemein", "form": VorgangForm},
     {"key": "person", "label": "Person", "form": PersonForm},
     {"key": "diskriminierung", "label": "Diskriminierung", "form": DiskriminierungForm},
-    {"key": "loesungsansaetze", "label": "Lösungsansätze", "form": LoesungsansaetzeForm},
-    {"key": "ergebnis", "label": "Ergebnis", "form": ErgebnisForm},
     {"key": "verursacher", "label": "Verursacher", "form": VerursacherForm},
+    {"key": "loesungsansaetze", "label": "Lösungsansätze", "form": LoesungsansaetzeForm},
+    {"key": "intervention", "label": "Interventionen", "form": InterventionForm},
+    {"key": "ergebnis", "label": "Ergebnis", "form": ErgebnisForm},
 ]
 
 
@@ -156,6 +157,35 @@ def create_verursacher(request):
         "inner_form_verursacher.html",
         {"forms": forms, "item_key": "verursacher", "vorgang_id": vorgang_id},
     )
+
+
+def create_intervention(request):
+    vorgang_id = get_vorgang_id(request)
+    
+    if request.method == "POST":
+        dict = request.POST
+        intervention = Intervention.objects.filter(id=dict['id']).first() if dict['id'] else None
+        if intervention:
+            form = InterventionForm(dict, instance=intervention)
+        else:
+            form = InterventionForm(dict)
+            form.instance.vorgang_id = vorgang_id
+        form.save()
+
+    # Daten für die Darstellung der Formulare bereitstellen
+    forms = []
+    vorgang = Vorgang.objects.filter(id=vorgang_id).first()
+    if vorgang:
+        interventionen = Intervention.objects.filter(vorgang=vorgang)
+        forms = [InterventionForm(instance=intervention) for intervention in interventionen]
+    forms.append(InterventionForm())
+    
+    return render(
+        request,
+        "inner_form_intervention.html",
+        {"forms": forms, "item_key": "intervention", "vorgang_id": vorgang_id},
+    )
+
 
 
 

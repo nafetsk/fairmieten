@@ -1,0 +1,26 @@
+{% load widget_tweaks %}
+<div class="flex">
+	<label class="basis-1/4 mr-4">  </label>
+	<label class="basis-1/4 ml-4">Datum</label>
+	<label class="basis-1/4 ml-4">Form</label>
+	<label class="basis-1/4 ml-4">Bemerkung</label>
+</div>
+
+{% for form in forms %}
+
+	<form class="inner-form-ergebnis mb-0" id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}" 
+	hx-trigger="change delay:1000ms" hx-target="#form-intervention">
+		{% csrf_token %}
+		<!-- Verstecktes Feld für die ID -->
+		{%if form.instance.id %}
+			<input type="hidden" name="id" value="{{ form.instance.id }}">
+		{% endif %}
+		<div class="verursacher-row flex gap-4">
+			<label class="basis-1/4 text-right">{{ forloop.counter }}</label>
+			{{form.datum|add_class:"basis-1/4 ml-4"}}
+			{{form.form_item|add_class:"basis-1/4"}}
+			{{form.bemerkung|add_class:"basis-1/4"}}
+		</div>
+	</form>
+{% endfor %}
+
