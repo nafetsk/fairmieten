@@ -1,25 +1,8 @@
 {% extends base %}
 {% block content %}
-<style type="text/tailwindcss">
-
-@layer utilities {
-	.vorgang_neu .inner-form p, .diskriminierungart-container .diskriminierungart-row{
-	@apply flex 
-  }	
-  .vorgang_neu .inner-form label, .vorgang_neu .inner-form-diskrimminierung label{
-	@apply basis-1/4 text-right mr-4  
-  }	
-  .vorgang_neu .inner-form-diskrimminierung .button-row{
-	@apply basis-3/4    
-  }
-  .vorgang_neu .inner-form input, select, textarea{
-    @apply basis-3/4 w-96 py-2 px-5 mb-4 font-semibold rounded shadow-md hover:bg-violet-100
-  }
-}
-</style>  
 
 <div class="with-sidebar vorgang_neu">
-	<aside class="sidebar" id="sidebar">
+	<aside class="sidebar hidden md:block" id="sidebar">
       <ul >
 		<li>
 		<div class="radio-button-group">

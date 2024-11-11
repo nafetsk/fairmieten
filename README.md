@@ -6,6 +6,7 @@ poetry install
 poetry run python3 manage.py migrate
 cp main/.env.template main/.env
 edit .env -> choose a secret Secret
+npx tailwindcss -i ./fairmieten/static/css/t_input.css -o ./fairmieten/static/css/t_output.css --watch
 ```
 
 ## Start:

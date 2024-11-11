@@ -2,7 +2,6 @@ import uuid
 from django.apps import apps
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import Max
 
 
 class Vorgangstyp(models.Model):

@@ -1,0 +1,26 @@
+@import "./pico.css";
+@tailwind components;
+@tailwind utilities;
+
+
+@layer utilities {
+	.vorgang_neu .inner-form p, .diskriminierungart-container .diskriminierungart-row{
+		@apply lg:flex
+	}	
+	.vorgang_neu .inner-form label, .vorgang_neu .inner-form-diskrimminierung label{
+		@apply basis-1/4 text-right mr-4  
+	}	
+	.vorgang_neu .inner-form-diskrimminierung .button-row{
+		@apply basis-3/4    
+	}
+	.vorgang_neu .inner-form input, select, textarea{
+		@apply basis-3/4 w-96 py-2 px-5 mb-4 font-semibold rounded shadow-md hover:bg-violet-100
+	}
+	
+	.inner-content {
+		@apply md:ml-64
+	}
+
+
+}
+

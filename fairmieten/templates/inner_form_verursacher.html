@@ -20,7 +20,7 @@
 				{% for bound_field in form %}
 					<select class="basis-1/4 ml-4" name="{{ bound_field.name }}">
 						{% for key, choice in bound_field.field.choices %}
-							<option value="{{ key }}" {% if key == field.value %}selected{% endif %}>{{ choice }}</option>
+							<option value="{{ key }}" {% if key == bound_field.value %}selected{% endif %}>{{ choice }}</option>
 						{% endfor %}
 					</select>
 				{% endfor %}
