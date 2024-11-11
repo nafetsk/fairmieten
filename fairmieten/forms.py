@@ -160,4 +160,7 @@ class InterventionForm(DataTextForm):
     class Meta:
         model = Intervention
         fields = ['datum', 'form_item', 'bemerkung']
-
+        widgets = {
+            "datum": forms.DateInput(attrs={"type": "date"}),
+            "bemerkung": forms.Textarea(attrs={"rows": 5}),
+        }
