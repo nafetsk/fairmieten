@@ -7,12 +7,13 @@
     <div class="content">
         <div class="flex gap-2">
             <select class="w-auto p-2 bg-white h-12" hx-get="{% url 'such_feld' %}?{{request.META.QUERY_STRING}}" hx-target="#such-input-feld" name="meta.feld_name">
+                <option value=""></option>
                 <option value="fallnummer">Fallnummer</option>
-                <option value="sprache">Sprache</option>
+                <option value="sprache_item">Sprache</option>
                 <option value="bezirk_item">Bezirk</option>
             </select>
             <span id="such-input-feld">
-                <input class="h-12 bg-white p-2" type="text" hx-get="{% url callback_name %}?{{request.META.QUERY_STRING}}" hx-target="#htmx-content" name="fallnummer" placeholder="Fallnummer suchen" value="{{ request.GET.fallnummer }}">
+                {% include 'such_input_feld.html' %}
             </span>
         </div>
         <div class="flex gap-2">

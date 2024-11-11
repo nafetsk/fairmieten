@@ -12,7 +12,13 @@ from .models import (
 from aggregation.models import Charts
 
 
-def setup(apps, schema_editor):
+def setup(apps = None, schema_editor = None):
+    
+    Vorgangstyp.objects.all().delete()
+    vorgangstypen = ["Beratung", "Meldung", "Fallbetreuung"]
+    for vorgangstyp in vorgangstypen:
+        Vorgangstyp.objects.create(name=vorgangstyp)
+    
     # Labels
     FormLabels.objects.all().delete()
 

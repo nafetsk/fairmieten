@@ -138,12 +138,12 @@ class FormValues(FormTextMixin):
     encoding = models.IntegerField(default=0)
 
     @staticmethod
-    def get_Values(modelname):
+    def get_Values(modelname, empty_value=None):
         values = FormValues.objects.filter(model=modelname)
         values_dict = {}
         for value in values:
             if value.field not in values_dict:
-                values_dict[value.field] = []
+                values_dict[value.field] = [('', empty_value)] if empty_value else []
             values_dict[value.field].append((value.key, value.value))
         return values_dict
 

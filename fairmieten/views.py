@@ -1,4 +1,3 @@
-from os import name
 from uuid import UUID
 from django.core.paginator import Paginator, Page, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
@@ -7,7 +6,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import QuerySet
-from django import forms
 from .models import FormValues
 from .view_utils import layout
 

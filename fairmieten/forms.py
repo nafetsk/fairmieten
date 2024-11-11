@@ -25,13 +25,14 @@ class DataTextForm(forms.ModelForm):
                 "field", "label"
             )
         )
-        values_dict = FormValues.get_Values(self.Meta.model.__name__)
+        values_dict = FormValues.get_Values(self.Meta.model.__name__, empty_value=' ')
 
         for field_name in self.fields:
             if field_name.endswith("_item") and field_name in values_dict:
                 self.fields[field_name] = forms.ChoiceField(
                     choices=values_dict[field_name], required=False
                 )
+            
             #print(field_name)
             self.fields[field_name].label = labels.get(field_name, field_name)
 
