@@ -72,7 +72,8 @@ def such_feld(request: HttpRequest) -> HttpResponse:
        return render(request, 'such_select_feld.html', {"name" : such_input_name, 'values': values})
 
 def vorgang_detail(request: HttpRequest, vorgang_id: UUID) -> HttpResponse:
-    return render(request, 'vorgang_detail.html')
+    vorgang = Vorgang.objects.get(id=vorgang_id)
+    return render(request, 'vorgang_detail.html', {'vorgang': vorgang})
 
 def login_view(request):
     if request.method == 'POST':

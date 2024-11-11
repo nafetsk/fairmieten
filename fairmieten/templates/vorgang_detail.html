@@ -1,0 +1,175 @@
+<h1>Vorgang Detailansicht</h1>
+    <table>
+        <tr>
+            <td>ID</td>
+            <td>{{ vorgang.id }}</td>
+        </tr>
+        <tr>
+            <td>Fallnummer</td>
+            <td>{{ vorgang.fallnummer }}</td>
+        </tr>
+        {% if vorgang.vorgangstyp %}
+        <tr>
+            <td>Vorgangstyp</td>
+            <td>{{ vorgang.vorgangstyp.name }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.datum_kontaktaufnahme %}
+        <tr>
+            <td>Datum Kontaktaufnahme</td>
+            <td>{{ vorgang.datum_kontaktaufnahme }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.kontaktaufnahme_durch_item %}
+        <tr>
+            <td>Kontaktaufnahme durch</td>
+            <td>{{ vorgang.kontaktaufnahme_durch_item }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.datum_vorfall_von %}
+        <tr>
+            <td>Datum Vorfall von</td>
+            <td>{{ vorgang.datum_vorfall_von }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.datum_vorfall_bis %}
+        <tr>
+            <td>Datum Vorfall bis</td>
+            <td>{{ vorgang.datum_vorfall_bis }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.sprache_item %}
+        <tr>
+            <td>Sprache</td>
+            <td>{{ vorgang.sprache_item }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.beschreibung %}
+        <tr>
+            <td>Beschreibung</td>
+            <td>{{ vorgang.beschreibung }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.bezirk_item %}
+        <tr>
+            <td>Bezirk</td>
+            <td>{{ vorgang.bezirk_item }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.zugang_fachstelle_item %}
+        <tr>
+            <td>Zugang Fachstelle</td>
+            <td>{{ vorgang.zugang_fachstelle_item }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.alter_item %}
+        <tr>
+            <td>Alter</td>
+            <td>{{ vorgang.alter_item }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.anzahl_kinder %}
+        <tr>
+            <td>Anzahl Kinder</td>
+            <td>{{ vorgang.anzahl_kinder }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.gender_item %}
+        <tr>
+            <td>Geschlecht</td>
+            <td>{{ vorgang.gender_item }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.betroffen_item %}
+        <tr>
+            <td>Betroffen</td>
+            <td>{{ vorgang.betroffen_item }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.prozeskostenuebernahme_item %}
+        <tr>
+            <td>Prozesskostenübernahme</td>
+            <td>{{ vorgang.prozeskostenuebernahme_item }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.bereich_diskriminierung_item %}
+        <tr>
+            <td>Bereich Diskriminierung</td>
+            <td>{{ vorgang.bereich_diskriminierung_item }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.diskriminierungsform.exists %}
+        <tr>
+            <td>Diskriminierungsformen</td>
+            <td>
+                {% for form in vorgang.diskriminierungsform.all %}
+                    {{ form.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endif %}
+        {% if vorgang.diskriminierung.exists %}
+        <tr>
+            <td>Diskriminierungen</td>
+            <td>
+                {% for diskriminierung in vorgang.diskriminierung.all %}
+                    {{ diskriminierung.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endif %}
+        {% if vorgang.loesungsansaetze.exists %}
+        <tr>
+            <td>Lösungsansätze</td>
+            <td>
+                {% for ansatz in vorgang.loesungsansaetze.all %}
+                    {{ ansatz.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endif %}
+        {% if vorgang.rechtsbereich.exists %}
+        <tr>
+            <td>Rechtsbereiche</td>
+            <td>
+                {% for bereich in vorgang.rechtsbereich.all %}
+                    {{ bereich.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endif %}
+        {% if vorgang.loesungsansaetze_bemerkung %}
+        <tr>
+            <td>Lösungsansätze Bemerkung</td>
+            <td>{{ vorgang.loesungsansaetze_bemerkung }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.ergebnis.exists %}
+        <tr>
+            <td>Ergebnisse</td>
+            <td>
+                {% for ergebnis in vorgang.ergebnis.all %}
+                    {{ ergebnis.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endif %}
+        {% if vorgang.ergebnis_bemerkung %}
+        <tr>
+            <td>Ergebnis Bemerkung</td>
+            <td>{{ vorgang.ergebnis_bemerkung }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td>Erstellt von</td>
+            <td>{{ vorgang.created_by.username }}</td>
+        </tr>
+        <tr>
+            <td>Erstellt am</td>
+            <td>{{ vorgang.created }}</td>
+        </tr>
+        <tr>
+            <td>Geändert am</td>
+            <td>{{ vorgang.modified }}</td>
+        </tr>
+    </table>
