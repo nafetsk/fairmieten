@@ -27,7 +27,6 @@ footer{
 }
 
 .sidebar {
-	position: fixed;
     width: 250px; /* oder eine feste Breite wie 250px */
     overflow-y: auto; /* Falls die Seitenleiste länger ist als der Bildschirm */
 }

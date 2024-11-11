@@ -6,10 +6,10 @@
 
 @layer utilities {
 	.vorgang_neu .inner-form p, .diskriminierungart-container .diskriminierungart-row{
-		@apply lg:flex
+		@apply flex flex-col lg:flex-row
 	}	
 	.vorgang_neu .inner-form label, .vorgang_neu .inner-form-diskrimminierung label{
-		@apply basis-1/4 text-right mr-4  
+		@apply basis-1/4 lg:text-right mr-4  
 	}	
 	.vorgang_neu .inner-form-diskrimminierung .button-row{
 		@apply basis-3/4    
