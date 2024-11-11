@@ -18,7 +18,7 @@ RUN poetry install --no-root
 COPY . /app/
 COPY main/.env.template main/.env
 
-RUN apk add nodejs npm
+RUN apk add nodejs npm sqlite
 RUN npx tailwindcss -i ./fairmieten/static/css/t_input.css -o ./fairmieten/static/css/t_output.css --minify
 
 # Ensure entrypoint.sh is copied and has the correct permissions

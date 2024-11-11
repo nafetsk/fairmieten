@@ -15,7 +15,6 @@ from aggregation.models import Charts
 def setup(apps = None, schema_editor = None):
     
     Vorgangstyp.objects.all().delete()
-    # Zurücksetzen der Sequenz
     vorgangstypen = ["Beratung", "Meldung", "Fallbetreuung"]
     for i, vorgangstyp in enumerate(vorgangstypen, start=1):
         Vorgangstyp.objects.create(id=i, name=vorgangstyp)
@@ -310,16 +309,6 @@ def setup(apps = None, schema_editor = None):
     ]
     for rechtsbereich in rechtsbereiche:
         Rechtsbereich.objects.create(name=rechtsbereich)
-
-    # Vorgangstyp
-    Vorgangstyp.objects.all().delete()
-    vorgangstypen = [
-        "Allgemeine Beratung",
-        "Meldung",
-        "Fallbetreuung",
-    ]
-    for vorgangstyp in vorgangstypen:
-        Vorgangstyp.objects.create(name=vorgangstyp)
 
     # Charts
     Charts.objects.create(

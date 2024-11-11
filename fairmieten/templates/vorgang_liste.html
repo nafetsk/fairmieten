@@ -62,8 +62,8 @@
             <div class="pagination">
                 <span class="step-links">
                     {% if vorgang_liste.has_previous %}
-                        <a hx-get="{% url callback_name %}?{% params_plus request.GET 'page' 1 %}" hx-target="#htmx-content">&laquo; </a>
-                        <a hx-get="{% url callback_name %}?{% params_plus request.GET 'page' vorgang_liste.previous_page_number %}" hx-target="#htmx-content">&lsaquo;</a>
+                        <a href="#" hx-get="{% url callback_name %}?{% params_plus request.GET 'page' 1 %}" hx-target="#htmx-content">&laquo; </a>
+                        <a href="#" hx-get="{% url callback_name %}?{% params_plus request.GET 'page' vorgang_liste.previous_page_number %}" hx-target="#htmx-content">&lsaquo;</a>
                     {% endif %}
 
                     <span class="current">
@@ -71,8 +71,8 @@
                     </span>
 
                     {% if vorgang_liste.has_next %}
-                        <a hx-get="{% url callback_name %}?{% params_plus request.GET 'page' vorgang_liste.next_page_number %}" hx-target="#htmx-content">&rsaquo; </a>
-                        <a hx-get="{% url callback_name %}?{% params_plus request.GET 'page' vorgang_liste.paginator.num_pages %}" hx-target="#htmx-content"> &raquo;</a>
+                        <a href="#" hx-get="{% url callback_name %}?{% params_plus request.GET 'page' vorgang_liste.next_page_number %}" hx-target="#htmx-content">&rsaquo; </a>
+                        <a href="#" hx-get="{% url callback_name %}?{% params_plus request.GET 'page' vorgang_liste.paginator.num_pages %}" hx-target="#htmx-content"> &raquo;</a>
                     {% endif %}
                 </span>
             </div>git 
