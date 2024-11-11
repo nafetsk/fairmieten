@@ -63,7 +63,7 @@ def create_beratung(request):
     return render(
         request,
         "inner_form.html",
-        {"form": form, "item_key": "vorgang", "vorgang_id": get_vorgang_id(request), "type_nr": request.GET.get("type_nr", 2)},
+        {"form": form, "item_key": "beratung", "vorgang_id": get_vorgang_id(request), "type_nr": request.GET.get("type_nr", 2)},
     )
 
 

@@ -5,11 +5,10 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.db.models import QuerySet
-from .models import FormValues
+from django.db.models import QuerySet, Q, Field
+from .models import FormValues, Vorgang
 from .view_utils import layout
 
-from fairmieten.models import Vorgang
 
 def home(request: HttpRequest) -> HttpResponse:
     return render(request, 'home.html')
@@ -30,18 +29,23 @@ def delete_vorgang(request: HttpRequest, vorgang_id: UUID) -> HttpResponse:
     vorgang.delete()
     return redirect('vorgang_liste')
 
-def search_and_sort(request: HttpRequest, vorgang_liste: QuerySet[Vorgang, Vorgang]) -> Page[Vorgang]:
+def search_and_sort(request: HttpRequest, vorgang_liste: QuerySet[Vorgang]) -> Page[Vorgang]:
 
     # Suchfunktion
     for key, value in request.GET.items():
         if key.startswith('suche.'):
             suchfeld = key.split('suche.')[1]
             vorgang_liste = vorgang_liste.filter(**{suchfeld: value})
-
-    #query = request.GET.get('fallnummer', None)
-        #if query:
-        #    vorgang_liste = vorgang_liste.filter(fallnummer__icontains=query)
-
+        if key == 'freitextsuche':
+            # Hier wird die Suche in allen relevanten Feldern des Vorgang-Modells durchgeführt
+            suchbedingungen = Q()  # Leeres Q-Objekt erstellen
+            for feld in Vorgang._meta.get_fields():  # Alle Felder des Modells abrufen
+                if isinstance(feld, Field) and not feld.is_relation :  # Nur Felder ohne ForeignKey oder ManyToMany
+                    print(feld.name)
+                    suchbedingungen |= Q(**{f"{feld.name}__icontains": value})  # Fügen Sie die Bedingungen hinzu
+            vorgang_liste = vorgang_liste.filter(suchbedingungen)  # Filter anwenden
+    
+    
     # Sortierung
     sort_by = request.GET.get('sort_by', 'created')  # Standard-Sortierung
     vorgang_liste = vorgang_liste.order_by(sort_by)

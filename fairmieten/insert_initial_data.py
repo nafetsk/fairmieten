@@ -15,9 +15,10 @@ from aggregation.models import Charts
 def setup(apps = None, schema_editor = None):
     
     Vorgangstyp.objects.all().delete()
+    # Zurücksetzen der Sequenz
     vorgangstypen = ["Beratung", "Meldung", "Fallbetreuung"]
-    for vorgangstyp in vorgangstypen:
-        Vorgangstyp.objects.create(name=vorgangstyp)
+    for i, vorgangstyp in enumerate(vorgangstypen, start=1):
+        Vorgangstyp.objects.create(id=i, name=vorgangstyp)
     
     # Labels
     FormLabels.objects.all().delete()

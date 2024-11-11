@@ -1,24 +1,23 @@
 {% extends layout %}
 {% load custom_filters %}
 {% block content %}
-
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <div>
     <div class="content">
         <div class="flex gap-2">
+            <input hx-get="/vorgang/liste/?{{request.META.QUERY_STRING}}" hx-target="#htmx-content" name="freitextsuche" placeholder="freitext"></input>            
             <select class="w-auto p-2 bg-white h-12" hx-get="{% url 'such_feld' %}?{{request.META.QUERY_STRING}}" hx-target="#such-input-feld" name="meta.feld_name">
-                <option value=""></option>
                 <option value="fallnummer">Fallnummer</option>
                 <option value="sprache_item">Sprache</option>
                 <option value="bezirk_item">Bezirk</option>
             </select>
             <span id="such-input-feld">
-                {% include 'such_input_feld.html' %}
+                {% include 'such_input_feld.html' with name="fallnummer" %}
             </span>
         </div>
         <div class="flex gap-2">
             {% for key, value in request.GET.items %}
-                {% if key|slice:"5" == 'suche' or key == "sort_by" %}
+                {% if key|slice:"5" == 'suche' or key == "sort_by" or key == "freitextsuche" %}
                     <button class="w-auto cursor-pointer rounded-lg border-2 py-1 px-4  text-black-200 border-black whitespace-nowrap" >{{ key }}:{{ value }}<a hx-target="#htmx-content" hx-get="{% url callback_name %}?{{ request.GET|params_minus:key }}"> x</a> </button>
                 {% endif %}
             {% endfor %}
@@ -48,7 +47,12 @@
                             <td>
                                 <a href="#" hx-get="{% url 'vorgang_detail' vorgang.id %}" hx-target="#htmx-content">Details</a> | 
                                 <a href="#" hx-get="{% url 'vorgang_bearbeiten' vorgang.id vorgang.vorgangstyp.id %}" hx-push-url="true" hx-target="#htmx-content">Edit</a> | 
-                                <a href="#" hx-get="{% url 'delete_vorgang' vorgang.id %}" hx-target="#htmx-content">Delete</a>
+                                <a href="#" hx-get="{% url 'delete_vorgang' vorgang.id %}" hx-target="#htmx-content" hx-trigger='confirmed'
+                                        onClick="Swal.fire({title: 'Bestätigung erforderlich', text:'Vorgang wirklich löschen?'}).then((result)=>{
+                                            if(result.isConfirmed){
+                                              htmx.trigger(this, 'confirmed');  
+                                            } 
+                                        })">Delete</a>
                             </td>
                         </tr>
                     {% endfor %}

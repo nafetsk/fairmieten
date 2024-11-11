@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 
 class Vorgangstyp(models.Model):
-    id = models.AutoField( primary_key = True, editable = False)
+    id = models.IntegerField( primary_key = True, editable = False)
     name = models.CharField(max_length=100)
 
     def __str__(self):
