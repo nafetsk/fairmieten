@@ -39,7 +39,7 @@ def aggregation(request: HttpRequest) -> HttpResponse:
     valid_years = [
         year["year"]
         for year in years
-        if isinstance(year["year"], int) and year["year"] is not None
+        if isinstance(year["year"], int) and year["year"] is not None and year["year"] > 1000
     ]
 
     return render(
@@ -152,6 +152,10 @@ def get_chart(request: HttpRequest) -> HttpResponse:
     # get data for chart
     incidents_per_variable = get_query_set(chart, start_year, end_year)
 
+    # sum of all incidents
+    total_incidents = sum(incident["count"] for incident in incidents_per_variable)
+
+    print(total_incidents)
     # create dictionary for chart.js
     data: Dict[str, Any] = {
         "chartName": chart.name,
@@ -169,6 +173,7 @@ def get_chart(request: HttpRequest) -> HttpResponse:
                 ],  # Count of incidents on y-axis
             }
         ],
+        "totalIncidents": total_incidents,
     }
 
     # convert dictionary to json
