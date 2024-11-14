@@ -8,6 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import QuerySet, Q, Field
 from .models import FormValues, Vorgang
 from .view_utils import layout
+from datetime import timedelta
 
 
 def home(request: HttpRequest) -> HttpResponse:
@@ -75,7 +76,9 @@ def such_feld(request: HttpRequest) -> HttpResponse:
 
 def vorgang_detail(request: HttpRequest, vorgang_id: UUID) -> HttpResponse:
     vorgang = Vorgang.objects.get(id=vorgang_id)
-    return render(request, 'vorgang_detail.html', {'vorgang': vorgang})
+    beschw_frist, klage_frist, strafan_frist = get_fristen(vorgang.datum_vorfall_von)
+    print(vorgang.fallnummer)
+    return render(request, 'vorgang_detail.html', {'layout': layout(request), 'vorgang': vorgang, 'beschw_frist': beschw_frist, 'klage_frist': klage_frist, 'strafan_frist': strafan_frist})
 
 def login_view(request):
     if request.method == 'POST':
@@ -94,3 +97,16 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('home')  # Redirect to the home page after logout
+
+
+# *** Hilfsfunktionen *******************************************
+
+def get_fristen(date):
+    # Beschwerde Frist + Monate
+    beschw_frist = date + timedelta(days=60)
+    # Klagefrist 3 Jahre später
+    klage_frist = date + timedelta(days=1095)
+    # Strafantragsfrist + 4 Monate
+    strafan_frist = date + timedelta(days=124)
+
+    return beschw_frist, klage_frist, strafan_frist

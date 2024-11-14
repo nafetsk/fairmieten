@@ -93,6 +93,9 @@ class Vorgang(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
+    
+
+
 # Verursacher
 class Verursacher(models.Model):
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False)

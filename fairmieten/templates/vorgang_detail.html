@@ -1,9 +1,7 @@
+{% extends layout %}
+{% block content %}
 <h1>Vorgang Detailansicht</h1>
     <table>
-        <tr>
-            <td>ID</td>
-            <td>{{ vorgang.id }}</td>
-        </tr>
         <tr>
             <td>Fallnummer</td>
             <td>{{ vorgang.fallnummer }}</td>
@@ -30,6 +28,18 @@
         <tr>
             <td>Datum Vorfall von</td>
             <td>{{ vorgang.datum_vorfall_von }}</td>
+        </tr>
+        <tr>
+            <td>Beschwerde Frist</td>
+            <td>{{ beschw_frist }}</td>
+        </tr>
+        <tr>
+            <td>Klagefrist</td>
+            <td>{{ klage_frist }}</td>
+        </tr>
+        <tr>
+            <td>Strafantragsfrist</td>
+            <td>{{ strafan_frist }}</td>
         </tr>
         {% endif %}
         {% if vorgang.datum_vorfall_bis %}
@@ -173,3 +183,5 @@
             <td>{{ vorgang.modified }}</td>
         </tr>
     </table>
+
+{% endblock %}
