@@ -10,7 +10,7 @@
 {% for form in forms %}
 
 	<form class="inner-form-ergebnis mb-0" id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}" 
-	hx-trigger="change delay:1000ms" hx-target="#form-intervention">
+	hx-trigger="keyup[key=='Enter'] from:input, focusout" hx-target="#form-intervention">
 		{% csrf_token %}
 		<!-- Verstecktes Feld für die ID -->
 		{%if form.instance.id %}

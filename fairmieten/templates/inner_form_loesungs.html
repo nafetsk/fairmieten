@@ -1,5 +1,5 @@
 <form class="inner-form-loesung" id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}" 
-  hx-trigger="change delay:1000ms" hx-swap="outerHTML">
+  hx-trigger="keyup[key=='Enter'] from:input, focusout" hx-swap="outerHTML">
   {% csrf_token %}
 
   {% for field in form %}
