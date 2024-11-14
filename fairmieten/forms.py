@@ -36,20 +36,6 @@ class DataTextForm(forms.ModelForm):
             #print(field_name)
             self.fields[field_name].label = labels.get(field_name, field_name)
 
-        # Überprüfe, ob das Feld einen Wert aus der Datenbank hat
-        for field_name in self.fields:
-            if (self.instance and self.instance.pk is not None ):  # Überprüfen, ob das Objekt existiert
-                field_value = getattr(self.instance, field_name, None)
-                if (
-                    field_value is not None and field_value != ""
-                ):  # Überprüfen, ob das Feld einen Wert hat
-                    # Füge die Klasse "from_database" hinzu
-                    current_class = self.fields[field_name].widget.attrs.get(
-                        "class", ""
-                    )
-                    self.fields[field_name].widget.attrs["class"] = " ".join(
-                        filter(None, [current_class, "from_database"])
-                    )
 
 
 class BeratungForm(DataTextForm):

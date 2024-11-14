@@ -1,9 +1,8 @@
-.from_database{
-	background-color: #f0f0f0;
-}
 .form-placeholder{
 	height: 3000px;
 }
 .vorgang_neu .edited{
-	background-color: #a0a0a0;
+	background-color: #f0f0f0;
+	border: 3px solid #a23b15;
+	outline: 3px solid #a23b15;
 }

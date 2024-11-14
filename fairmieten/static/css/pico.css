@@ -291,7 +291,6 @@ details summary[role=button]:not(.outline)::after {
   --pico-form-element-focus-color: var(--pico-primary-border);
   --pico-form-element-disabled-opacity: 0.5;
   --pico-form-element-invalid-border-color: #b86a6b;
-  --pico-form-element-invalid-active-border-color: #c84f48;
   --pico-form-element-invalid-focus-color: var(--pico-form-element-invalid-active-border-color);
   --pico-form-element-valid-border-color: #4c9b8a;
   --pico-form-element-valid-active-border-color: #279977;
@@ -411,7 +410,6 @@ details summary[role=button]:not(.outline)::after {
     --pico-form-element-focus-color: var(--pico-primary-border);
     --pico-form-element-disabled-opacity: 0.5;
     --pico-form-element-invalid-border-color: #964a50;
-    --pico-form-element-invalid-active-border-color: #b7403b;
     --pico-form-element-invalid-focus-color: var(--pico-form-element-invalid-active-border-color);
     --pico-form-element-valid-border-color: #2a7b6f;
     --pico-form-element-valid-active-border-color: #16896a;
@@ -533,8 +531,6 @@ details summary[role=button]:not(.outline)::after {
   --pico-form-element-active-border-color: var(--pico-primary-border);
   --pico-form-element-focus-color: var(--pico-primary-border);
   --pico-form-element-disabled-opacity: 0.5;
-  --pico-form-element-invalid-border-color: #964a50;
-  --pico-form-element-invalid-active-border-color: #b7403b;
   --pico-form-element-invalid-focus-color: var(--pico-form-element-invalid-active-border-color);
   --pico-form-element-valid-border-color: #2a7b6f;
   --pico-form-element-valid-active-border-color: #16896a;
