@@ -56,14 +56,16 @@
 			// Dichteres Schwellenwert-Array für genauere Beobachtung
 			threshold: [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]
 		};
-	
 		const observer = new IntersectionObserver((entries) => {
 			// Nur Einträge berücksichtigen, die wirklich sichtbar sind
+			for (const entry of entries) {
+				console.log(`observe: ${entry.target.id} (Ratio: ${entry.intersectionRatio.toFixed(2)}, Top: ${entry.boundingClientRect.top}px)`);
+			}
+
 			const visibleEntries = entries.filter(entry => {
 				return entry.intersectionRatio >= MIN_VISIBILITY && 
 					   entry.boundingClientRect.top <= 0;
 			});
-	
 			if (visibleEntries.length > 0) {
 				// Sortiere nach Position und wähle den obersten
 				const sortedEntries = visibleEntries.sort((a, b) => {
@@ -81,6 +83,8 @@
 				const formId = activeEntry.target.id;
 				const navId = 'nav-' + formId.split('-')[1];
 				const currentActive = document.querySelector('.sidebar a.active');
+
+				console.log(`highest: ${formId} (Ratio: ${activeEntry.intersectionRatio.toFixed(2)}, Top: ${activeEntry.boundingClientRect.top}px)`);
 				
 				// Das hier verhindert flackern usw.
 				if (!currentActive || currentActive.id !== navId) {

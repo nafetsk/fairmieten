@@ -47,7 +47,7 @@
                             <td>
                                 <a href="{% url 'vorgang_detail' vorgang.id %}" hx-get="{% url 'vorgang_detail' vorgang.id %}" hx-push-url="true" hx-target="#htmx-content">Details</a> | 
                                 <a href="{% url 'vorgang_bearbeiten' vorgang.id vorgang.vorgangstyp.id %}" hx-get="{% url 'vorgang_bearbeiten' vorgang.id vorgang.vorgangstyp.id %}" hx-push-url="true" hx-target="#htmx-content">Edit</a> | 
-                                <a href="{% url 'vorgang_detail' vorgang.id %}" hx-get="{% url 'delete_vorgang' vorgang.id %}" hx-target="#htmx-content" hx-trigger='confirmed'
+                                <a href="#" hx-get="{% url 'delete_vorgang' vorgang.id %}" hx-target="#htmx-content" hx-trigger='confirmed'
                                         onClick="Swal.fire({title: 'Bestätigung erforderlich', text:'Vorgang wirklich löschen?'}).then((result)=>{
                                             if(result.isConfirmed){
                                               htmx.trigger(this, 'confirmed');  
