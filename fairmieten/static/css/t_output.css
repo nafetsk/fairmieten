@@ -3616,6 +3616,10 @@ video {
   }
 }
 
+.visible{
+  visibility: visible;
+}
+
 .static{
   position: static;
 }
@@ -3664,8 +3668,28 @@ video {
   height: 24rem;
 }
 
+.h-full{
+  height: 100%;
+}
+
+.h-44{
+  height: 11rem;
+}
+
+.min-h-32{
+  min-height: 8rem;
+}
+
+.min-h-64{
+  min-height: 16rem;
+}
+
 .w-auto{
   width: auto;
+}
+
+.w-full{
+  width: 100%;
 }
 
 .basis-1\/4{
