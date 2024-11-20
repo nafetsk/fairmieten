@@ -1,4 +1,5 @@
 from uuid import UUID
+from django.contrib.auth.decorators import login_not_required
 from django.core.paginator import Paginator, Page, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
@@ -77,6 +78,7 @@ def vorgang_detail(request: HttpRequest, vorgang_id: UUID) -> HttpResponse:
     vorgang = Vorgang.objects.get(id=vorgang_id)
     return render(request, 'vorgang_detail.html', {'vorgang': vorgang})
 
+@login_not_required
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
