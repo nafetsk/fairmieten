@@ -76,7 +76,7 @@ def such_feld(request: HttpRequest) -> HttpResponse:
 
 def vorgang_detail(request: HttpRequest, vorgang_id: UUID) -> HttpResponse:
     vorgang = Vorgang.objects.get(id=vorgang_id)
-    return render(request, 'vorgang_detail.html', {'vorgang': vorgang})
+    return render(request, 'vorgang_detail.html', {'vorgang': vorgang, 'layout': layout(request)})
 
 @login_not_required
 def login_view(request):

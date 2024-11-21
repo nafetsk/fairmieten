@@ -1,3 +1,5 @@
+{% extends layout %}
+{% block content %}
 <h1>Vorgang Detailansicht</h1>
     <table>
         <tr>
@@ -173,3 +175,7 @@
             <td>{{ vorgang.modified }}</td>
         </tr>
     </table>
+    <div class="flex flex-row justify-end items-start">
+        <button hx-get="/vorgang/edit/{{vorgang.id}}/{{vorgang.vorgangstyp}}" hx-target="#htmx-content" class="button p-2">Vorgang editieren</button>
+    </div>
+{% endblock %}
