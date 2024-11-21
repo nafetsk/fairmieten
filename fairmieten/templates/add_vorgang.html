@@ -32,12 +32,17 @@
 
     <div class="inner-content" id="htmx-inner-content" >
 		{% for item in form_liste %}		
-		<div id="form-{{ item.key }}" class="form-container md:pt-24 md:-mt-16" hx-get="{% url 'create_'|add:item.key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}&&type_nr={{type_nr}}"
-		hx-trigger="load once">
-		<div class="form-placeholder">{{vorgang_id}}</div>
-		</div>
+			<div id="form-{{ item.key }}" class="form-container md:pt-24 md:-mt-16" hx-get="{% url 'create_'|add:item.key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}&&type_nr={{type_nr}}"
+			hx-trigger="load once">	
+			<div class="form-placeholder">{{vorgang_id}}</div>
+			</div>
+			{% if not forloop.last %} <!-- Füge hr nur hinzu, wenn es nicht das letzte Element ist -->
+			<hr class="h-1 mt-6 bg-gray-300 lg:w-[73%] ml-auto">
+			{% endif %}
 		{% endfor %}
-		<div class="min-h-64"></div>
+		<div class="min-h-64 flex flex-row justify-end items-start">
+			<button hx-get="/vorgang/detail/{{vorgang_id}}" hx-target="#htmx-content" class="button p-2">zur Vorgangs Ansicht</button>
+		</div>
     </div>
 </div>
 

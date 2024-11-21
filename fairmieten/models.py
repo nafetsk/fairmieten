@@ -1,3 +1,4 @@
+import datetime
 import uuid
 from django.apps import apps
 from django.db import models
@@ -61,7 +62,7 @@ class Vorgang(models.Model):
     # Allgemein
     fallnummer = models.IntegerField(null=True, blank=True)
     vorgangstyp = models.ForeignKey(Vorgangstyp, on_delete=models.CASCADE, null=True, blank=True) # allgemeine Beratung, Meldung, Fallbetreuung
-    datum_kontaktaufnahme = models.DateField(null=True, blank=True)
+    datum_kontaktaufnahme = models.DateField(null=True, blank=True, default=datetime.date.today)
     kontaktaufnahme_durch_item = models.CharField(max_length=100, null=True, blank=True) # (Betroffene Person, beschuldigte Person, unbeteiligte Person)
     datum_vorfall_von = models.DateField(null=True, blank=True)
     datum_vorfall_bis = models.DateField(null=True, blank=True)
