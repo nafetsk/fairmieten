@@ -134,7 +134,12 @@ def get_query_set(chart: Charts, start_year, end_year):
         )
     else:
         return None
-    return result.exclude(x_variable='')
+    if chart.type == 5 or chart.type == 3:
+        return result.exclude(x_variable=None)
+    else:
+        result.exclude(x_variable='')
+
+    return result
 
 def get_chart(request: HttpRequest) -> HttpResponse:
     # get chart uuid, start and end year

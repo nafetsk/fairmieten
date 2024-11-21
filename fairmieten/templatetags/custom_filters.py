@@ -9,10 +9,18 @@ register = template.Library()
 def groupby_typ(diskriminierungen):
     # Group the diskriminierungen by 'typ.name'
     sorted_diskriminierungen = sorted(diskriminierungen, key=attrgetter("typ.name"))
-    return {
+    grouped = {
         key: list(group)
         for key, group in groupby(sorted_diskriminierungen, key=attrgetter("typ.name"))
     }
+    # Rassismus an erster Stelle
+    if "Rassismus" in grouped:
+        # rassismus aus dem Dict entfernen
+        rassismus_group = {"Rassismus": grouped.pop("Rassismus")}
+        # neues Erstellen mit Rassismus am Anfang und dem Rest dahinter
+        grouped = {**rassismus_group, **grouped}
+    
+    return grouped
 
     
 @register.filter
