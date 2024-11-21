@@ -37,7 +37,6 @@
 		<div class="form-placeholder">{{vorgang_id}}</div>
 		</div>
 		{% endfor %}
-		<div class="min-h-64"></div>
     </div>
 </div>
 
@@ -46,72 +45,91 @@
 	function initializeObserver() {
 		// Intersection Observer setup
 		const formContainers = document.querySelectorAll('.form-container');
+		const navLinks = document.querySelectorAll('.sidebar a');
 		console.log("INITIALIZE OBSERVER");
 		// Minimale Sichtbarkeit, die ein Container haben muss
-		const MIN_VISIBILITY = 0.0001;
-		let stillVisibleEntry = null;
-		let activeEntry = null;
+		const MIN_VISIBILITY = 0.1;
     
 		const observerOptions = {
-			root: null,
 			// Positive rootMargin oben für früheres Triggern
-			rootMargin: '-10% 0px -89% 0px',
+			rootMargin: '0px 0px 0px 0px',
 			// Dichteres Schwellenwert-Array für genauere Beobachtung
-			threshold: [0.0001]
+			threshold: [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]
 		};
 		const observer = new IntersectionObserver((entries) => {
 			// Nur Einträge berücksichtigen, die wirklich sichtbar sind
 			for (const entry of entries) {
 				console.log(`observe: ${entry.target.id} (Ratio: ${entry.intersectionRatio.toFixed(2)}, Top: ${entry.boundingClientRect.top}px)`);
-				if(entry.intersectionRatio >= MIN_VISIBILITY) { // entry wird sichtbar
-					stillVisibleEntry = activeEntry
-					activeEntry = entry;
-					setActive(matchingNavElement(activeEntry));
-					console.log(`Aktiviere 1: ${activeEntry.target.id} (Ratio: ${activeEntry.intersectionRatio.toFixed(2)}, Top: ${activeEntry.boundingClientRect.top}px)`);
-				}else if(activeEntry == entry && stillVisibleEntry != null){ // activer entry wird unsichtbar bevor ein neuer sichtbar wird
-					activeEntry = stillVisibleEntry
-					setActive(matchingNavElement(activeEntry));
-					console.log(`Aktiviere 2: ${activeEntry.target.id} (Ratio: ${activeEntry.intersectionRatio.toFixed(2)}, Top: ${activeEntry.boundingClientRect.top}px)`);
-				}else if(stillVisibleEntry == entry){ // entry war der letzte sichtbare entry
-					stillVisibleEntry = null;
-				}
+			}
+
+			const visibleEntries = entries.filter(entry => {
+				return entry.intersectionRatio >= MIN_VISIBILITY && 
+					   entry.boundingClientRect.top <= 0;
+			});
+			if (visibleEntries.length > 0) {
+				// Sortiere nach Position und wähle den obersten
+				const sortedEntries = visibleEntries.sort((a, b) => {
+					// Wenn beide oben sind, nimm den mit höherer Sichtbarkeit
+					if (a.boundingClientRect.top <= 0 && b.boundingClientRect.top <= 0) {
+						return b.intersectionRatio - a.intersectionRatio;
+					}
+					// Sonst nach Position sortieren
+					return a.boundingClientRect.top - b.boundingClientRect.top;
+				});
 	
+				const activeEntry = sortedEntries[0];
+				
+				// Nur aktualisieren, wenn sich wirklich etwas geändert hat
+				const formId = activeEntry.target.id;
+				const navId = 'nav-' + formId.split('-')[1];
+				const currentActive = document.querySelector('.sidebar a.active');
+
+				console.log(`highest: ${formId} (Ratio: ${activeEntry.intersectionRatio.toFixed(2)}, Top: ${activeEntry.boundingClientRect.top}px)`);
+				
+				// Das hier verhindert flackern usw.
+				if (!currentActive || currentActive.id !== navId) {
+					console.log(`Aktiviere: ${formId} (Ratio: ${activeEntry.intersectionRatio.toFixed(2)}, Top: ${activeEntry.boundingClientRect.top}px)`);
+					navLinks.forEach(link => link.classList.remove('active'));
+					document.getElementById(navId).classList.add('active');
+				}
 			}
 		}, observerOptions);
 
 		formContainers.forEach(container => observer.observe(container));
 
 		// Markiere den ersten Anker-Tag als aktiv
-		document.querySelectorAll('.sidebar a')[0].classList.add('active');
-		return observer;
+		if (navLinks.length > 0) {
+			navLinks[0].classList.add('active');
+		}
 	}
 
 	function handleInputChange(event) {
 		const inputElement = event.target;
 		inputElement.classList.add('edited'); // Fügen Sie die gewünschte Klasse hinzu
 	}
-	function matchingNavElement(activeEntry){
-		const formId = activeEntry.target.id;
-		const navId = 'nav-' + formId.split('-')[1];
-		return document.getElementById(navId);
-	}
 
 	function setActive(element) {
-		const currentActive = document.querySelector('.sidebar a.active');
-		if (!currentActive || currentActive.id !== element.id) {
-			// Entferne die Klasse 'active' von allen Links
-			var links = document.querySelectorAll('a[id^="nav-"]');
-			links.forEach(function(link) {
-				link.classList.remove('active');
-			});
-			// Füge die Klasse 'active' zum angeklickten Link hinzu
-			element.classList.add('active');
-		}
-	}
-	initializeObserver()
+		// Entferne die Klasse 'active' von allen Links
+		var links = document.querySelectorAll('a[id^="nav-"]');
+		links.forEach(function(link) {
+			link.classList.remove('active');
+		});
 
+		// Füge die Klasse 'active' zum angeklickten Link hinzu
+		element.classList.add('active');
+	}
+
+	// Initialisierung beim Laden der Seite
+	document.addEventListener('DOMContentLoaded', function() {
+    	initializeObserver();
+	});
 // Event Listener for htmx:afterSwap
   document.body.addEventListener('htmx:afterSwap', function(event) {
+    // Überprüfen, ob das nachgeladene Element die gesamte Seite ist
+    console.log("Target id:  "+event.detail.target.id);
+	if (event.detail.target.id == 'htmx-content') {
+    	initializeObserver();
+	}
 	// Event Listener for input fields
 	const inputFields = document.querySelectorAll('input, textarea, select');
 	inputFields.forEach(input => {

@@ -6,7 +6,7 @@ from .main import INSTALLED_APPS, BASE_DIR, MIDDLEWARE
 
 INSTALLED_APPS = [ "unfold"] + INSTALLED_APPS + [ "environ", "fairmieten", "main.hello", "aggregation", "widget_tweaks"]
 
-MIDDLEWARE += ['django_htmx.middleware.HtmxMiddleware', 'whitenoise.middleware.WhiteNoiseMiddleware']
+MIDDLEWARE += ['django_htmx.middleware.HtmxMiddleware', 'whitenoise.middleware.WhiteNoiseMiddleware', "django.contrib.auth.middleware.LoginRequiredMiddleware"]
 
 env = environ.Env(
     # set casting, default value
@@ -30,6 +30,8 @@ SECRET_KEY = env("SECRET_KEY")
 
 STATIC_ROOT = "staticfiles/"
 
+
+LOGIN_URL = "/login/"
 
 # Parse database connection url strings
 # like psql://user:pass@127.0.0.1:8458/db

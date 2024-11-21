@@ -1,4 +1,5 @@
 from uuid import UUID
+from django.contrib.auth.decorators import login_not_required
 from django.core.paginator import Paginator, Page, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
@@ -80,6 +81,7 @@ def vorgang_detail(request: HttpRequest, vorgang_id: UUID) -> HttpResponse:
     print(vorgang.fallnummer)
     return render(request, 'vorgang_detail.html', {'layout': layout(request), 'vorgang': vorgang, 'beschw_frist': beschw_frist, 'klage_frist': klage_frist, 'strafan_frist': strafan_frist})
 
+@login_not_required
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
