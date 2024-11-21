@@ -31,6 +31,7 @@ def setup(apps = None, schema_editor = None):
         "bezirk_item": "Bezirk",
         "datum_vorfall_bis": "Datum Vorfall bis",
         "sprache_item": "Sprache",
+        "andere_sprache": "andere Sprache",
         "beschreibung": "Beschreibung",
         "zugang_fachstelle_item": "Wie haben Sie von der Fachstelle erfahren?",
         "vorgangstyp": "Vorgangstyp",
@@ -107,6 +108,7 @@ def setup(apps = None, schema_editor = None):
             "Spanisch": "Spanisch",
             "Rumänisch": "Rumänisch",
             "Arabisch": "Arabisch",
+            "andere": "andere",
         },
         "vorgangstyp": {
             "Beratung": "Beratung",

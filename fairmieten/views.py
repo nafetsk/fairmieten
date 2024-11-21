@@ -104,6 +104,8 @@ def logout_view(request):
 # *** Hilfsfunktionen *******************************************
 
 def get_fristen(date):
+    if not date:
+        return None, None, None
     # Beschwerde Frist + 2 Monate
     beschw_frist = date + timedelta(days=60)
     # Klagefrist 3 Jahre später

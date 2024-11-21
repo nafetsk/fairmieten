@@ -66,6 +66,7 @@ class Vorgang(models.Model):
     datum_vorfall_von = models.DateField(null=True, blank=True)
     datum_vorfall_bis = models.DateField(null=True, blank=True)
     sprache_item = models.CharField(max_length=100, null=True, blank=True)
+    andere_sprache = models.CharField(max_length=100, null=True, blank=True)
     beschreibung = models.TextField(null=True, blank=True)
     bezirk_item = models.CharField(max_length=100, null=True, blank=True)
     zugang_fachstelle_item = models.CharField(max_length=100, null=True,  blank=True) # (Flyer, Internet, ...)

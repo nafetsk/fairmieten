@@ -54,6 +54,12 @@
             <td>{{ vorgang.sprache_item }}</td>
         </tr>
         {% endif %}
+        {% if vorgang.andere_sprache %}
+        <tr>
+            <td>Andere Sprache</td>
+            <td>{{ vorgang.andere_sprache }}</td>
+        </tr>
+        {% endif %}
         {% if vorgang.beschreibung %}
         <tr>
             <td>Beschreibung</td>

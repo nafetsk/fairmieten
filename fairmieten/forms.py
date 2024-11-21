@@ -54,6 +54,18 @@ class BeratungForm(DataTextForm):
 
 
 class VorgangForm(DataTextForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+        # Die Differentierung zwische POST und GET ist wichtig, weil sonst das 
+        # HiddenInput-Feld nicht korrekt gesetzt wird bei nem GET-Request
+        if self.request and self.request.method == 'POST':
+            if self.data.get('sprache_item') != 'andere':
+                self.fields['andere_sprache'].widget = forms.HiddenInput()
+        else:
+            if self.instance.sprache_item != 'andere':
+                self.fields['andere_sprache'].widget = forms.HiddenInput()
+
     class Meta:
         model = Vorgang
         fields = [
@@ -63,6 +75,7 @@ class VorgangForm(DataTextForm):
             "datum_vorfall_von",
             "datum_vorfall_bis",
             "sprache_item",
+            "andere_sprache",
             "beschreibung",
             "bezirk_item",
             "zugang_fachstelle_item",
@@ -72,6 +85,12 @@ class VorgangForm(DataTextForm):
             "datum_vorfall_von": forms.DateInput(attrs={"type": "date"}),
             "datum_vorfall_bis": forms.DateInput(attrs={"type": "date"}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data.get('sprache_item') != 'andere':
+            cleaned_data['andere_sprache'] = ''
+        return cleaned_data
 
 
 class PersonForm(DataTextForm):
