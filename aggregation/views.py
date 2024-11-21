@@ -134,7 +134,7 @@ def get_query_set(chart: Charts, start_year, end_year):
         )
     else:
         return None
-    return result.exclude(x_variable=None)
+    return result.exclude(x_variable='')
 
 def get_chart(request: HttpRequest) -> HttpResponse:
     # get chart uuid, start and end year

@@ -109,7 +109,7 @@ def setup(apps = None, schema_editor = None):
             "Arabisch": "Arabisch",
         },
         "vorgangstyp": {
-            "Allgemeine Beratung": "Allgemeine Beratung",
+            "Beratung": "Beratung",
             "Meldung": "Meldung",
             "Fallbetreuung": "Fallbetreuung",
         },
