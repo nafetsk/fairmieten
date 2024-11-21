@@ -3,10 +3,6 @@
 <h1>Vorgang Detailansicht</h1>
     <table>
         <tr>
-            <td>ID</td>
-            <td>{{ vorgang.id }}</td>
-        </tr>
-        <tr>
             <td>Fallnummer</td>
             <td>{{ vorgang.fallnummer }}</td>
         </tr>
@@ -33,6 +29,18 @@
             <td>Datum Vorfall von</td>
             <td>{{ vorgang.datum_vorfall_von }}</td>
         </tr>
+        <tr>
+            <td>Beschwerde Frist</td>
+            <td>{{ beschw_frist }}</td>
+        </tr>
+        <tr>
+            <td>Klagefrist</td>
+            <td>{{ klage_frist }}</td>
+        </tr>
+        <tr>
+            <td>Strafantragsfrist</td>
+            <td>{{ strafan_frist }}</td>
+        </tr>
         {% endif %}
         {% if vorgang.datum_vorfall_bis %}
         <tr>
@@ -44,6 +52,12 @@
         <tr>
             <td>Sprache</td>
             <td>{{ vorgang.sprache_item }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.andere_sprache %}
+        <tr>
+            <td>Andere Sprache</td>
+            <td>{{ vorgang.andere_sprache }}</td>
         </tr>
         {% endif %}
         {% if vorgang.beschreibung %}
@@ -175,7 +189,5 @@
             <td>{{ vorgang.modified }}</td>
         </tr>
     </table>
-    <div class="flex flex-row justify-end items-start">
-        <button hx-get="/vorgang/edit/{{vorgang.id}}/{{vorgang.vorgangstyp}}" hx-target="#htmx-content" class="button p-2">Vorgang editieren</button>
-    </div>
+
 {% endblock %}

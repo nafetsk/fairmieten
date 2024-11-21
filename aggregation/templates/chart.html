@@ -82,11 +82,6 @@
     var data = JSON.parse('{{ data|escapejs }}');
     renderChart(data);
 
-    // Hier fügen wir eine extra Zeile hinzu, die die Summe der Daten enthält
-    data.labels.push('Summe');
-    // reduce() mit a+b bildet Summe
-    data.datasets[0].data.push(data.datasets[0].data.reduce((a, b) => a + b, 0));
-
     console.log(data)
 
     // Dynamically set axis names in the table header
@@ -121,6 +116,20 @@
             // Append row to the table body
             dataTableBody.appendChild(row);
         });
+
+        // Add a row for the sum of the data
+        var sumRow = document.createElement('tr');
+        
+        var sumLabelCell = document.createElement('td');
+        sumLabelCell.textContent = 'Summe';
+        sumRow.appendChild(sumLabelCell);
+
+        var sumValueCell = document.createElement('td');
+        sumValueCell.textContent = data.totalIncidents;
+        sumRow.appendChild(sumValueCell);
+
+        dataTableBody.appendChild(sumRow);
+        
 
 
 </script>
