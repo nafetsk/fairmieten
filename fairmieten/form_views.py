@@ -1,6 +1,7 @@
 import logging
 import uuid
 from typing import Type
+from django import forms
 from django.shortcuts import render
 from .forms import BeratungForm, DiskriminierungForm, InterventionForm, PersonForm, VerursacherForm, VorgangForm, LoesungsansaetzeForm, ErgebnisForm
 from .models import Intervention, Verursacher, Vorgang, Vorgangstyp
@@ -71,10 +72,15 @@ def create_vorgang(request):
     form = VorgangForm(
         post_or_none(request), instance=get_Instance(request, Vorgang, "vorgang_id")
     )
+
     if request.method == "POST" and form.is_valid():
         set_created_by(request, form)
         set_vorgangstyp(request, form)
         form.save()
+
+    if form.instance and form.instance.sprache_item != 'andere':
+        form.fields['andere_sprache'].widget = forms.HiddenInput() 
+
     return render(
         request,
         "inner_form.html",

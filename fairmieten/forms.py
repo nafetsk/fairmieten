@@ -54,17 +54,6 @@ class BeratungForm(DataTextForm):
 
 
 class VorgangForm(DataTextForm):
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        super().__init__(*args, **kwargs)
-        # Die Differentierung zwische POST und GET ist wichtig, weil sonst das 
-        # HiddenInput-Feld nicht korrekt gesetzt wird bei nem GET-Request
-        if self.request and self.request.method == 'POST':
-            if self.data.get('sprache_item') != 'andere':
-                self.fields['andere_sprache'].widget = forms.HiddenInput()
-        else:
-            if self.instance.sprache_item != 'andere':
-                self.fields['andere_sprache'].widget = forms.HiddenInput()
 
     class Meta:
         model = Vorgang
