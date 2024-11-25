@@ -73,7 +73,7 @@ def get_query_set(chart: Charts, start_year, end_year):
         # Filter the related Vorgang instances based on the date range
         filtered_vorgang = modell_class.objects.filter(
             vorgang__datum_vorfall_von__gte=start_date,
-            vorgang__datum_vorfall_bis__lte=end_date,
+            vorgang__datum_vorfall_von__lte=end_date,
         )
 
         result = filtered_vorgang.annotate(
@@ -84,6 +84,7 @@ def get_query_set(chart: Charts, start_year, end_year):
                 "name"
             ),  # hier wird "name" in x_variable umbenannt, damit alles wieder einheitlich ist
         )
+        print(result)
     elif chart.type == 3:  # Variable ist Jahr
         result = (
             time_filter.annotate(year=ExtractYear(chart.variable))
@@ -95,7 +96,7 @@ def get_query_set(chart: Charts, start_year, end_year):
         modell_class = apps.get_model("fairmieten", chart.model)
         filtered_vorgang = modell_class.objects.filter(
             vorgang__datum_vorfall_von__gte=start_date,
-            vorgang__datum_vorfall_bis__lte=end_date,
+            vorgang__datum_vorfall_von__lte=end_date,
         )
 
         # Group by the specified variable and count the related Vorgang instances
@@ -134,12 +135,12 @@ def get_query_set(chart: Charts, start_year, end_year):
         )
     else:
         return None
+    
     if chart.type == 5 or chart.type == 3:
         return result.exclude(x_variable=None)
     else:
-        result.exclude(x_variable='')
+        return result.exclude(x_variable='')
 
-    return result
 
 def get_chart(request: HttpRequest) -> HttpResponse:
     # get chart uuid, start and end year

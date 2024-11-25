@@ -109,7 +109,7 @@ def setup(apps = None, schema_editor = None):
             "Meldung": "Meldung",
             "Fallbetreuung": "Fallbetreuung",
         },
-        "alter_item": {"1": "0-17", "2": "18-24", "3": "25-35", "4": "35-45", "5": "45-65", "6": "65+"},
+        "alter_item": {"0-17": "0-17", "18-24": "18-24", "25-35": "25-35", "35-45": "35-45", "45-65": "45-65", "65+": "65+"},
         "gender_item": {
             "divers": "divers",
             "weiblich": "weiblich",
