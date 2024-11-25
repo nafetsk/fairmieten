@@ -84,6 +84,8 @@ class PersonForm(DataTextForm):
             "alter_item",
             "anzahl_kinder",
             "gender_item",
+            "betroffen_item",
+            "prozeskostenuebernahme_item",
             "bereich_diskriminierung_item",
             "anderer_bereich_diskriminierung",
             "diskriminierungsform",
