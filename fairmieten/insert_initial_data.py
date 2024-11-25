@@ -41,6 +41,7 @@ def setup(apps = None, schema_editor = None):
         "betroffen_item": "Wer ist betroffen?",
         "prozeskostenuebernahme_item": "Prozesskostenübernahme",
         "bereich_diskriminierung_item": "Bereich der Diskriminierung",
+        "anderer_bereich_diskriminierung": "anderer Bereich der Diskriminierung",
         "diskriminierungsform": "Form der Diskriminierung",
         "ergebnis": "Ergebnis",
         "rechtsbereich": "Rechtsbereich",
@@ -133,7 +134,7 @@ def setup(apps = None, schema_editor = None):
             "Wohnungssuche": "Wohnungssuche",
             "im bestehenden Wohnverhältnis": "im bestehenden Wohnverhältnis",
             "Gewerbe": "Gewerbe",
-            "anderes": "anderes",
+            "anderer": "anderer",
         },
     }
     values["Verursacher"] = {

@@ -92,6 +92,12 @@ def create_person(request):
     form = PersonForm(post_or_none(request), instance=get_Instance(request, Vorgang, "vorgang_id"))
     if request.method == "POST" and form.is_valid():
         form.save()
+    
+    if form.instance and form.instance.bereich_diskriminierung_item != 'anderer':
+        form.fields['anderer_bereich_diskriminierung'].widget = forms.HiddenInput()
+    
+    #print(form.fields["anderer_bereich_diskriminierung"].widget)
+
     return render(
         request,
         "inner_form_person.html",

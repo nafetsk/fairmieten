@@ -75,11 +75,6 @@ class VorgangForm(DataTextForm):
             "datum_vorfall_bis": forms.DateInput(attrs={"type": "date"}),
         }
 
-    def clean(self):
-        cleaned_data = super().clean()
-        if cleaned_data.get('sprache_item') != 'andere':
-            cleaned_data['andere_sprache'] = ''
-        return cleaned_data
 
 
 class PersonForm(DataTextForm):
@@ -90,6 +85,7 @@ class PersonForm(DataTextForm):
             "anzahl_kinder",
             "gender_item",
             "bereich_diskriminierung_item",
+            "anderer_bereich_diskriminierung",
             "diskriminierungsform",
         ]
         widgets = {"anzahl_kinder": forms.NumberInput(attrs={"min": 0})}

@@ -110,8 +110,14 @@
         {% endif %}
         {% if vorgang.bereich_diskriminierung_item %}
         <tr>
-            <td>Bereich Diskriminierung</td>
+            <td>Bereich der Diskriminierung</td>
             <td>{{ vorgang.bereich_diskriminierung_item }}</td>
+        </tr>
+        {% endif %}
+        {% if vorgang.anderer_bereich_diskriminierung %}
+        <tr>
+            <td>anderer Bereich der Diskriminierung</td>
+            <td>{{ vorgang.anderer_bereich_diskriminierung }}</td>
         </tr>
         {% endif %}
         {% if vorgang.diskriminierungsform.exists %}

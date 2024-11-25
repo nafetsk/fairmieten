@@ -79,6 +79,7 @@ class Vorgang(models.Model):
     betroffen_item = models.CharField(max_length=100, null=True, blank=True) # (Alleinstehend, Familie, usw.)
     prozeskostenuebernahme_item = models.CharField(max_length=100, null=True, blank=True) # (Ja, Nein, zu prüfen, anderes)
     bereich_diskriminierung_item = models.CharField(max_length=100, null=True, blank=True) # (Wohnungssuche, Gewerbe)
+    anderer_bereich_diskriminierung = models.CharField(max_length=100, null=True, blank=True)
     diskriminierungsform = models.ManyToManyField(Diskriminierungsform, blank=True) # (Unmittelbar, mittelbar, usw.)
 
     # Diskriminierung
