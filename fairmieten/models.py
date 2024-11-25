@@ -81,6 +81,7 @@ class Vorgang(models.Model):
     bereich_diskriminierung_item = models.CharField(max_length=100, null=True, blank=True) # (Wohnungssuche, Gewerbe)
     anderer_bereich_diskriminierung = models.CharField(max_length=100, null=True, blank=True)
     diskriminierungsform = models.ManyToManyField(Diskriminierungsform, blank=True) # (Unmittelbar, mittelbar, usw.)
+    andere_diskriminierungsform = models.CharField(max_length=100, null=True, blank=True)
 
     # Diskriminierung
     diskriminierung = models.ManyToManyField(Diskriminierung, blank=True)

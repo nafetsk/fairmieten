@@ -96,7 +96,8 @@ def create_person(request):
     if form.instance and form.instance.bereich_diskriminierung_item != 'anderer':
         form.fields['anderer_bereich_diskriminierung'].widget = forms.HiddenInput()
     
-    #print(form.fields["anderer_bereich_diskriminierung"].widget)
+    if form.instance and "andere" not in [diskriminierungsform.name for diskriminierungsform in form.instance.diskriminierungsform.all()]:
+        form.fields['andere_diskriminierungsform'].widget = forms.HiddenInput()
 
     return render(
         request,

@@ -4,7 +4,7 @@
 
 
 {% for field in form %}
-  {% if field.name != 'diskriminierungsform' and not field.is_hidden %}
+  {% if field.name != 'diskriminierungsform' and field.name != "andere_diskriminierungsform" and not field.is_hidden %}
     <div class="flex flex-col lg:flex-row">
       <label class="basis-1/4 lg:text-right mr-4"> {{ field.label }} </label>
       <span class="basis-3/4">
@@ -26,6 +26,14 @@
     </div>
   </div>
 
+  {% if not form.andere_diskriminierungsform.is_hidden %}
+  <div class="flex flex-col lg:flex-row">
+    <label class="basis-1/4 lg:text-right mr-4"> {{ form.andere_diskriminierungsform.label }} </label>
+    <span class="basis-3/4">
+    {{ form.andere_diskriminierungsform }}
+    </span>
+  </div>
+  {% endif %}
 
   </div>
 </form>

@@ -87,6 +87,7 @@ class PersonForm(DataTextForm):
             "bereich_diskriminierung_item",
             "anderer_bereich_diskriminierung",
             "diskriminierungsform",
+            "andere_diskriminierungsform",
         ]
         widgets = {"anzahl_kinder": forms.NumberInput(attrs={"min": 0})}
         

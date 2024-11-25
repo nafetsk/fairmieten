@@ -129,6 +129,12 @@
                 {% endfor %}
             </td>
         </tr>
+            {% if vorgang.andere_diskriminierungsform %}
+            <tr>
+                <td>Andere Diskriminierungsform</td>
+                <td>{{ vorgang.andere_diskriminierungsform }}</td>
+            </tr>
+            {% endif %}
         {% endif %}
         {% if vorgang.diskriminierung.exists %}
         <tr>

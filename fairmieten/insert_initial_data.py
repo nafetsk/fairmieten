@@ -43,6 +43,7 @@ def setup(apps = None, schema_editor = None):
         "bereich_diskriminierung_item": "Bereich der Diskriminierung",
         "anderer_bereich_diskriminierung": "anderer Bereich der Diskriminierung",
         "diskriminierungsform": "Form der Diskriminierung",
+        "andere_diskriminierungsform": "andere Form der Diskriminierung",
         "ergebnis": "Ergebnis",
         "rechtsbereich": "Rechtsbereich",
         "ergebnis_bemerkung": "Ergebnis Bemerkung",
@@ -263,6 +264,7 @@ def setup(apps = None, schema_editor = None):
         "verbale Belästigung",
         "non-verbale Belästigung",
         "Sachbeschädigung",
+        "andere",
     ]
 
     for diskriminierungsform in diskriminierungsformen:
