@@ -4,3 +4,4 @@ main/.env
 .venv
 .vscode
 staticfiles
+fairmieten/static/css/t_output.css

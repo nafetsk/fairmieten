@@ -1,0 +1,22 @@
+{% load static %}
+{% if form %}
+<form class="inner-form-ergebnis mb-0" id="{{item_key}}_form" hx-post="{% url 'create_one_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}" 
+hx-trigger="keyup[key=='Enter'] from:input, focusout, click from:#submit-all" >
+{% csrf_token %}
+
+<!-- Verstecktes Feld für die ID -->
+	{%if form.instance.id %}
+		<input type="hidden" name="id" value="{{ form.instance.id }}">
+	{% endif %}
+	<div class="verursacher-row flex">
+		<label class="basis-1/4 text-right hidden lg:block"><a href="#" hx-get="{% url 'delete_verursacher' form.instance.id %}?vorgang_id={{vorgang_id}}" hx-target="#form-verursacher"><img class="w-4 h-4 ml-auto" src="{% static 'img/delete.svg' %}" alt="Löschen"></a></label>
+		{% for bound_field in form %}
+			<select class="basis-1/4 ml-4" name="{{ bound_field.name }}">
+				{% for key, choice in bound_field.field.choices %}
+					<option value="{{ key }}" {% if key == bound_field.value %}selected{% endif %}>{{ choice }}</option>
+				{% endfor %}
+			</select>
+		{% endfor %}
+	</div>
+</form>
+{% endif %}

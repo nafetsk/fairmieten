@@ -10,7 +10,8 @@
 {% for form in forms %}
 	{% include 'form_intervention.html' with form=form %}
 {% endfor %}
-
-<button class="btn btn-primary" hx-get="{% url 'add_intervention' %}?vorgang_id={{vorgang_id}}" hx-target="#form-interventionen">Intervention hinzufügen</button>
+<div class="w-1/4 flex justify-end">
+	<button class="btn btn-primary px-2" hx-get="{% url 'add_intervention' %}?vorgang_id={{vorgang_id}}" hx-target="#form-interventionen">Intervention hinzufügen</button>
+</div>
 
 
