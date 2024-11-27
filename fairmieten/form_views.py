@@ -180,7 +180,9 @@ def add_verursacher(request):
 
 def delete_verursacher(request, verursacher_id):
     vorgang_id = get_vorgang_id(request)
+    print(verursacher_id)
     verursacher = Verursacher.objects.filter(id=verursacher_id).first()
+    print(verursacher)
     if verursacher:
         verursacher.delete()
     forms = get_verursacher(vorgang_id)
@@ -197,7 +199,7 @@ def get_verursacher(vorgang_id):
     if vorgang:
         die_verursacher = Verursacher.objects.filter(vorgang=vorgang)
         forms = [VerursacherForm(instance=verursacher) for verursacher in die_verursacher]
-    forms.append(VerursacherForm())
+    #forms.append(VerursacherForm())
     return forms
  
 
