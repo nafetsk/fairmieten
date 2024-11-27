@@ -17,6 +17,7 @@ RUN poetry install --no-root
 # Copy the project code into the container
 COPY . /app/
 COPY main/.env.template main/.env
+RUN poetry run python3 manage.py collectstatic
 
 RUN apk add nodejs npm sqlite bash
 RUN npx tailwindcss -i ./fairmieten/static/css/t_input.css -o ./fairmieten/static/css/t_output.css --minify
