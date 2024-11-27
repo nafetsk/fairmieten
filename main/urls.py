@@ -42,6 +42,9 @@ urlpatterns = [
     path('vorgang/diskriminierung', fairmieten.form_views.create_diskriminierung, name='create_diskriminierung'),
     path('vorgang/verursacher', fairmieten.form_views.create_verursacher, name='create_verursacher'),
     path('vorgang/intervention', fairmieten.form_views.create_intervention, name='create_intervention'),
+    path('vorgang/interventionen', fairmieten.form_views.create_interventionen, name='create_interventionen'),
+    path('vorgang/intervention/add', fairmieten.form_views.add_intervention, name='add_intervention'),
+    path('vorgang/intervention/delete/<uuid:intervention_id>/', fairmieten.form_views.delete_intervention, name='delete_intervention'),
     path('vorgang/loesungsansaetze', fairmieten.form_views.create_loesungsansaetze, name='create_loesungsansaetze'),
     path('vorgang/ergebnis', fairmieten.form_views.create_ergebnis, name='create_ergebnis'),
 

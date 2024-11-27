@@ -1,0 +1,22 @@
+{% load widget_tweaks %}
+
+{% if form %}
+<form class="inner-form-ergebnis mb-0" id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}" 
+	hx-trigger="keyup[key=='Enter'] from:input, focusout from:textarea, change from:select" hx-swap="focus-scroll:true">
+	{% csrf_token %}
+	<!-- Verstecktes Feld für die ID -->
+	{%if form.instance.id %}
+		<input type="hidden" name="id" value="{{ form.instance.id }}">
+	{% endif %}
+	<div class="flex flex-col lg:flex-row gap-4">
+		<label class="basis-1/4 hidden lg:block text-right"><a href="#" hx-get="{% url 'delete_intervention' form.instance.id %}?vorgang_id={{vorgang_id}}" hx-target="#form-interventionen">x{{ forloop.counter }}</a></label>
+		{{form.datum|add_class:"basis-1/4"}}
+		{{form.form_item|add_class:"basis-2/4"}}
+	</div>
+	<div class="flex flex-col lg:flex-row gap-4">
+		<label class="basis-1/4 lg:text-right">{{form.bemerkung.label}}</label>
+		{{form.bemerkung|add_class:"basis-3/4"}}
+		</div>
+	</form>
+{% endif %}
+
