@@ -5,13 +5,13 @@
 <div>
     <div class="content">
         <div class="flex gap-2">
-            <input hx-get="/vorgang/liste/?{{request.META.QUERY_STRING}}" hx-target="#htmx-content" name="freitextsuche" placeholder="freitext"></input>            
-            <select class="w-auto p-2 bg-white h-12" hx-get="{% url 'such_feld' %}?{{request.META.QUERY_STRING}}" hx-target="#such-input-feld" name="meta.feld_name">
+            <input hx-get="/vorgang/liste/?{{request.META.QUERY_STRING}}" hx-target="#htmx-content" name="freitextsuche" placeholder="freitext" class="basis-1/3"></input>            
+            <select class="basis-1/3 p-2 bg-white h-12" hx-get="{% url 'such_feld' %}?{{request.META.QUERY_STRING}}" hx-target="#such-input-feld" name="meta.feld_name">
                 <option value="fallnummer">Fallnummer</option>
                 <option value="sprache_item">Sprache</option>
                 <option value="bezirk_item">Bezirk</option>
             </select>
-            <span id="such-input-feld">
+            <span id="such-input-feld" class="basis-1/3">
                 {% include 'such_input_feld.html' with name="fallnummer" %}
             </span>
         </div>

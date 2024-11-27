@@ -137,9 +137,20 @@ def create_ergebnis(request):
         {"form": form, "item_key": "ergebnis", "vorgang_id": get_vorgang_id(request)},
     )
 
+
 def create_verursacher(request):
     vorgang_id = get_vorgang_id(request)
-    
+    forms = get_verursacher(vorgang_id)
+    return render(
+        request,
+        "inner_form_verursacher.html",
+        {"forms": forms, "item_key": "verursacher", "vorgang_id": vorgang_id},
+    )
+
+def create_one_verursacher(request):
+    vorgang_id = get_vorgang_id(request)
+
+    form = None
     if request.method == "POST":
         dict = request.POST
         verursacher = Verursacher.objects.filter(id=dict['id']).first() if dict['id'] else None
@@ -149,20 +160,46 @@ def create_verursacher(request):
             form = VerursacherForm(dict)
             form.instance.vorgang_id = vorgang_id
         form.save()
+ 
+    return render(
+        request,
+        "inner_form_one_verursacher.html",
+        {"form": form, "item_key": "verursacher", "vorgang_id": vorgang_id},
+    )
 
-    # Daten für die Darstellung der Formulare bereitstellen
+def add_verursacher(request):
+    vorgang_id = get_vorgang_id(request)
+    Verursacher.objects.create(vorgang_id=vorgang_id)
+    forms = get_verursacher(vorgang_id)
+    print(forms)
+    return render(
+        request,
+        "inner_form_verursacher.html",
+        {"forms": forms, "item_key": "verursacher", "vorgang_id": vorgang_id},
+    )
+
+def delete_verursacher(request, verursacher_id):
+    vorgang_id = get_vorgang_id(request)
+    verursacher = Verursacher.objects.filter(id=verursacher_id).first()
+    if verursacher:
+        verursacher.delete()
+    forms = get_verursacher(vorgang_id)
+    return render(
+        request,
+        "inner_form_verursacher.html",
+        {"forms": forms, "item_key": "verursacher", "vorgang_id": vorgang_id},
+    )
+
+def get_verursacher(vorgang_id):
+   # Daten für die Darstellung der Formulare bereitstellen
     forms = []
     vorgang = Vorgang.objects.filter(id=vorgang_id).first()
     if vorgang:
         die_verursacher = Verursacher.objects.filter(vorgang=vorgang)
         forms = [VerursacherForm(instance=verursacher) for verursacher in die_verursacher]
     forms.append(VerursacherForm())
-    
-    return render(
-        request,
-        "inner_form_verursacher.html",
-        {"forms": forms, "item_key": "verursacher", "vorgang_id": vorgang_id},
-    )
+    return forms
+ 
 
 def create_interventionen(request):
     vorgang_id = get_vorgang_id(request)
@@ -186,7 +223,6 @@ def add_intervention(request):
     vorgang_id = get_vorgang_id(request)
     Intervention.objects.create(vorgang_id=vorgang_id)
     forms = get_interventionen(vorgang_id)
-    print(forms)
 
     return render(
         request,
@@ -203,7 +239,7 @@ def delete_intervention(request, intervention_id):
     forms = get_interventionen(vorgang_id)
     return render(
         request,
-        "inner_form_intervention.html",
+        "inner_form_interventionen.html",
         {"forms": forms, "item_key": "intervention", "vorgang_id": vorgang_id},
     )
 
