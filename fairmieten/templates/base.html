@@ -7,6 +7,7 @@
       integrity="sha384-Y7hw+L/jvKeWIRRkqWYfPcvVxHzVzn5REgzbawhxAuQGwX1XWe70vji+VSeHOThJ"
       crossorigin="anonymous"
     ></script>
+    <script src="https://unpkg.com/idiomorph@0.3.0/dist/idiomorph-ext.min.js"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/chart.js"
     ></script>
@@ -19,7 +20,7 @@
     <link rel="stylesheet" href="{% static 'css/forms.css' %}" />
 
   </head>
-  <body>
+  <body hx-ext="morph">
     <div class="header">
       <div class="container">
         {% include 'header.html' %}

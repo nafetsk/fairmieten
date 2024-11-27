@@ -1,0 +1,16 @@
+{% load widget_tweaks %}
+
+<label class="lg:hidden"><b>Interventionen</b></label>
+<div class="flex gap-4">
+	<label class="basis-1/4 lg:text-right hidden lg:block"><b>Interventionen</b></label>
+	<label class="basis-1/4">Datum</label>
+	<label class="basis-2/4">Form</label>
+</div>
+
+{% for form in forms %}
+	{% include 'form_intervention.html' with form=form %}
+{% endfor %}
+
+<button class="btn btn-primary" hx-get="{% url 'add_intervention' %}?vorgang_id={{vorgang_id}}" hx-target="#form-interventionen">Intervention hinzufügen</button>
+
+

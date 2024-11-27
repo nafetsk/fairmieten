@@ -29,7 +29,7 @@ form_liste[3] = [
     {"key": "diskriminierung", "label": "Diskriminierung", "form": DiskriminierungForm},
     {"key": "verursacher", "label": "Verursacher", "form": VerursacherForm},
     {"key": "loesungsansaetze", "label": "Lösungsansätze", "form": LoesungsansaetzeForm},
-    {"key": "intervention", "label": "Interventionen", "form": InterventionForm},
+    {"key": "interventionen", "label": "Interventionen", "form": InterventionForm},
     {"key": "ergebnis", "label": "Ergebnis", "form": ErgebnisForm},
 ]
 
@@ -171,10 +171,61 @@ def create_verursacher(request):
         {"forms": forms, "item_key": "verursacher", "vorgang_id": vorgang_id},
     )
 
+def create_interventionen(request):
+    vorgang_id = get_vorgang_id(request)
+    forms = get_interventionen(vorgang_id)
+    return render(
+        request,
+        "inner_form_interventionen.html",
+        {"forms": forms, "item_key": "intervention", "vorgang_id": vorgang_id},
+    )
 
 def create_intervention(request):
     vorgang_id = get_vorgang_id(request)
-    
+    form = save_intervention(request,vorgang_id)
+    return render(
+        request,
+        "form_intervention.html",
+        {"form": form, "item_key": "intervention", "vorgang_id": vorgang_id},
+    )
+
+def add_intervention(request):
+    vorgang_id = get_vorgang_id(request)
+    Intervention.objects.create(vorgang_id=vorgang_id)
+    forms = get_interventionen(vorgang_id)
+    print(forms)
+
+    return render(
+        request,
+        "inner_form_interventionen.html",
+        {"forms": forms, "item_key": "intervention", "vorgang_id": vorgang_id},
+    )
+
+def delete_intervention(request, intervention_id):
+    vorgang_id = get_vorgang_id(request)
+    intervention = Intervention.objects.filter(id=intervention_id).first()
+    if intervention:
+        intervention.delete()
+
+    forms = get_interventionen(vorgang_id)
+    return render(
+        request,
+        "inner_form_intervention.html",
+        {"forms": forms, "item_key": "intervention", "vorgang_id": vorgang_id},
+    )
+
+def get_interventionen(vorgang_id):
+        # Daten für die Darstellung der Formulare bereitstellen
+    forms = []
+    vorgang = Vorgang.objects.filter(id=vorgang_id).first()
+    if vorgang:
+        interventionen = Intervention.objects.filter(vorgang=vorgang)
+        forms = [InterventionForm(instance=intervention) for intervention in interventionen]
+    #forms.append(InterventionForm())
+    return forms
+
+def save_intervention(request,vorgang_id):
+    form = None
     if request.method == "POST":
         dict = request.POST
         intervention = Intervention.objects.filter(id=dict['id']).first() if dict['id'] else None
@@ -184,23 +235,7 @@ def create_intervention(request):
             form = InterventionForm(dict)
             form.instance.vorgang_id = vorgang_id
         form.save()
-
-    # Daten für die Darstellung der Formulare bereitstellen
-    forms = []
-    vorgang = Vorgang.objects.filter(id=vorgang_id).first()
-    if vorgang:
-        interventionen = Intervention.objects.filter(vorgang=vorgang)
-        forms = [InterventionForm(instance=intervention) for intervention in interventionen]
-    forms.append(InterventionForm())
-    
-    return render(
-        request,
-        "inner_form_intervention.html",
-        {"forms": forms, "item_key": "intervention", "vorgang_id": vorgang_id},
-    )
-
-
-
+    return form
 
 
 # *** Hilfsfunktionen *******************************************
