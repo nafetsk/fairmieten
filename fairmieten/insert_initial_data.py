@@ -40,6 +40,7 @@ def setup(apps = None, schema_editor = None):
         "gender_item": "Geschlecht",
         "betroffen_item": "Wer ist betroffen?",
         "prozeskostenuebernahme_item": "Prozesskostenübernahme",
+        "andere_diskriminierung": "andere Diskriminierung",
         "bereich_diskriminierung_item": "Bereich der Diskriminierung",
         "anderer_bereich_diskriminierung": "anderer Bereich der Diskriminierung",
         "diskriminierungsform": "Form der Diskriminierung",
@@ -253,6 +254,10 @@ def setup(apps = None, schema_editor = None):
     for diskriminierung, diskrimminierungsart in diskriminierungen.items():
         typ = Diskrimminierungsart.objects.filter(name=diskrimminierungsart).first()
         Diskriminierung.objects.create(name=diskriminierung, typ=typ)
+
+    # andere Diskriminierung
+    for diskrimminierungsart in Diskrimminierungsart.objects.all():
+        Diskriminierung.objects.create(name=f"andere ({diskrimminierungsart.name})", typ=diskrimminierungsart)
 
     # Diskriminierungsform
     Diskriminierungsform.objects.all().delete()

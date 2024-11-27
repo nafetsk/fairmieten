@@ -112,6 +112,13 @@ def create_diskriminierung(request):
     )
     if request.method == "POST" and form.is_valid():
         form.save()
+
+    if form.instance and form.instance.diskriminierung:
+        print(form.instance.diskriminierung.all())
+
+    if form.instance and "andere" not in [diskriminierung.name.split()[0] for diskriminierung in form.instance.diskriminierung.all()]:
+        form.fields['andere_diskriminierung'].widget = forms.HiddenInput()
+
     return render(
         request,
         "inner_form_diskriminierung.html",

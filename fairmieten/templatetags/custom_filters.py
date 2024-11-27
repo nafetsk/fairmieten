@@ -19,7 +19,6 @@ def groupby_typ(diskriminierungen):
         rassismus_group = {"Rassismus": grouped.pop("Rassismus")}
         # neues Erstellen mit Rassismus am Anfang und dem Rest dahinter
         grouped = {**rassismus_group, **grouped}
-    
     return grouped
 
     
@@ -37,3 +36,21 @@ def params_plus(query_params, param_to_add, value):
     params[param_to_add] = value
     new_query_string = urlencode(params)
     return new_query_string
+
+@register.filter
+def get_item(dictionary, key):
+    """Retrieve an item from a dictionary by key."""
+    return dictionary.get(key, None)
+
+@register.filter
+def attribute(obj, attr):
+    """Retrieve an attribute from an object or handle related items."""
+    # First, try to get the attribute from the object
+    attribute_value = getattr(obj, attr, None)
+
+    # If the attribute is a many-to-many relation, return all related items
+    if attribute_value and hasattr(attribute_value, 'all'):
+        return attribute_value.all()
+    
+    # Otherwise, return the attribute value
+    return attribute_value
