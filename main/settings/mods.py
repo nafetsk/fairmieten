@@ -47,6 +47,9 @@ UNFOLD = {
         "light": lambda request: static("logo/logo_icon.svg"),  # light mode
         "dark": lambda request: static("icon-dark.svg"),  # dark mode
     },
+	"STYLES": [
+        lambda request: static("css/unfold_custom.css"),
+    ],
      "COLORS": {
         "font": {
             "subtle-light": "107 114 128",
