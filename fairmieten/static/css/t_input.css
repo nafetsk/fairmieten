@@ -4,6 +4,19 @@
 @tailwind utilities;
 
 
+@layer base {
+	h1 {
+		@apply text-3xl font-bold
+	}
+	h2 {
+		@apply text-2xl font-bold
+	}
+	h3 {
+		@apply text-xl font-bold
+	}
+}
+
+
 @layer utilities {
 	.vorgang_neu .inner-form p, .diskriminierungart-container .diskriminierungart-row{
 		@apply flex flex-col lg:flex-row

@@ -85,6 +85,7 @@ class Vorgang(models.Model):
 
     # Diskriminierung
     diskriminierung = models.ManyToManyField(Diskriminierung, blank=True)
+    andere_diskriminierung = models.CharField(max_length=100, null=True, blank=True)
     # Loesungsansaetze
     loesungsansaetze = models.ManyToManyField(Loesungsansaetze, blank=True)
     rechtsbereich = models.ManyToManyField(Rechtsbereich, blank=True)
@@ -118,7 +119,7 @@ class Intervention(models.Model):
 
 class Item(models.Model):
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False)
-    key = models.CharField(max_length=100)  # TODO: bessere Datentyp?
+    key = models.CharField(max_length=100) 
     value = models.CharField(max_length=100)
 
 

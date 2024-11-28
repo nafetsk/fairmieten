@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import QuerySet, Q, Field
-from .models import FormValues, Vorgang
+from .models import FormValues, Vorgang, FormLabels
 from .view_utils import layout
 from datetime import timedelta
 
@@ -78,8 +78,43 @@ def such_feld(request: HttpRequest) -> HttpResponse:
 def vorgang_detail(request: HttpRequest, vorgang_id: UUID) -> HttpResponse:
     vorgang = Vorgang.objects.get(id=vorgang_id)
     beschw_frist, klage_frist, strafan_frist = get_fristen(vorgang.datum_vorfall_von)
-    print(vorgang.fallnummer)
-    return render(request, 'vorgang_detail.html', {'layout': layout(request), 'vorgang': vorgang, 'beschw_frist': beschw_frist, 'klage_frist': klage_frist, 'strafan_frist': strafan_frist})
+
+    # Retrieve all field labels from FormLabels
+    labels = dict(
+            FormLabels.objects.filter(model="Vorgang").values_list(
+                "field", "label"
+            )
+        )
+    
+    # Get all fields of the Vorgang model
+    normal_fields = [
+        field.name
+        for field in Vorgang._meta.get_fields()
+        if not field.is_relation or (field.is_relation and not field.many_to_many)
+    ]
+    mm_fields = [
+        field.name
+        for field in Vorgang._meta.get_fields()
+        if field.is_relation and field.many_to_many
+    ]
+
+    # exclude fields
+    normal_fields = [field for field in normal_fields if field not in ["id", "created", "created_by", "modified"]]
+
+    return render(
+        request,
+        'vorgang_detail.html',
+        {
+            'layout': layout(request),
+            'vorgang': vorgang,
+            'beschw_frist': beschw_frist,
+            'klage_frist': klage_frist,
+            'strafan_frist': strafan_frist,
+            'field_labels': labels,
+            'normal_fields': normal_fields,
+            'mm_fields': mm_fields,
+        },
+    )
 
 @login_not_required
 def login_view(request):
