@@ -102,7 +102,7 @@ class PersonForm(DataTextForm):
 class DiskriminierungForm(DataTextForm):
     class Meta:
         model = Vorgang
-        fields = ["diskriminierung"]
+        fields = ["diskriminierung", "andere_diskriminierung"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
