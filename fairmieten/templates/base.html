@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="{% static 'css/forms.css' %}" />
 
   </head>
-  <body hx-ext="morph">
+  <body hx-ext="morph" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     <div class="header">
       <div class="container">
         {% include 'header.html' %}

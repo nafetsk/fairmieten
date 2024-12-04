@@ -1,14 +1,16 @@
+{% load widget_tweaks %}
+
 <form class="inner-form-person" id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}" 
-  hx-trigger="keyup[key=='Enter'] from:input, focusout from:textarea, focusout from:input, change from:select,change from:input[type=checkbox], click from:#submit-all" hx-swap="outerHTML">
+  hx-trigger="keyup[key=='Enter'] from:input, focusout from:textarea, focusout from:input, change from:select,change from:input[type=checkbox], click from:#submit-all" hx-swap="morph:outerHTML">
   {% csrf_token %}
 
 
 {% for field in form %}
   {% if field.name != 'diskriminierungsform' and field.name != "andere_diskriminierungsform" and not field.is_hidden %}
-    <div class="flex flex-col lg:flex-row">
+    <div id="{{field.name}}_div" class="flex flex-col lg:flex-row" >
       <label class="basis-1/4 lg:text-right mr-4"> {{ field.label }} </label>
       <span class="basis-3/4">
-      {{ field }}
+          {{ field }}
       </span>
     </div>
   {% endif %}

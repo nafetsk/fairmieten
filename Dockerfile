@@ -16,7 +16,7 @@ RUN poetry install --no-root
 
 # Copy the project code into the container
 COPY . /app/
-COPY main/.env.template main/.env
+COPY data/env_variables/.env.template data/env_variables/.env
 RUN poetry run python3 manage.py collectstatic
 
 RUN apk add nodejs npm sqlite bash

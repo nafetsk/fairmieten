@@ -1,7 +1,10 @@
 import os
 import environ
 from django.templatetags.static import static
-from .main import INSTALLED_APPS, BASE_DIR, MIDDLEWARE
+from .main import INSTALLED_APPS, MIDDLEWARE
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 INSTALLED_APPS = [ "unfold"] + INSTALLED_APPS + [ "environ", "fairmieten", "main.hello", "aggregation", "widget_tweaks"]
@@ -14,7 +17,7 @@ env = environ.Env(
 )
 
 # Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+environ.Env.read_env(os.path.join(BASE_DIR, "data/env_variables", ".env"))
 
 
 # False if not in os.environ because of casting above
@@ -38,7 +41,7 @@ LOGIN_URL = "/login/"
 DATABASES = {
     # read os.environ['DATABASE_URL'] and raises
     # ImproperlyConfigured exception if not found
-    "default": env.db_url("DATABASE_URL", default="sqlite:////tmp/my-tmp-sqlite.db")
+    "default": env.db_url("DATABASE_URL", default="sqlite:///data/database/db.sqlite3")
 }
 
 UNFOLD = {

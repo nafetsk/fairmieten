@@ -1,7 +1,7 @@
 {% load custom_filters %}
 
 <form class="inner-form-diskrimminierung" id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}" 
-  hx-trigger="change, click from:#submit-all" hx-swap="outerHTML">
+  hx-trigger="change, click from:#submit-all" hx-swap="morph:outerHTML">
   {% csrf_token %}
   <div class="diskriminierungart-container ">
     {% with form.diskriminierung.field.queryset|groupby_typ as grouped_diskriminierung %}

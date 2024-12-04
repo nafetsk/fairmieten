@@ -39,11 +39,13 @@ form_liste[3] = [
 
 def vorgang_erstellen(request, type_nr = 2):
     vorgang_id = uuid.uuid4()
-    return render(
+    response = render(
         request,
         "add_vorgang.html",
         {"base": layout(request), "form_liste": form_liste[type_nr], "vorgang_id": vorgang_id, "type_nr": type_nr },
     )
+    response['HX-Push-Url'] = "/vorgang/edit/" + str(vorgang_id) + "/" + str(type_nr)  # Hier den gewünschten Header setzen    
+    return response
 
 
 def vorgang_bearbeiten(request, vorgang_id: uuid.UUID, type_nr = 2):
