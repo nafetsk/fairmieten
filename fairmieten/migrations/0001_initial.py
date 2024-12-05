@@ -5,7 +5,30 @@ import django.utils.timezone
 import uuid
 from django.conf import settings
 from django.db import migrations, models
+from django.contrib.auth.models import User
+import os
 from fairmieten.insert_initial_data import setup
+
+
+# Functions from the following migrations need manual copying.
+# Move them and any dependencies into this file, then update the
+# RunPython operations to refer to the local versions:
+# fairmieten.migrations.0018_create_superuser
+
+def create_superuser(apps, schema_editor):
+    # Umgebungsvariablen abrufen
+    username = os.getenv('ADMIN_USERNAME', 'admin')
+    password = os.getenv('ADMIN_PASSWORD')
+    email = os.getenv('ADMIN_EMAIL', 'admin@example.com')
+
+    # Superuser nur erstellen, wenn er nicht bereits existiert
+    print("Search for ", username)
+    user = User.objects.filter(username=username)
+    print("User: ", user)
+    if not user.exists():
+        print("Create Superuser")
+        User.objects.create_superuser(username=username, email=email, password=password)
+
 
 class Migration(migrations.Migration):
 
@@ -164,6 +187,9 @@ class Migration(migrations.Migration):
             model_name='vorgang',
             name='created_by',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.RunPython(
+            code=create_superuser,
         ),
         migrations.AddField(
             model_name='vorgang',
