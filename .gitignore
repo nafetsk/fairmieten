@@ -1,6 +1,6 @@
-db.sqlite3
+data/database/db.sqlite3
 __pycache__/
-main/.env
+data/env_variables/.env
 .venv
 .vscode
 staticfiles

@@ -2,8 +2,8 @@
 FROM python:3.11-alpine
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1 #?
-ENV PYTHONUNBUFFERED 1 #?
+ENV PYTHONDONTWRITEBYTECODE=1 
+ENV PYTHONUNBUFFERED=1
 ENV POETRY_VIRTUALENVS_CREATE=false
 
 # Set the working directory
@@ -17,12 +17,13 @@ RUN poetry install --no-root
 # Copy the project code into the container
 COPY . /app/
 COPY data/env_variables/.env.template data/env_variables/.env
-RUN poetry run python3 manage.py collectstatic
+
+RUN poetry run python3 manage.py collectstatic --noinput
 
 RUN apk add nodejs npm sqlite bash
 RUN npx tailwindcss -i ./fairmieten/static/css/t_input.css -o ./fairmieten/static/css/t_output.css --minify
 
-# Ensure entrypoint.sh is copied and has the correct permissions
+# Ensure entrypoint.sh Vis copied and has the correct permissions
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
