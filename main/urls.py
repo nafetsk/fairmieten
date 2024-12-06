@@ -28,9 +28,9 @@ urlpatterns = [
 
     path("aggregation/", include(aggregation.urls)),
 
-	path('vorgang/neu/', fairmieten.form_views.vorgang_erstellen, {'type_nr': 1}, name='vorgang_erstellen'),
+	path('vorgang/neu/', fairmieten.form_views.vorgang_erstellen, {'type_nr': 2}, name='vorgang_erstellen'),
     path('vorgang/neu/<int:type_nr>/', fairmieten.form_views.vorgang_erstellen, name='vorgang_erstellen'),
-    path('vorgang/edit/<uuid:vorgang_id>/', fairmieten.form_views.vorgang_bearbeiten, {'type_nr': 1}, name='vorgang_bearbeiten'),
+    path('vorgang/edit/<uuid:vorgang_id>/', fairmieten.form_views.vorgang_bearbeiten, {'type_nr': 2}, name='vorgang_bearbeiten'),
     path('vorgang/edit/<uuid:vorgang_id>/<int:type_nr>/', fairmieten.form_views.vorgang_bearbeiten, name='vorgang_bearbeiten'),
     path('vorgang/delete/<uuid:vorgang_id>/', fairmieten.views.delete_vorgang, name='delete_vorgang'),
     path('vorgang/save/<int:form_nr>/', fairmieten.form_views.save_form, name='save_form'),

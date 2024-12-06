@@ -93,6 +93,9 @@ def create_vorgang(request):
 def create_person(request):
     form = PersonForm(post_or_none(request), instance=get_Instance(request, Vorgang, "vorgang_id"))
     if request.method == "POST" and form.is_valid():
+        print(form.instance.created_by)
+        set_created_by(request, form)
+        print(form.instance.created_by)
         form.save()
     
     if form.instance and form.instance.bereich_diskriminierung_item != 'anderer':
@@ -113,6 +116,7 @@ def create_diskriminierung(request):
         post_or_none(request), instance=get_Instance(request, Vorgang, "vorgang_id")
     )
     if request.method == "POST" and form.is_valid():
+        set_created_by(request, form)
         form.save()
 
     if form.instance and form.instance.diskriminierung:
@@ -132,6 +136,7 @@ def create_loesungsansaetze(request):
         post_or_none(request), instance=get_Instance(request, Vorgang, "vorgang_id")
     )
     if request.method == "POST" and form.is_valid():
+        set_created_by(request, form)
         form.save()
 
     return render(
@@ -145,6 +150,7 @@ def create_ergebnis(request):
         post_or_none(request), instance=get_Instance(request, Vorgang, "vorgang_id")
     )
     if request.method == "POST" and form.is_valid():
+        set_created_by(request, form)
         form.save()
 
     return render(
@@ -300,6 +306,7 @@ def set_vorgangstyp(request, form):
 
 def get_Instance(request, model: Type[models.Model], id_name: str = "id"):
     id = request.GET.get(id_name, None)
+    print(id)
     if request.method == "POST":
         if id is None or id == "None":
             id = uuid.uuid4()

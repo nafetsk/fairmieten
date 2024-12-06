@@ -19,7 +19,7 @@ class FormLabelsAdmin(unfold.admin.ModelAdmin):
     search_fields = ('model', 'field', 'label')  # Ermöglicht die Suche nach 'field' und 'label'
     ordering = ('model', 'field')
 
-class FormValuesAdmin(admin.ModelAdmin):
+class FormValuesAdmin(unfold.admin.ModelAdmin):
     list_display = ('model', 'field', 'key', 'value', 'encoding')
     search_fields = ('model', 'field', 'value')  # Ermöglicht die Suche nach 'field' und 'label'
     ordering = ('model', 'field')
@@ -27,14 +27,14 @@ class FormValuesAdmin(admin.ModelAdmin):
 # Register your models here.
 admin.site.register(Diskrimminierungsart, unfold.admin.ModelAdmin)
 admin.site.register(Diskriminierung, unfold.admin.ModelAdmin)
-admin.site.register(Loesungsansaetze)
-admin.site.register(Ergebnis)
-admin.site.register(Vorgang)
-admin.site.register(Intervention)
+admin.site.register(Loesungsansaetze, unfold.admin.ModelAdmin)
+admin.site.register(Ergebnis, unfold.admin.ModelAdmin)
 admin.site.register(FormValues, FormValuesAdmin)
 admin.site.register(FormLabels,FormLabelsAdmin)
-admin.site.register(Charts)
-admin.site.register(Verursacher)
-admin.site.register(Diskriminierungsform)
+admin.site.register(Charts, unfold.admin.ModelAdmin)
+admin.site.register(Diskriminierungsform, unfold.admin.ModelAdmin)
+admin.site.register(Vorgang)
+#admin.site.register(Verursacher)
+#admin.site.register(Intervention)
 
 

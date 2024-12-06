@@ -37,11 +37,15 @@ LOGIN_URL = "/login/"
 
 # Parse database connection url strings
 # like psql://user:pass@127.0.0.1:8458/db
+
+
 DATABASES = {
     # read os.environ['DATABASE_URL'] and raises
     # ImproperlyConfigured exception if not found
-    "default": env.db_url("DATABASE_URL", default="sqlite:///data/database/db.sqlite3")
+    "default": env.db_url("DATABASE_URL", default="sqlite:///data/database/db.sqlite3"),
 }
+DATABASES["default"]["OPTIONS"] = env.list("DATABASE_OPTIONS",default={"timeout": 20, "transaction_mode": "IMMEDIATE"})
+print(DATABASES["default"])
 
 UNFOLD = {
     "SITE_HEADER": "Fairmieten Admin",
