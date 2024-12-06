@@ -33,7 +33,10 @@ def params_minus(query_params, param_to_remove):
 @register.simple_tag
 def params_plus(query_params, param_to_add, value):
     params = query_params.copy()
-    params[param_to_add] = value
+    if(param_to_add == 'sort_by' and params.get('sort_by') == value):
+        params['sort_by'] = '-' + value
+    else:
+        params[param_to_add] = value
     new_query_string = urlencode(params)
     return new_query_string
 

@@ -44,7 +44,7 @@ DATABASES = {
     # ImproperlyConfigured exception if not found
     "default": env.db_url("DATABASE_URL", default="sqlite:///data/database/db.sqlite3"),
 }
-DATABASES["default"]["OPTIONS"] = env.list("DATABASE_OPTIONS",default={"timeout": 20, "transaction_mode": "IMMEDIATE"})
+DATABASES["default"]["OPTIONS"] = env.list("DATABASE_OPTIONS",default={"timeout": 20})
 print(DATABASES["default"])
 
 UNFOLD = {

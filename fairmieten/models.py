@@ -101,10 +101,6 @@ class Vorgang(models.Model):
     def __str__(self):
         return str(self.fallnummer)
     
-    def save(self, *args, **kwargs):
-        if not self.vorgangstyp:
-            self.vorgangstyp = Vorgangstyp.objects.get(id=2)
-        super().save(*args, **kwargs)
 
 
 # Verursacher

@@ -25,7 +25,7 @@ def create_superuser(apps, schema_editor):
     print("Search for ", username)
     user = User.objects.filter(username=username)
     print("User: ", user)
-    if not user.exists():
+    if password and not user.exists():
         print("Create Superuser")
         User.objects.create_superuser(username=username, email=email, password=password)
 

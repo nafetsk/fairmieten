@@ -78,8 +78,8 @@ def create_vorgang(request):
     if request.method == "POST" and form.is_valid():
         set_created_by(request, form)
         set_vorgangstyp(request, form)
-        form.save()
-
+        form.save()    
+    
     if form.instance and form.instance.sprache_item != 'andere':
         form.fields['andere_sprache'].widget = forms.HiddenInput() 
 
@@ -91,11 +91,11 @@ def create_vorgang(request):
 
 
 def create_person(request):
+    #return HttpResponse(status=204)
     form = PersonForm(post_or_none(request), instance=get_Instance(request, Vorgang, "vorgang_id"))
     if request.method == "POST" and form.is_valid():
-        print(form.instance.created_by)
         set_created_by(request, form)
-        print(form.instance.created_by)
+        set_vorgangstyp(request, form)
         form.save()
     
     if form.instance and form.instance.bereich_diskriminierung_item != 'anderer':
@@ -107,7 +107,7 @@ def create_person(request):
     return render(
         request,
         "inner_form_person.html",
-        {"form": form, "item_key": "person", "vorgang_id": get_vorgang_id(request)},
+        {"form": form, "item_key": "person", "vorgang_id": get_vorgang_id(request), "type_nr": request.GET.get("type_nr", 2)},
     )
 
 
@@ -296,17 +296,17 @@ def save_intervention(request,vorgang_id):
 
 def set_created_by(request, form):
     if not form.instance.created_by:
-        form.instance.created_by = request.user
+        form.instance.created_by = request.user  # Setze den Wert in der Instanz
+        form.changed_data.append('created_by')  # Füge das Feld zu changed_data hinzu
 
 def set_vorgangstyp(request, form):
     type_nr = request.GET.get("type_nr", 2)
     form.instance.vorgangstyp = Vorgangstyp.objects.get(id=type_nr)
-    form.save()
+    form.changed_data.append('vorgangstyp')
 
 
 def get_Instance(request, model: Type[models.Model], id_name: str = "id"):
     id = request.GET.get(id_name, None)
-    print(id)
     if request.method == "POST":
         if id is None or id == "None":
             id = uuid.uuid4()

@@ -43,14 +43,15 @@ def search_and_sort(request: HttpRequest, vorgang_liste: QuerySet[Vorgang]) -> P
             suchbedingungen = Q()  # Leeres Q-Objekt erstellen
             for feld in Vorgang._meta.get_fields():  # Alle Felder des Modells abrufen
                 if isinstance(feld, Field) and not feld.is_relation :  # Nur Felder ohne ForeignKey oder ManyToMany
-                    print(feld.name)
                     suchbedingungen |= Q(**{f"{feld.name}__icontains": value})  # Fügen Sie die Bedingungen hinzu
             vorgang_liste = vorgang_liste.filter(suchbedingungen)  # Filter anwenden
     
     
     # Sortierung
-    sort_by = request.GET.get('sort_by', 'created')  # Standard-Sortierung
+    sort_by = request.GET.get('sort_by', '-created')  # Standard-Sortierung
+    
     vorgang_liste = vorgang_liste.order_by(sort_by)
+    
 
     #pagination
     page = None

@@ -78,6 +78,8 @@ dokku letsencrypt:enable fwfm
 #than you have to set environment variables in the .env file
 sudo apt install ne
 ne /data/fairmieten/env_variables/.env
+# and create a superuser
+dokku enter fwfm web poetry run python3 manage.py createsuperuser
 
 # now restart your app
 dokku ps:restart fwfm
