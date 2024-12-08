@@ -1,5 +1,5 @@
 <form onsubmit="return false;" class="inner-form" id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}&type_nr={{type_nr}}" 
-  hx-trigger="keyup[key=='Enter'] from:input, focusout from:textarea, focusout from:input, change from:select, click from:#submit-all" hx-swap="morph:outerHTML">
+  hx-trigger="focusout, click from:#submit-all" hx-swap="morph:outerHTML">
   {% csrf_token %}
   {{ form.as_p }}
 </form>

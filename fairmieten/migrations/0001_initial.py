@@ -18,14 +18,14 @@ from fairmieten.insert_initial_data import setup
 def create_superuser(apps, schema_editor):
     # Umgebungsvariablen abrufen
     username = os.getenv('ADMIN_USERNAME', 'admin')
-    password = os.getenv('ADMIN_PASSWORD', 'adminpassword')
+    password = os.getenv('ADMIN_PASSWORD')
     email = os.getenv('ADMIN_EMAIL', 'admin@example.com')
 
     # Superuser nur erstellen, wenn er nicht bereits existiert
     print("Search for ", username)
     user = User.objects.filter(username=username)
     print("User: ", user)
-    if not user.exists():
+    if password and not user.exists():
         print("Create Superuser")
         User.objects.create_superuser(username=username, email=email, password=password)
 

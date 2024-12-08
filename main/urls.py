@@ -28,9 +28,9 @@ urlpatterns = [
 
     path("aggregation/", include(aggregation.urls)),
 
-	path('vorgang/neu/', fairmieten.form_views.vorgang_erstellen, {'type_nr': 1}, name='vorgang_erstellen'),
+	path('vorgang/neu/', fairmieten.form_views.vorgang_erstellen, {'type_nr': 2}, name='vorgang_erstellen'),
     path('vorgang/neu/<int:type_nr>/', fairmieten.form_views.vorgang_erstellen, name='vorgang_erstellen'),
-    path('vorgang/edit/<uuid:vorgang_id>/', fairmieten.form_views.vorgang_bearbeiten, {'type_nr': 1}, name='vorgang_bearbeiten'),
+    path('vorgang/edit/<uuid:vorgang_id>/', fairmieten.form_views.vorgang_bearbeiten, {'type_nr': 2}, name='vorgang_bearbeiten'),
     path('vorgang/edit/<uuid:vorgang_id>/<int:type_nr>/', fairmieten.form_views.vorgang_bearbeiten, name='vorgang_bearbeiten'),
     path('vorgang/delete/<uuid:vorgang_id>/', fairmieten.views.delete_vorgang, name='delete_vorgang'),
     path('vorgang/save/<int:form_nr>/', fairmieten.form_views.save_form, name='save_form'),
@@ -59,22 +59,17 @@ urlpatterns = [
     path('login/', fairmieten.views.login_view, name='login'),
     path('logout/', fairmieten.views.logout_view, name='logout'),
 
-    path('password-reset/', 
-         auth_views.PasswordResetView.as_view(
-         ), 
-         name='password_reset'),
+    path('password-reset/', auth_views.PasswordResetView.as_view(template_name='users/password_reset.html'), name='password_reset'),
     
     path('password-reset/done/', 
-         auth_views.PasswordResetDoneView.as_view(
-         ), 
+         auth_views.PasswordResetDoneView.as_view(template_name='users/password_reset_send.html'), 
          name='password_reset_done'),
     
     path('password-reset-confirm/<uidb64>/<token>/', 
-         auth_views.PasswordResetConfirmView.as_view(
-         ), 
+         auth_views.PasswordResetConfirmView.as_view(template_name = 'users/password_reset_confirm.html'), 
          name='password_reset_confirm'),
     
     path('password-reset-complete/', 
-         auth_views.PasswordResetCompleteView.as_view(), 
+         auth_views.PasswordResetCompleteView.as_view(template_name = 'users/password_reset_complete.html'), 
          name='password_reset_complete'),
 ]   

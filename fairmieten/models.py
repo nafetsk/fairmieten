@@ -100,6 +100,7 @@ class Vorgang(models.Model):
 
     def __str__(self):
         return str(self.fallnummer)
+    
 
 
 # Verursacher
