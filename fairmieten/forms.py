@@ -45,12 +45,9 @@ class DataTextForm(forms.ModelForm):
                 )
             )
         if commit:
-            # If committing, save the instance and the m2m data immediately.
             self.instance.save(update_fields=self.changed_data)
             self._save_m2m()
         else:
-            # If not committing, add a method to the form to allow deferred
-            # saving of m2m data.
             self.save_m2m = self._save_m2m
         return self.instance
 
