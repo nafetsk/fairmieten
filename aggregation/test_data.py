@@ -14,15 +14,17 @@ from fairmieten.models import (
 )
 from datetime import datetime, timedelta
 
+Faker.seed(1)
+random.seed(1)
+fake = Faker()
+
+
 def custom_random_element(field_name):
     options = FormValues.get_field_values(field_name)
     if options:
         first_elements = [option[1] for option in options]
         return random.choice(first_elements)
     return None
-
-
-fake = Faker()
 
 
 def create_test_data():
@@ -36,8 +38,8 @@ def create_test_data():
     start_date = end_date - timedelta(days=4 * 365)
 
     list_vorgangstyp = list(Vorgangstyp.objects.all())
-    print(list_vorgangstyp)
     diskriminierungen_list = list(Diskriminierung.objects.all())
+    
     loesungsansaetze_list = list(Loesungsansaetze.objects.all())
     ergebnisse_list = list(Ergebnis.objects.all())
     rechtsbereiche_list = list(Rechtsbereich.objects.all())
