@@ -22,11 +22,8 @@ poetry run python3 manage.py runserver
 ```
 open a browser an go to:
 ```
-localhost:8000/hello?name=yourname
+localhost:8000
 ```
-
-to see greetings to you.
-
 
 ## Testdaten
 
@@ -37,12 +34,8 @@ poetry run python3 manage.py shell
 Then run 
 ```
 from aggregation.test_data import create_test_data
-create_test_data()
 ```
 to create testdata
-
-## Test Aggregationen
-open `localhost:8000/aggregationen` for a test bar graph
 
 ## Deploy Remote - with dokku  
 (Get yourself a server)[https://kabelkopf.de/index.php/2024/11/26/ubuntu-server-setup/] probably harden it a little bit.

@@ -6,7 +6,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-INSTALLED_APPS = [ "unfold"] + INSTALLED_APPS + [ "environ", "fairmieten", "main.hello", "aggregation", "widget_tweaks"]
+INSTALLED_APPS = [ "unfold"] + INSTALLED_APPS + [ "environ", "fairmieten", "aggregation", "widget_tweaks"]
 
 MIDDLEWARE += ['django_htmx.middleware.HtmxMiddleware', 'whitenoise.middleware.WhiteNoiseMiddleware', "django.contrib.auth.middleware.LoginRequiredMiddleware"]
 
