@@ -178,233 +178,157 @@ def transform_name(name):
 
 
 def csv_download(request):
-    # Create the HttpResponse object with the appropriate CSV header.
-    response: HttpResponse = HttpResponse(content_type="text/csv")
-    current_date = datetime.now().strftime("%Y-%m-%d")
-    response["Content-Disposition"] = f'attachment; filename="data_{current_date}.csv"'
-
-    # Create codebook
+    response = create_csv_response()
     codebook = create_codebook()
-
     writer = csv.writer(response)
 
-    # Get all Diskriminierung names to use as dynamic column headers
-    diskriminierung_list = list(Diskriminierung.objects.all())
-    diskriminierung_names = [
-        f"diskriminierung_{transform_name(d.name)}" for d in diskriminierung_list
+    # Configuration for dynamic columns
+    column_configs = [
+        {
+            'model': Diskriminierung,
+            'prefix': 'diskriminierung',
+            'header_prefix': 'diskriminierung',
+            'through': Vorgang.diskriminierung.through,
+            'filter_field': 'diskriminierung_id',
+        },
+        {
+            'model': Diskrimminierungsart,
+            'prefix': 'diskrimminierungsart',
+            'header_prefix': 'diskriminierungsart',
+            'through': Vorgang.diskriminierung.through,
+            'filter_field': 'diskriminierung__typ_id',
+        },
+        {
+            'model': Diskriminierungsform,
+            'prefix': 'diskriminierungsform',
+            'header_prefix': 'diskriminierungsform',
+            'through': Vorgang.diskriminierungsform.through,
+            'filter_field': 'diskriminierungsform_id',
+        },
+        {
+            'model': Loesungsansaetze,
+            'prefix': 'loesungsansatz',
+            'header_prefix': 'loesungsansaetze',
+            'through': Vorgang.loesungsansaetze.through,
+            'filter_field': 'loesungsansaetze_id',
+        },
+        {
+            'model': Ergebnis,
+            'prefix': 'ergebnis',
+            'header_prefix': 'ergebnis',
+            'through': Vorgang.ergebnis.through,
+            'filter_field': 'ergebnis_id',
+        },
+        {
+            'model': Rechtsbereich,
+            'prefix': 'rechtsbereich',
+            'header_prefix': 'rechtsbereich',
+            'through': Vorgang.rechtsbereich.through,
+            'filter_field': 'rechtsbereich_id',
+        },
     ]
 
-    # Diskriminierungsart
-    diskriminierungsart_list = list(Diskrimminierungsart.objects.all())
-    diskriminierungsart_names = [
-        f"diskriminierungsart_{transform_name(d.name)}"
-        for d in diskriminierungsart_list
-    ]
+    # Prepare configurations and collect instances
+    for config in column_configs:
+        config['instances'] = list(config['model'].objects.all())
 
-    # Diskriminierungsform
-    diskriminierungsform_list = list(Diskriminierungsform.objects.all())
-    diskriminierungsform_names = [
-        f"diskriminierungsform_{transform_name(d.name)}"
-        for d in diskriminierungsform_list
-    ]
+    # Write headers
+    writer.writerow(generate_headers(column_configs))
 
-    # Get all Lösungsansätze
-    loesungsansaetze_list = list(Loesungsansaetze.objects.all())
-    loesungsansaetze_names = [
-        f"loesungsansaetze_{transform_name(d.name)}" for d in loesungsansaetze_list
-    ]
-
-    # Get all Ergebnis
-    ergebnis_list = list(Ergebnis.objects.all())
-    ergebnis_names = [f"ergebnis_{transform_name(d.name)}" for d in ergebnis_list]
-
-    # Get all Rechtsbereich
-    rechtsbereich_list = list(Rechtsbereich.objects.all())
-    rechtsbereich_names = [
-        f"rechtsbereich_{transform_name(d.name)}" for d in rechtsbereich_list
-    ]
-
-    # Write the header row
-    writer.writerow(
-        [
-            # Vorgang
-            "id",
-            "fallnummer",
-            "vorgangstyp",
-            "datum_kontakaufnahme",
-            "kontakaufnahme_durch",
-            "datum_vorfall_von",
-            "datum_vorfall_bis",
-            "sprache",
-            "bezirk",
-            "zugang",
-            # Person
-            "alter",
-            "anzahl_kinder",
-            "geschlecht",
-            "betroffen",
-            "prozesskostenuebernahme",
-            # Aggregierte Columns
-            "anzahl_interventionen",
-            "bereich_der_diskriminierung",
-            # Diskriminierung dumys
-            *diskriminierung_names,
-            # Diskriminierungsart
-            *diskriminierungsart_names,
-            # Diskriminierungsform
-            *diskriminierungsform_names,
-            # Loesungsansaetze
-            *loesungsansaetze_names,
-            # Ergebnis
-            *ergebnis_names,
-            # Rechtsbereich
-            *rechtsbereich_names,
-        ]
-    )
-    # Für Aggregierte Columns
+    # Annotate queryset
     queryset = Vorgang.objects.all().annotate(
-        intervention_count=Count("intervention"),
-        # Dictionary Comprehension mit key: has_diskriminierung_{d.id} und value: True/False
-        **{  # Diskriminierung dummy columns
-            f"has_diskriminierung_{d.id}": Exists(
-                Vorgang.diskriminierung.through.objects.filter(
-                    diskriminierung_id=d.id, vorgang_id=OuterRef("pk")
-                )
-            )
-            for d in diskriminierung_list
-        },
-        **{  # Diskrimminierungsart dummy columns
-            f"has_diskrimminierungsart_{da.id}": Exists(
-                Vorgang.diskriminierung.through.objects.filter(
-                    diskriminierung__typ_id=da.id, vorgang_id=OuterRef("pk")
-                )
-            )
-            for da in diskriminierungsart_list
-        },
-        **{  # Diskriminierungsform dummy columns
-            f"has_diskriminierungsform_{df.id}": Exists(
-                Vorgang.diskriminierungsform.through.objects.filter(
-                    diskriminierungsform_id=df.id, vorgang_id=OuterRef("pk")
-                )
-            )
-            for df in diskriminierungsform_list
-        },
-        **{  # Loesungsansaetze dummy columns
-            f"has_loesungsansatz_{l.id}": Exists(
-                Vorgang.loesungsansaetze.through.objects.filter(
-                    loesungsansaetze_id=l.id, vorgang_id=OuterRef("pk")
-                )
-            )
-            for l in loesungsansaetze_list
-        },
-        **{  # Ergebnis dummy columns
-            f"has_ergebnis_{e.id}": Exists(
-                Vorgang.ergebnis.through.objects.filter(
-                    ergebnis_id=e.id, vorgang_id=OuterRef("pk")
-                )
-            )
-            for e in ergebnis_list
-        },
-        **{  # Rechtsbereich dummy columns
-            f"has_rechtsbereich_{r.id}": Exists(
-                Vorgang.rechtsbereich.through.objects.filter(
-                    rechtsbereich_id=r.id, vorgang_id=OuterRef("pk")
-                )
-            )
-            for r in rechtsbereich_list
-        },
+        intervention_count=Count("intervention")
     )
+    for config in column_configs:
+        queryset = queryset.annotate(**generate_annotations(
+            instances=config['instances'],
+            through_model=config['through'],
+            filter_field=config['filter_field'],
+            prefix=config['prefix']
+        ))
 
     # Write data rows
     for vorgang in queryset:
-        row = [
-            # Vorgang
-            vorgang.id,
-            vorgang.fallnummer,
-            # TODO Kodierung funktioniert hier noch nicht richtig
-            _get_coded_value(vorgang.vorgangstyp.name, codebook, "vorgangstyp") if vorgang.vorgangstyp else "",
-            vorgang.datum_kontaktaufnahme,
-            _get_coded_value(
-                vorgang.kontaktaufnahme_durch_item,
-                codebook,
-                "kontaktaufnahme_durch_item",
-            ),
-            # vorgang.kontaktaufnahme_durch_item,
-            vorgang.datum_vorfall_von,
-            vorgang.datum_vorfall_bis,
-            _get_coded_value(vorgang.sprache_item, codebook, "sprache_item"),
-            _get_coded_value(vorgang.bezirk_item, codebook, "bezirk_item"),
-            _get_coded_value(
-                vorgang.zugang_fachstelle_item, codebook, "zugang_fachstelle_item"
-            ),
-            # Diskriminierung
-            # Person
-            _get_coded_value(vorgang.alter_item, codebook, "alter_item"),
-            vorgang.anzahl_kinder,
-            # vorgang.person.gender_item,
-            _get_coded_value(vorgang.gender_item, codebook, "gender_item"),
-            _get_coded_value(vorgang.betroffen_item, codebook, "betroffen_item"),
-            _get_coded_value(
-                vorgang.prozeskostenuebernahme_item,
-                codebook,
-                "prozeskostenuebernahme_item",
-            ),
-            # Protokoll
-            vorgang.intervention_count,
-            # Bereich der Diskriminierung
-            _get_coded_value(
-                vorgang.bereich_diskriminierung_item,
-                codebook,
-                "bereich_diskriminierung_item",
-            ),
-        ]
-
-        # Add Diskriminierung dummy columns
-        # List Comprehension mit True/False Werten für jede Diskriminierung
-        diskriminierung_data = [
-            getattr(vorgang, f"has_diskriminierung_{d.id}")
-            for d in diskriminierung_list
-        ]
-
-        # Add Diskriminierungsart dummy columns
-        diskriminierungsart_data = [
-            getattr(vorgang, f"has_diskrimminierungsart_{da.id}")
-            for da in diskriminierungsart_list
-        ]
-
-        # Add Loesungsansaetze dummy columns
-        loesungsansaetze_data = [
-            getattr(vorgang, f"has_loesungsansatz_{l.id}")
-            for l in loesungsansaetze_list
-        ]
-
-        # Add Ergebnis dummy columns
-        ergebnis_data = [
-            getattr(vorgang, f"has_ergebnis_{e.id}") for e in ergebnis_list
-        ]
-
-        # Add Rechtsbereich dummy columns
-        rechtsbereich_data = [
-            getattr(vorgang, f"has_rechtsbereich_{r.id}") for r in rechtsbereich_list
-        ]
-
-        # Diskriminierungsform dummy columns
-        diskriminierungsform_data = [
-            getattr(vorgang, f"has_diskriminierungsform_{df.id}")
-            for df in diskriminierungsform_list
-        ]
-
-        writer.writerow(
-            row
-            + diskriminierung_data
-            + diskriminierungsart_data
-            + diskriminierungsform_data
-            + loesungsansaetze_data
-            + ergebnis_data
-            + rechtsbereich_data
-        )
+        static_data = get_static_row_data(vorgang, codebook)
+        dynamic_data = generate_dynamic_row_data(vorgang, column_configs)
+        writer.writerow(static_data + dynamic_data)
 
     return response
+
+
+def create_csv_response() -> HttpResponse:
+    """Create HttpResponse with CSV headers."""
+    response = HttpResponse(content_type="text/csv")
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    response["Content-Disposition"] = f'attachment; filename="data_{current_date}.csv"'
+    return response
+
+
+def generate_headers(column_configs) -> list:
+    """Generate complete list of CSV headers."""
+    static_headers = [
+        "id", "fallnummer", "vorgangstyp", "datum_kontakaufnahme",
+        "kontakaufnahme_durch", "datum_vorfall_von", "datum_vorfall_bis",
+        "sprache", "bezirk", "zugang", "alter", "anzahl_kinder",
+        "geschlecht", "betroffen", "prozesskostenuebernahme",
+        "anzahl_interventionen", "bereich_der_diskriminierung"
+    ]
+    
+    dynamic_headers = []
+    for config in column_configs:
+        dynamic_headers.extend([
+            f"{config['header_prefix']}_{transform_name(instance.name)}"
+            for instance in config['instances']
+        ])
+    
+    return static_headers + dynamic_headers
+
+
+def generate_annotations(instances, through_model, filter_field, prefix) -> dict:
+    """Generate annotation dictionary for a set of instances."""
+    return {
+        f"has_{prefix}_{instance.id}": Exists(
+            through_model.objects.filter(
+                **{filter_field: instance.id},
+                vorgang_id=OuterRef("pk")
+            )
+        )
+        for instance in instances
+    }
+
+
+def get_static_row_data(vorgang, codebook) -> list:
+    """Generate static portion of a data row."""
+    return [
+        vorgang.id,
+        vorgang.fallnummer,
+        _get_coded_value(vorgang.vorgangstyp.name, codebook, "vorgangstyp") if vorgang.vorgangstyp else "",
+        vorgang.datum_kontaktaufnahme,
+        _get_coded_value(vorgang.kontaktaufnahme_durch_item, codebook, "kontaktaufnahme_durch_item"),
+        vorgang.datum_vorfall_von,
+        vorgang.datum_vorfall_bis,
+        _get_coded_value(vorgang.sprache_item, codebook, "sprache_item"),
+        _get_coded_value(vorgang.bezirk_item, codebook, "bezirk_item"),
+        _get_coded_value(vorgang.zugang_fachstelle_item, codebook, "zugang_fachstelle_item"),
+        _get_coded_value(vorgang.alter_item, codebook, "alter_item"),
+        vorgang.anzahl_kinder,
+        _get_coded_value(vorgang.gender_item, codebook, "gender_item"),
+        _get_coded_value(vorgang.betroffen_item, codebook, "betroffen_item"),
+        _get_coded_value(vorgang.prozeskostenuebernahme_item, codebook, "prozeskostenuebernahme_item"),
+        vorgang.intervention_count,
+        _get_coded_value(vorgang.bereich_diskriminierung_item, codebook, "bereich_diskriminierung_item"),
+    ]
+
+
+def generate_dynamic_row_data(vorgang, column_configs) -> list:
+    """Generate dynamic portion of a data row."""
+    dynamic_data = []
+    for config in column_configs:
+        dynamic_data.extend([
+            int(getattr(vorgang, f"has_{config['prefix']}_{instance.id}"))
+            for instance in config['instances']
+        ])
+    return dynamic_data
 
 
 def codebook_download(request: HttpRequest) -> HttpResponse:
