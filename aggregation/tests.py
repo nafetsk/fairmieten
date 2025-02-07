@@ -13,7 +13,7 @@ from fairmieten.models import (
 )
 from aggregation.models import Charts
 from aggregation.test_data import create_test_data
-from aggregation.views import get_query_set, get_dates
+from aggregation.chart_utils import get_query_set, get_dates
 import random
 from faker import Faker
 
@@ -67,13 +67,58 @@ class ChartQuerySetTest(TestCase):
     def test_chart_type_3(self):
         chart_jahr_3 = Charts.objects.get(variable="datum_vorfall_von")
         
-        result_qs = get_query_set(chart_rechtsbereich_3, 2020, 2026)
+        result_qs = get_query_set(chart_jahr_3, 2020, 2026)
         
         expected_qs = [
-            {'count': 13, 'x_variable': 'AGG'},
-            {'count': 6, 'x_variable': 'Sozialrecht'},
-            {'count': 12, 'x_variable': 'Mietrecht'},
-            {'count': 9, 'x_variable': 'Arbeitsrecht'},
+            {'count': 3, 'x_variable': 2021},
+            {'count': 2, 'x_variable': 2022},
+            {'count': 4, 'x_variable': 2023},
+            {'count': 11, 'x_variable': 2024},
         ]
-        print(expected_qs)
-        #self.assertEqual(sorted(result_qs, key=lambda x: x['x_variable']), sorted(expected_qs, key=lambda x: x['x_variable']))
+
+        self.assertEqual(sorted(result_qs, key=lambda x: x['x_variable']), sorted(expected_qs, key=lambda x: x['x_variable']))
+        
+    def test_chart_type_3_time_limit(self):
+        chart_jahr_3 = Charts.objects.get(variable="datum_vorfall_von")
+        
+        result_qs = get_query_set(chart_jahr_3, 2022, 2023)
+        
+        expected_qs = [
+            {'count': 2, 'x_variable': 2022},
+            {'count': 4, 'x_variable': 2023},
+        ]
+
+        self.assertEqual(sorted(result_qs, key=lambda x: x['x_variable']), sorted(expected_qs, key=lambda x: x['x_variable']))    
+   
+    def test_chart_type_4(self):
+        chart_personentyp_4 = Charts.objects.get(variable="personentyp_item")
+        
+        result_qs = get_query_set(chart_personentyp_4, 2020, 2026)
+        
+        expected_qs = [
+            {'count': 1, 'x_variable': 'Freier Träger'},
+            {'count': 1, 'x_variable': 'Hausmeister*in'},
+            {'count': 1, 'x_variable': 'Internetplattform'},
+            {'count': 1, 'x_variable': 'Lebenspartner*in'},
+            {'count': 3, 'x_variable': 'Makler*in'},
+            {'count': 2, 'x_variable': 'Nachbar*in'},
+            {'count': 3, 'x_variable': 'Unterkunfsleitung'},
+            {'count': 1, 'x_variable': 'Wohnungseigentümer*in'},
+            {'count': 3, 'x_variable': 'Wohnungsverwalter*in'},
+            {'count': 1, 'x_variable': 'anderes'},
+            {'count': 3, 'x_variable': 'öffentliche Institution'},
+        ]
+        
+        self.assertEqual(sorted(result_qs, key=lambda x: x['x_variable']), sorted(expected_qs, key=lambda x: x['x_variable']))
+        
+        
+    def test_chart_type_5(self):
+        chart_intervention_5 = Charts.objects.get(variable="intervention")
+        
+        result_qs = get_query_set(chart_intervention_5, 2020, 2026)
+        
+        expected_qs = [
+            {'count': 20, 'x_variable': 1},
+        ]
+        
+        self.assertEqual(sorted(result_qs, key=lambda x: x['x_variable']), sorted(expected_qs, key=lambda x: x['x_variable']))
