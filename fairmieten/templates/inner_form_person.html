@@ -1,7 +1,7 @@
 {% load widget_tweaks %}
 
 <form class="inner-form-person" id="{{item_key}}_form" hx-post="{% url 'create_'|add:item_key %}?id={{form.instance.id}}&vorgang_id={{vorgang_id}}&type_nr={{type_nr}}" 
-  hx-trigger="focusout, click from:#submit-all" hx-swap="morph:outerHTML">
+  hx-trigger="change, click from:#submit-all" hx-swap="morph:outerHTML">
   {% csrf_token %}
 
 

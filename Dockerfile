@@ -18,10 +18,10 @@ RUN poetry install --no-root
 COPY . /app/
 COPY data/env_variables/.env.template data/env_variables/.env
 
-RUN poetry run python3 manage.py collectstatic --noinput
-
 RUN apk add nodejs npm sqlite bash
 RUN npx tailwindcss -i ./fairmieten/static/css/t_input.css -o ./fairmieten/static/css/t_output.css --minify
+
+RUN poetry run python3 manage.py collectstatic --noinput
 
 # Ensure entrypoint.sh Vis copied and has the correct permissions
 COPY entrypoint.sh /app/entrypoint.sh
