@@ -331,7 +331,7 @@ def generate_dynamic_row_data(vorgang, column_configs) -> list:
     return dynamic_data
 
 
-def codebook_download(request: HttpRequest) -> HttpResponse:
+def codebook_download_json(request: HttpRequest) -> HttpResponse:
     codebook = create_codebook()
 
     response = HttpResponse(
@@ -339,4 +339,27 @@ def codebook_download(request: HttpRequest) -> HttpResponse:
     )
     response["Content-Disposition"] = 'attachment; filename="codebook.json"'
 
+    return response
+
+
+def codebook_download_txt(request: HttpRequest) -> HttpResponse:
+    codebook = create_codebook()
+    
+    lines = []
+    # Iterate through each field 
+    for field in codebook.keys():
+        lines.append(field)
+        # Retrieve encodings and sort them as strings to handle mixed types consistently
+        encodings = codebook[field]
+        for encoding in sorted(encodings.keys(), key=lambda x: str(x)):
+            value = encodings[encoding]
+            lines.append(f"{encoding} {value}")
+        lines.append('')
+    
+    # Join all lines into a single string with newline separators
+    text_content = '\n'.join(lines)
+    
+    # Create the HttpResponse with text content and appropriate headers
+    response = HttpResponse(text_content, content_type="text/plain")
+    response["Content-Disposition"] = 'attachment; filename="codebook.txt"'
     return response
