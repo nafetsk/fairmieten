@@ -55,6 +55,12 @@ dokku apps:create fwfm #if not already done
 dokku ports:add fwfm http:80:8001 
 dokku domains:set fwfm <your_app_domain> #optional if not set fwfm.<your_domain> is used
 
+# add your ssh key
+# first copy your public key to the server for example with
+scp ~/.ssh/id_rsa.pub dokku@<your_domain>:/home/dokku/.ssh/id_rsa.pub
+# the add the key to dokku	
+dokku ssh-keys:add KEY_NAME path/to/id_rsa.pub
+
 # and persist your database and enviroment variables
 mkdir -p /data/fairmieten
 sudo docker volume create "fairmieten"   --driver "local"   --opt "type=none"   --opt "device=/data/fairmieten"   --opt "o=bind"
