@@ -13,14 +13,11 @@ from fairmieten.models import (
 )
 from .models import Charts
 from django.db.models.functions import ExtractYear
-from django.db.models import Count, F
-from django.apps import apps
+from django.db.models import Count
 import json
 import csv
 from fairmieten.form_views import layout
-from django.db.models import IntegerField
-from django.db.models import OuterRef, Subquery, Exists
-from django.db.models.functions import Coalesce
+from django.db.models import OuterRef, Exists
 import unicodedata
 from datetime import datetime
 from aggregation.chart_utils import get_query_set
@@ -67,7 +64,7 @@ def get_chart(request: HttpRequest) -> HttpResponse:
     incidents_per_variable = get_query_set(chart, start_year, end_year)
 
     # sum of all incidents
-    total_incidents = sum(incident["count"] for incident in incidents_per_variable)
+    total_incidents = sum(incident["count"] for incident in incidents_per_variable) if incidents_per_variable else 0
 
     print(total_incidents)
     # create dictionary for chart.js
