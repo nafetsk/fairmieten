@@ -269,9 +269,10 @@ def generate_headers(column_configs) -> list:
     static_headers = [
         "id", "fallnummer", "vorgangstyp", "datum_kontakaufnahme",
         "kontakaufnahme_durch", "datum_vorfall_von", "datum_vorfall_bis",
-        "sprache", "bezirk", "zugang", "alter", "anzahl_kinder",
+        "sprache","andere_sprache", "bezirk", "zugang", "alter", "anzahl_kinder",
         "geschlecht", "betroffen", "prozesskostenuebernahme",
-        "anzahl_interventionen", "bereich_der_diskriminierung"
+        "anzahl_interventionen", "bereich_der_diskriminierung", "anderer_bereich_d",
+        "andere_df", "andere_d",
     ]
     
     dynamic_headers = []
@@ -308,6 +309,7 @@ def get_static_row_data(vorgang, codebook) -> list:
         vorgang.datum_vorfall_von,
         vorgang.datum_vorfall_bis,
         _get_coded_value(vorgang.sprache_item, codebook, "sprache_item"),
+        vorgang.andere_sprache,
         _get_coded_value(vorgang.bezirk_item, codebook, "bezirk_item"),
         _get_coded_value(vorgang.zugang_fachstelle_item, codebook, "zugang_fachstelle_item"),
         _get_coded_value(vorgang.alter_item, codebook, "alter_item"),
@@ -317,6 +319,9 @@ def get_static_row_data(vorgang, codebook) -> list:
         _get_coded_value(vorgang.prozeskostenuebernahme_item, codebook, "prozeskostenuebernahme_item"),
         vorgang.intervention_count,
         _get_coded_value(vorgang.bereich_diskriminierung_item, codebook, "bereich_diskriminierung_item"),
+        vorgang.anderer_bereich_diskriminierung,
+        vorgang.andere_diskriminierungsform,
+        vorgang.andere_diskriminierung,
     ]
 
 
