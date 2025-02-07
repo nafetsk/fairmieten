@@ -48,98 +48,97 @@ def aggregation(request: HttpRequest) -> HttpResponse:
         {"base": layout(request), "charts": charts, "years": valid_years},
     )
 
+def get_dates(start_year, end_year):
+    """Hilfsfunktion zur Konvertierung von Jahren in Datumsstrings."""
+    return f"{start_year}-01-01", f"{end_year}-12-31"
 
-def get_query_set(chart: Charts, start_year, end_year):
-    # Convert years to date format
-    start_date = f"{start_year}-01-01"
-    end_date = f"{end_year}-12-31"
-
-    # Filtere die Vorgänge basierend auf dem Zeitraum
-    time_filter = Vorgang.objects.filter(
+def get_time_filter(start_date, end_date):
+    """Erstellt einen gefilterten QuerySet für Vorgang basierend auf dem Zeitraum."""
+    return Vorgang.objects.filter(
         datum_vorfall_von__gte=start_date, 
         datum_vorfall_von__lte=end_date
     )
 
-    if chart.type == 1:  # Variable ist einfaches Feld in Vorgang
-        result = (
-            time_filter.values(x_variable=F(chart.variable))
-            .annotate(count=Count("id"))
-            .order_by(chart.variable)
-        )
-    elif chart.type == 2:  # Variable ist M2M Feld in Vorgang, Vorgang verweist auf ein anderes Modell
+def apply_exclusions(result, chart_type):
+    """Wendet Ausschlussfilter auf das Ergebnis an."""
+    if chart_type in (3, 5):
+        return result.exclude(x_variable=None)
+    return result.exclude(x_variable='')
 
-        modell_class = apps.get_model("fairmieten", chart.model)
+# Handler-Funktionen für jeden Chart-Typ
+def handle_type1(chart, start_date, end_date):
+    """Verarbeitet Chart-Typ 1: Einfaches Feld in Vorgang."""
+    time_filter = get_time_filter(start_date, end_date)
+    return (
+        time_filter.values(x_variable=F(chart.variable))
+        .annotate(count=Count("id"))
+        .order_by(chart.variable)
+    )
 
-        # Filter the related Vorgang instances based on the date range
-        filtered_vorgang = modell_class.objects.filter(
-            vorgang__datum_vorfall_von__gte=start_date,
-            vorgang__datum_vorfall_von__lte=end_date,
-        )
+def handle_type2(chart, start_date, end_date):
+    """Verarbeitet Chart-Typ 2: M2M Feld, Vorgang verweist auf anderes Modell."""
+    model_class = apps.get_model("fairmieten", chart.model)
+    filtered = model_class.objects.filter(
+        vorgang__datum_vorfall_von__gte=start_date,
+        vorgang__datum_vorfall_von__lte=end_date
+    )
+    return filtered.annotate(count=Count("vorgang")).values("count", x_variable=F("name"))
 
-        result = filtered_vorgang.annotate(
-            count=Count("vorgang")
-        ).values(
-            "count",
-            x_variable=F(
-                "name"
-            ),  # hier wird "name" in x_variable umbenannt, damit alles wieder einheitlich ist
-        )
-        print(result)
-    elif chart.type == 3:  # Variable ist Jahr
-        result = (
-            time_filter.annotate(year=ExtractYear(chart.variable))
-            .values(x_variable=F("year"))
-            .annotate(count=Count("id"))
-            .order_by("year")
-        )
-    elif chart.type == 4:  # Variable ist M2M Feld anderes Modell verweist auf Vorgang
-        modell_class = apps.get_model("fairmieten", chart.model)
-        filtered_vorgang = modell_class.objects.filter(
-            vorgang__datum_vorfall_von__gte=start_date,
-            vorgang__datum_vorfall_von__lte=end_date,
-        )
+def handle_type3(chart, start_date, end_date):
+    """Verarbeitet Chart-Typ 3: Variable ist Jahr."""
+    time_filter = get_time_filter(start_date, end_date)
+    return (
+        time_filter.annotate(year=ExtractYear(chart.variable))
+        .values(x_variable=F("year"))
+        .annotate(count=Count("id"))
+        .order_by("year")
+    )
 
-        # Group by the specified variable and count the related Vorgang instances
-        result = (
-            filtered_vorgang.values(chart.variable)
-            .annotate(count=Count("vorgang"))
-            .values(
-                "count",
-                x_variable=F(
-                    chart.variable
-                ),  # Rename the variable to x_variable for consistency
-            )
-        )
-    elif chart.type == 5:  # Anzahl assoziierter Objekte (Anzahl Interventionen)
-        # Es braucht eine Subquery weil wir keine Aggregationen auf Aggregationen machen können
-        subquery = (
-            time_filter.filter(id=OuterRef("id"))
-            .annotate(intervention_count=Count(chart.variable))
-            .values("intervention_count")[:1]  # Get only one result per entry
-        )
+def handle_type4(chart, start_date, end_date):
+    """Verarbeitet Chart-Typ 4: M2M Feld, anderes Modell verweist auf Vorgang."""
+    model_class = apps.get_model("fairmieten", chart.model)
+    filtered = model_class.objects.filter(
+        vorgang__datum_vorfall_von__gte=start_date,
+        vorgang__datum_vorfall_von__lte=end_date
+    )
+    return (
+        filtered.values(chart.variable)
+        .annotate(count=Count("vorgang"))
+        .values("count", x_variable=F(chart.variable))
+    )
 
-        # Step 2: Annotate the main queryset with intervention_count from the subquery
-        queryset = time_filter.annotate(
-            intervention_count=Coalesce(
-                Subquery(subquery), 0, output_field=IntegerField()
-            )
-        )
+def handle_type5(chart, start_date, end_date):
+    """Verarbeitet Chart-Typ 5: Anzahl assoziierter Objekte (Interventionen)."""
+    time_filter = get_time_filter(start_date, end_date)
+    subquery = (
+        time_filter.filter(id=OuterRef("id"))
+        .annotate(intervention_count=Count(chart.variable))
+        .values("intervention_count")[:1]
+    )
+    queryset = time_filter.annotate(
+        intervention_count=Coalesce(Subquery(subquery), 0, output_field=IntegerField())
+    )
+    return queryset.values(x_variable=F("intervention_count")).annotate(count=Count("id"))
 
-        # Step 3: Perform grouping by intervention_count and count occurrences
-        result = (
-            queryset.values(
-                x_variable=F("intervention_count")
-            ).annotate(  # Rename intervention_count to x_variable
-                count=Count("id")
-            )  # Count occurrences for each unique intervention count
-        )
-    else:
+# Mapping von Chart-Typen zu Handler-Funktionen
+chart_handlers = {
+    1: handle_type1,
+    2: handle_type2,
+    3: handle_type3,
+    4: handle_type4,
+    5: handle_type5,
+}
+
+def get_query_set(chart: Charts, start_year, end_year):
+    """Hauptfunktion, die die Verarbeitung an die jeweiligen Handler delegiert."""
+    start_date, end_date = get_dates(start_year, end_year)
+    handler = chart_handlers.get(chart.type)
+    
+    if not handler:
         return None
     
-    if chart.type == 5 or chart.type == 3:
-        return result.exclude(x_variable=None)
-    else:
-        return result.exclude(x_variable='')
+    result = handler(chart, start_date, end_date)
+    return apply_exclusions(result, chart.type) if result is not None else None
 
 
 def get_chart(request: HttpRequest) -> HttpResponse:
