@@ -5,3 +5,4 @@ data/env_variables/.env
 .vscode
 staticfiles
 fairmieten/static/css/t_output.css
+.env
