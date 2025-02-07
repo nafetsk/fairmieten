@@ -6,3 +6,4 @@ data/env_variables/.env
 staticfiles
 fairmieten/static/css/t_output.css
 .env
+node_modules/

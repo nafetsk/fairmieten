@@ -5,6 +5,9 @@ cd fairmieten
 ```
 
 ## Install Local:
+requierements:
+- python
+- npm
 ```
 python3 -m pip install poetry
 poetry config virtualenvs.in-project true #optional
@@ -12,6 +15,7 @@ poetry install
 poetry run python3 manage.py migrate
 cp data/env_variables/.env.template data/env_variables/.env
 edit .env -> choose a secret Secret
+npm install
 npx tailwindcss -i ./fairmieten/static/css/t_input.css -o ./fairmieten/static/css/t_output.css --watch
 poetry run python3 manage.py createsuperuser
 ```
