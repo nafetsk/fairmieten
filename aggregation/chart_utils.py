@@ -4,6 +4,7 @@ from django.apps import apps
 from django.db.models.functions import Coalesce
 from fairmieten.models import Vorgang
 from .models import Charts
+from django.db.models import Q
 
 
 def get_dates(start_year, end_year):
@@ -19,7 +20,7 @@ def get_time_filter(start_date, end_date):
 
 def apply_exclusions(result, chart_type):
     """Wendet Ausschlussfilter auf das Ergebnis an."""
-    if chart_type in (3, 5):
+    if chart_type in (3, 5, 6):
         return result.exclude(x_variable=None)
     return result.exclude(x_variable='')
 
@@ -78,6 +79,25 @@ def handle_type5(chart, start_date, end_date):
     )
     return queryset.values(x_variable=F("intervention_count")).annotate(count=Count("id"))
 
+def handle_type6(chart, start_date, end_date):
+    """Verarbeitet Diskriminierungsart-Zählung über M2M und ForeignKey. (Diskriminierungsart)"""
+    model_class = apps.get_model("fairmieten", chart.model)
+    return (
+        model_class.objects.annotate(
+            count=Count(
+                'diskriminierung__vorgang',
+                filter=Q(
+                    diskriminierung__vorgang__datum_vorfall_von__gte=start_date,
+                    diskriminierung__vorgang__datum_vorfall_von__lte=end_date
+                ),
+                distinct=True
+            )
+        )
+        .values('count', x_variable=F('name'))
+        .order_by('name')
+    )
+
+
 # Mapping von Chart-Typen zu Handler-Funktionen
 chart_handlers = {
     1: handle_type1,
@@ -85,12 +105,13 @@ chart_handlers = {
     3: handle_type3,
     4: handle_type4,
     5: handle_type5,
+    6: handle_type6,
 }
 
 def get_query_set(chart: Charts, start_year, end_year):
     """Hauptfunktion, die die Verarbeitung an die jeweiligen Handler delegiert."""
     start_date, end_date = get_dates(start_year, end_year)
-    handler = chart_handlers.get(chart.type)
+    handler = chart_handlers.get(chart.type) if chart.type is not None else None
     
     if not handler:
         return None

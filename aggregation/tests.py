@@ -110,6 +110,24 @@ class ChartQuerySetTest(TestCase):
         ]
         
         self.assertEqual(sorted(result_qs, key=lambda x: x['x_variable']), sorted(expected_qs, key=lambda x: x['x_variable']))
+    
+    def test_chart_type_6(self):
+        chart_diskrimminierungsart_6 = Charts.objects.get(model="Diskrimminierungsart")
+        
+        result_qs = get_query_set(chart_diskrimminierungsart_6, 2020, 2026)
+        
+        expected_qs = [
+            {'count': 3, 'x_variable': "Behinderung"},
+            {'count': 2, 'x_variable': "Geschlecht"},
+            {'count': 5, 'x_variable': "Lebensalter"},
+            {'count': 15, 'x_variable': "Rassismus"},
+            {'count': 7, 'x_variable': "Religion"},
+            {'count': 5, 'x_variable': "Sexuelle Identität"},
+            {'count': 10, 'x_variable': "Sozialer Status"},
+            {'count': 5, 'x_variable': "Äußere Erscheinungsbild"},
+        ]
+
+        self.assertEqual(sorted(result_qs, key=lambda x: x['x_variable']), sorted(expected_qs, key=lambda x: x['x_variable']))
         
         
 # class CSVDownloadTestCase(TestCase):
