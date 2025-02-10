@@ -354,9 +354,9 @@ def codebook_download_txt(request: HttpRequest) -> HttpResponse:
     # Iterate through each field 
     for field in codebook.keys():
         lines.append(field)
-        # Retrieve encodings and sort them as strings to handle mixed types consistently
+        # Retrieve encodings and sort them as integers
         encodings = codebook[field]
-        for encoding in sorted(encodings.keys(), key=lambda x: str(x)):
+        for encoding in sorted(encodings.keys(), key=int):
             value = encodings[encoding]
             lines.append(f"{encoding} {value}")
         lines.append('')
