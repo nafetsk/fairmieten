@@ -33,6 +33,7 @@
                         <th><a href="#" hx-target="#htmx-content" hx-get="{% url callback_name %}?{% params_plus request.GET 'sort_by' 'sprache_item' %}">Sprache</a></th>
                         <th><a href="#" hx-target="#htmx-content" hx-get="{% url callback_name %}?{% params_plus request.GET 'sort_by' 'vorgangstyp' %}">Vorgangstyp</a></th>
                         <th><a href="#" hx-target="#htmx-content" hx-get="{% url callback_name %}?{% params_plus request.GET 'sort_by' 'datum_kontaktaufnahme' %}">Datum Kontaktaufnahme</a></th>
+                        <th><a href="#" hx-target="#htmx-content" hx-get="{% url callback_name %}?{% params_plus request.GET 'sort_by' 'created_by' %}">erstellt von</a></th>
                         <th>Aktionen</th>
                     </tr>
                 </thead>
@@ -44,6 +45,7 @@
                             <td>{{ vorgang.sprache_item }}</td>
                             <td>{{ vorgang.vorgangstyp.name }}</td>
                             <td>{{ vorgang.datum_kontaktaufnahme|date:"d.m.Y" }}</td>
+                            <td>{{ vorgang.created_by.username }}</td>
                             <td>
                                 <a href="{% url 'vorgang_detail' vorgang.id %}" hx-get="{% url 'vorgang_detail' vorgang.id %}" hx-push-url="true" hx-target="#htmx-content">Details</a> | 
                                 <a href="/vorgang/edit/{{vorgang.id}}/{{vorgang.vorgangstyp.id}}/" hx-get="/vorgang/edit/{{vorgang.id}}/{{vorgang.vorgangstyp.id}}/" hx-push-url="true" hx-target="#htmx-content">Edit</a> | 

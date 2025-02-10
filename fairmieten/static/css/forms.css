@@ -6,3 +6,7 @@
 	border: 1px solid #ffffff;
 	outline: 3px solid #a23b15;
 }
+.errorlist{
+	font-weight: 600;
+	color: #a23b15;
+}

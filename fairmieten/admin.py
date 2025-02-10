@@ -7,6 +7,7 @@ from .models import (
     FormLabels,
     Loesungsansaetze,
     Ergebnis,
+    Rechtsbereich,
     Vorgang,
     Intervention,
     Verursacher,
@@ -34,6 +35,7 @@ admin.site.register(FormLabels,FormLabelsAdmin)
 admin.site.register(Charts, unfold.admin.ModelAdmin)
 admin.site.register(Diskriminierungsform, unfold.admin.ModelAdmin)
 admin.site.register(Vorgang)
+admin.site.register(Rechtsbereich)
 #admin.site.register(Verursacher)
 #admin.site.register(Intervention)
 

@@ -286,6 +286,7 @@ def setup(apps = None, schema_editor = None):
         "Schlichtung",
         "Schiedsverfahren",
         "gerichtliche Klärung",
+        "andere"
     ]
     for loesungsansatz in loesungsansaetze:
         Loesungsansaetze.objects.create(name=loesungsansatz)
@@ -299,6 +300,7 @@ def setup(apps = None, schema_editor = None):
         "Mediation",
         "Schlichtung",
         "Schiedsverfahren",
+        "andere"
     ]
     for ergebnis in ergebnisse:
         Ergebnis.objects.create(name=ergebnis)
@@ -310,6 +312,7 @@ def setup(apps = None, schema_editor = None):
         "Arbeitsrecht",
         "Sozialrecht",
         "AGG",
+        "andere"
     ]
     for rechtsbereich in rechtsbereiche:
         Rechtsbereich.objects.create(name=rechtsbereich)

@@ -2,3 +2,4 @@ data/database/db.sqlite3
 data/env_variables/.env
 .venv
 __pycache__
+node_modules

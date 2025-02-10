@@ -1,5 +1,6 @@
 # Use an official Python runtime as a parent image
-FROM python:3.11-alpine
+FROM python:3.11-alpine3.21
+RUN cat /etc/alpine-release
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 
@@ -8,6 +9,7 @@ ENV POETRY_VIRTUALENVS_CREATE=false
 
 # Set the working directory
 WORKDIR /app
+
 
 # Install dependencies
 RUN python3 -m pip install poetry
@@ -18,7 +20,8 @@ RUN poetry install --no-root
 COPY . /app/
 COPY data/env_variables/.env.template data/env_variables/.env
 
-RUN apk add nodejs npm sqlite bash
+RUN apk add nodejs-current npm sqlite bash
+RUN npm install
 RUN npx tailwindcss -i ./fairmieten/static/css/t_input.css -o ./fairmieten/static/css/t_output.css --minify
 
 RUN poetry run python3 manage.py collectstatic --noinput
