@@ -60,7 +60,7 @@ class Ergebnis(models.Model):
 class Vorgang(models.Model):
     id = models.UUIDField( primary_key = True, default = uuid.uuid4, editable = False)
     # Allgemein
-    fallnummer = models.CharField(max_length=100, null=True, blank=True)
+    fallnummer = models.CharField(max_length=100, null=True, blank=True, unique=True)
     vorgangstyp = models.ForeignKey(Vorgangstyp, on_delete=models.CASCADE, null=True, blank=True) # allgemeine Beratung, Meldung, Fallbetreuung
     datum_kontaktaufnahme = models.DateField(null=True, blank=True, default=datetime.date.today)
     kontaktaufnahme_durch_item = models.CharField(max_length=100, null=True, blank=True) # (Betroffene Person, beschuldigte Person, unbeteiligte Person)
