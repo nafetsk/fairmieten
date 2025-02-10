@@ -89,4 +89,9 @@ dokku ps:restart fwfm
 
 # app should now be available under https://<your_app_domain> 
 
+#Add database Backup
+cd /tmp/ #or any other directory
+wget https://github.com/benbjohnson/litestream/releases/download/v0.3.13/litestream-v0.3.13-linux-amd64.deb 
+sudo dpkg -i litestream-v0.3.13-linux-amd64.deb
+
 ```
