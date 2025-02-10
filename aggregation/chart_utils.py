@@ -14,8 +14,8 @@ def get_dates(start_year, end_year):
 def get_time_filter(start_date, end_date):
     """Erstellt einen gefilterten QuerySet für Vorgang basierend auf dem Zeitraum."""
     return Vorgang.objects.filter(
-        datum_vorfall_von__gte=start_date, 
-        datum_vorfall_von__lte=end_date
+        datum_kontaktaufnahme__gte=start_date, 
+        datum_kontaktaufnahme__lte=end_date
     )
 
 def apply_exclusions(result, chart_type):
@@ -38,8 +38,8 @@ def handle_type2(chart, start_date, end_date):
     """Verarbeitet Chart-Typ 2: M2M Feld, Vorgang verweist auf anderes Modell."""
     model_class = apps.get_model("fairmieten", chart.model)
     filtered = model_class.objects.filter(
-        vorgang__datum_vorfall_von__gte=start_date,
-        vorgang__datum_vorfall_von__lte=end_date
+        vorgang__datum_kontaktaufnahme__gte=start_date,
+        vorgang__datum_kontaktaufnahme__lte=end_date
     )
     return filtered.annotate(count=Count("vorgang")).values("count", x_variable=F("name"))
 
@@ -57,8 +57,8 @@ def handle_type4(chart, start_date, end_date):
     """Verarbeitet Chart-Typ 4: M2M Feld, anderes Modell verweist auf Vorgang."""
     model_class = apps.get_model("fairmieten", chart.model)
     filtered = model_class.objects.filter(
-        vorgang__datum_vorfall_von__gte=start_date,
-        vorgang__datum_vorfall_von__lte=end_date
+        vorgang__datum_kontaktaufnahme__gte=start_date,
+        vorgang__datum_kontaktaufnahme__lte=end_date
     )
     return (
         filtered.values(chart.variable)
@@ -87,8 +87,8 @@ def handle_type6(chart, start_date, end_date):
             count=Count(
                 'diskriminierung__vorgang',
                 filter=Q(
-                    diskriminierung__vorgang__datum_vorfall_von__gte=start_date,
-                    diskriminierung__vorgang__datum_vorfall_von__lte=end_date
+                    diskriminierung__vorgang__datum_kontaktaufnahme__gte=start_date,
+                    diskriminierung__vorgang__datum_kontaktaufnahme__lte=end_date
                 )
             )
         )

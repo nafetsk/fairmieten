@@ -28,7 +28,7 @@ def aggregation(request: HttpRequest) -> HttpResponse:
     charts = Charts.objects.all()
     # get all relevant years from database
     years = (
-        Vorgang.objects.annotate(year=ExtractYear("datum_vorfall_von"))
+        Vorgang.objects.annotate(year=ExtractYear("datum_kontaktaufnahme"))
         .values("year")
         .distinct()
         .order_by("year")
@@ -107,7 +107,7 @@ def disable_year(request: HttpRequest) -> HttpResponse:
 
     # get all relevant years from database
     years = (
-        Vorgang.objects.annotate(year=ExtractYear("datum_vorfall_von"))
+        Vorgang.objects.annotate(year=ExtractYear("datum_kontaktaufnahme"))
         .values("year")
         .distinct()
         .order_by("year")
