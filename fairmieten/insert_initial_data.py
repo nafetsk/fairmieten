@@ -370,7 +370,7 @@ def setup(apps = None, schema_editor = None):
         name="Jahr des Vorfalls",
         description="Wann hat die Diskriminierung stattgefunden?",
         x_label="Jahr",
-        variable="datum_vorfall_von",
+        variable="datum_kontaktaufnahme",
         type=3,
         model="Vorgang",
     )

@@ -3,6 +3,7 @@ from django.db.models import Count, F, IntegerField, OuterRef, Subquery
 from django.apps import apps
 from django.db.models.functions import Coalesce
 from fairmieten.models import Vorgang
+from fairmieten.models import FormValues
 from .models import Charts
 from django.db.models import Q
 
@@ -17,6 +18,33 @@ def get_time_filter(start_date, end_date):
         datum_kontaktaufnahme__gte=start_date, 
         datum_kontaktaufnahme__lte=end_date
     )
+
+def get_labels(chart):
+    labels = []
+    if chart.type == 1:
+        # Chart-Typ 1: Einfaches Feld in Vorgang
+        labels = FormValues.get_field_values(chart.variable)
+        if labels:
+            labels = [label[1] for label in labels]
+    elif chart.type == 2 or chart.type == 4 or chart.type == 6:
+        # Chart-Typ 2: M2M Feld, Vorgang verweist auf anderes Modell.
+        model = apps.get_model("fairmieten", chart.model)
+        labels = model.objects.all()
+    elif chart.type == 3:
+        # Chart-Typ 3: Variable ist Jahr.
+        labels = [
+            {"year": year["year"]}
+            for year in Vorgang.objects.annotate(year=ExtractYear(chart.variable))
+            .values("year")
+            .distinct()
+            .order_by("year")
+        ]
+    elif chart.type == 5:
+        pass
+    
+    print(labels)
+    return labels
+
 
 def apply_exclusions(result, chart_type):
     """Wendet Ausschlussfilter auf das Ergebnis an."""

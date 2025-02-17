@@ -2,6 +2,7 @@ from django.test import TestCase
 from aggregation.models import Charts
 from aggregation.test_data import create_test_data
 from aggregation.chart_utils import get_query_set, get_dates
+from aggregation.views import get_valid_years
 import random
 from faker import Faker
 
@@ -13,6 +14,15 @@ class GetDatesTest(TestCase):
         self.assertEqual(start_date, "2020-01-01")
         self.assertEqual(end_date, "2026-12-31")
 
+class GetValidYearsTest(TestCase):
+    def setUp(self):
+        Faker.seed(1)
+        random.seed(1)
+        create_test_data()
+        
+    def test_1(self):
+        result = get_valid_years()
+        print(result)
 
 class ChartQuerySetTest(TestCase):
     def setUp(self):
@@ -26,14 +36,13 @@ class ChartQuerySetTest(TestCase):
         result_qs = get_query_set(chart_sprache_1, 2020, 2026)
         
         expected_qs = [
-            {'x_variable': 'Arabisch', 'count': 3},
-            {'x_variable': 'Deutsch', 'count': 1},
-            {'x_variable': 'Englisch', 'count': 1},
-            {'x_variable': 'Italienisch', 'count': 2},
-            {'x_variable': 'Rumänisch', 'count': 3},
-            {'x_variable': 'Spanisch', 'count': 2},
-            {'x_variable': 'Türkisch', 'count': 4},
-            {'x_variable': 'andere', 'count': 4},
+            {'x_variable': 'Deutsch', 'count': 4},
+            {'x_variable': 'Englisch', 'count': 3},
+            {'x_variable': 'Italienisch', 'count': 4},
+            {'x_variable': 'Rumänisch', 'count': 1},
+            {'x_variable': 'Spanisch', 'count': 1},
+            {'x_variable': 'Türkisch', 'count': 2},
+            {'x_variable': 'andere', 'count': 5},
         ]
     
         self.assertEqual(sorted(result_qs, key=lambda x: x['x_variable']), sorted(expected_qs, key=lambda x: x['x_variable']))
@@ -44,36 +53,38 @@ class ChartQuerySetTest(TestCase):
         result_qs = get_query_set(chart_rechtsbereich_2, 2020, 2026)
         
         expected_qs = [
-            {'count': 13, 'x_variable': 'AGG'},
-            {'count': 6, 'x_variable': 'Sozialrecht'},
-            {'count': 12, 'x_variable': 'Mietrecht'},
-            {'count': 9, 'x_variable': 'Arbeitsrecht'},
+            {'count': 10, 'x_variable': 'AGG'},
+            {'count': 9, 'x_variable': 'Sozialrecht'},
+            {'count': 8, 'x_variable': 'Mietrecht'},
+            {'count': 1, 'x_variable': 'Arbeitsrecht'},
+            {'count': 12, 'x_variable': 'andere'},
         ]
         
         self.assertEqual(sorted(result_qs, key=lambda x: x['x_variable']), sorted(expected_qs, key=lambda x: x['x_variable']))
         
     def test_chart_type_3(self):
-        chart_jahr_3 = Charts.objects.get(variable="datum_vorfall_von")
+        chart_jahr_3 = Charts.objects.get(variable="datum_kontaktaufnahme")
         
         result_qs = get_query_set(chart_jahr_3, 2020, 2026)
         
         expected_qs = [
             {'count': 3, 'x_variable': 2021},
             {'count': 2, 'x_variable': 2022},
-            {'count': 4, 'x_variable': 2023},
-            {'count': 11, 'x_variable': 2024},
+            {'count': 7, 'x_variable': 2023},
+            {'count': 7, 'x_variable': 2024},
+            {'count': 1, 'x_variable': 2025},
         ]
 
         self.assertEqual(sorted(result_qs, key=lambda x: x['x_variable']), sorted(expected_qs, key=lambda x: x['x_variable']))
         
     def test_chart_type_3_time_limit(self):
-        chart_jahr_3 = Charts.objects.get(variable="datum_vorfall_von")
+        chart_jahr_3 = Charts.objects.get(variable="datum_kontaktaufnahme")
         
         result_qs = get_query_set(chart_jahr_3, 2022, 2023)
         
         expected_qs = [
             {'count': 2, 'x_variable': 2022},
-            {'count': 4, 'x_variable': 2023},
+            {'count': 7, 'x_variable': 2023},
         ]
 
         self.assertEqual(sorted(result_qs, key=lambda x: x['x_variable']), sorted(expected_qs, key=lambda x: x['x_variable']))    
@@ -89,8 +100,8 @@ class ChartQuerySetTest(TestCase):
             {'count': 1, 'x_variable': 'Internetplattform'},
             {'count': 1, 'x_variable': 'Lebenspartner*in'},
             {'count': 3, 'x_variable': 'Makler*in'},
-            {'count': 2, 'x_variable': 'Nachbar*in'},
-            {'count': 3, 'x_variable': 'Unterkunfsleitung'},
+            {'count': 3, 'x_variable': 'Nachbar*in'},
+            {'count': 2, 'x_variable': 'Unterkunfsleitung'},
             {'count': 1, 'x_variable': 'Wohnungseigentümer*in'},
             {'count': 3, 'x_variable': 'Wohnungsverwalter*in'},
             {'count': 1, 'x_variable': 'anderes'},
@@ -117,13 +128,13 @@ class ChartQuerySetTest(TestCase):
         result_qs = get_query_set(chart_diskrimminierungsart_6, 2020, 2026)
         
         expected_qs = [
-            {'count': 3, 'x_variable': "Behinderung"},
-            {'count': 2, 'x_variable': "Geschlecht"},
+            {'count': 6, 'x_variable': "Behinderung"},
+            {'count': 4, 'x_variable': "Geschlecht"},
             {'count': 5, 'x_variable': "Lebensalter"},
-            {'count': 15, 'x_variable': "Rassismus"},
-            {'count': 7, 'x_variable': "Religion"},
-            {'count': 5, 'x_variable': "Sexuelle Identität"},
-            {'count': 10, 'x_variable': "Sozialer Status"},
+            {'count': 16, 'x_variable': "Rassismus"},
+            {'count': 8, 'x_variable': "Religion"},
+            {'count': 8, 'x_variable': "Sexuelle Identität"},
+            {'count': 8, 'x_variable': "Sozialer Status"},
             {'count': 5, 'x_variable': "Äußere Erscheinungsbild"},
         ]
 

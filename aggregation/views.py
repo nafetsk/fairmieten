@@ -13,20 +13,31 @@ from fairmieten.models import (
 )
 from .models import Charts
 from django.db.models.functions import ExtractYear
-from django.db.models import Count
+from django.db.models import Count, IntegerField
 import json
 import csv
 from fairmieten.form_views import layout
 from django.db.models import OuterRef, Exists
 import unicodedata
 from datetime import datetime
-from aggregation.chart_utils import get_query_set
+from aggregation.chart_utils import get_query_set, get_labels
 
+def get_valid_years():
+    valid_years = (
+        Vorgang.objects.annotate(year=ExtractYear("datum_kontaktaufnahme", output_field=IntegerField()))
+        .filter(year__gt=1000)  # Filter direkt in der Datenbank
+        .values_list("year", flat=True)
+        .distinct()
+        .order_by("year")
+    )
+    return valid_years
+    
 
 def aggregation(request: HttpRequest) -> HttpResponse:
     # get all charts from database
     charts = Charts.objects.all()
     # get all relevant years from database
+    #valid_years = get_valid_years()
     years = (
         Vorgang.objects.annotate(year=ExtractYear("datum_kontaktaufnahme"))
         .values("year")
@@ -47,6 +58,7 @@ def aggregation(request: HttpRequest) -> HttpResponse:
     )
 
 
+
 def get_chart(request: HttpRequest) -> HttpResponse:
     # get chart uuid, start and end year
     chart_id = request.GET.get("chart-select")
@@ -62,6 +74,8 @@ def get_chart(request: HttpRequest) -> HttpResponse:
 
     # get data for chart
     incidents_per_variable = get_query_set(chart, start_year, end_year)
+
+    labels = get_labels(chart)
 
     # sum of all incidents
     total_incidents = sum(incident["count"] for incident in incidents_per_variable) if incidents_per_variable else 0
