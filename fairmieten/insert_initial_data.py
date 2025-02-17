@@ -184,20 +184,7 @@ def setup(apps = None, schema_editor = None):
         }
     }
 
-    for model in values:
-        for fieldname, value_dict in values[model].items():
-            encoding_counter = 0
-            for key, value in value_dict.items():
-                print("Try to set value for", model, "->", fieldname, "->", key)
-                # increment encoding for each value
-                encoding_counter += 1
-                FormValues.objects.create(
-                    model=model,
-                    key=key,
-                    value=value,
-                    field=fieldname,
-                    encoding=encoding_counter,
-                )
+    
 
     # Diskriminierungsart
     Diskrimminierungsart.objects.all().delete()
@@ -215,6 +202,18 @@ def setup(apps = None, schema_editor = None):
     for diskrimminierungsart in diskrimminierungsarten:
         Diskrimminierungsart.objects.create(name=diskrimminierungsart)
 
+    values["Diskrimminierungsart"] = {
+        "diskrimminierungsart": {
+            "Rassismus": "Rassismus",
+            "Geschlecht": "Geschlecht",
+            "Sexuelle Identität": "Sexuelle Identität",
+            "Religion": "Religion",
+            "Behinderung": "Behinderung",
+            "Lebensalter": "Lebensalter",
+            "Sozialer Status": "Sozialer Status",
+            "Äußere Erscheinungsbild": "Äußere Erscheinungsbild",
+        }}
+    
     # Diskriminierung
     Diskriminierung.objects.all().delete()
     diskriminierungen = {
@@ -259,6 +258,18 @@ def setup(apps = None, schema_editor = None):
     for diskrimminierungsart in Diskrimminierungsart.objects.all():
         Diskriminierung.objects.create(name=f"andere ({diskrimminierungsart.name})", typ=diskrimminierungsart)
 
+    # values["Diskriminierung"] = {
+    #     "diskriminierung": {
+    #         "Rassismus": "Rassismus",
+    #         "Geschlecht": "Geschlecht",
+    #         "Sexuelle Identität": "Sexuelle Identität",
+    #         "Religion": "Religion",
+    #         "Behinderung": "Behinderung",
+    #         "Lebensalter": "Lebensalter",
+    #         "Sozialer Status": "Sozialer Status",
+    #         "Äußere Erscheinungsbild": "Äußere Erscheinungsbild",
+    #     }}
+
     # Diskriminierungsform
     Diskriminierungsform.objects.all().delete()
     diskriminierungsformen = [
@@ -274,6 +285,18 @@ def setup(apps = None, schema_editor = None):
 
     for diskriminierungsform in diskriminierungsformen:
         Diskriminierungsform.objects.create(name=diskriminierungsform)
+
+    values["Diskriminierungsform"] = {
+        "diskriminierungsform": {
+            "unmittelbar": "unmittelbar",
+            "mittelbar": "mittelbar",
+            "körperlicher Angriff": "körperlicher Angriff",
+            "sexualisierte Beläsitgung": "sexualisierte Beläsitgung",
+            "verbale Belästigung": "verbale Belästigung",
+            "non-verbale Belästigung": "non-verbale Belästigung",
+            "Sachbeschädigung": "Sachbeschädigung",
+            "andere": "andere",
+        }}
 
     # Loesungsansaetze
     Loesungsansaetze.objects.all().delete()
@@ -316,6 +339,23 @@ def setup(apps = None, schema_editor = None):
     ]
     for rechtsbereich in rechtsbereiche:
         Rechtsbereich.objects.create(name=rechtsbereich)
+
+
+    for model in values:
+        for fieldname, value_dict in values[model].items():
+            encoding_counter = 0
+            for key, value in value_dict.items():
+                print("Try to set value for", model, "->", fieldname, "->", key)
+                # increment encoding for each value
+                encoding_counter += 1
+                FormValues.objects.create(
+                    model=model,
+                    key=key,
+                    value=value,
+                    field=fieldname,
+                    encoding=encoding_counter,
+                )
+
 
     # Charts
     Charts.objects.create(
@@ -484,7 +524,7 @@ def setup(apps = None, schema_editor = None):
         name="Art der Diskriminierung",
         description="",
         x_label="Art der Diskriminierung",
-        variable="",
+        variable="diskrimminierungsart",
         type=6,
         model="Diskrimminierungsart",
     )

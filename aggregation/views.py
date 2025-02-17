@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
 from fairmieten.models import (
@@ -20,7 +20,7 @@ from fairmieten.form_views import layout
 from django.db.models import OuterRef, Exists
 import unicodedata
 from datetime import datetime
-from aggregation.chart_utils import get_query_set, get_labels
+from aggregation.chart_utils import get_query_set, prepare_table_data
 
 def get_valid_years():
     valid_years = (
@@ -61,12 +61,15 @@ def get_chart(request: HttpRequest) -> HttpResponse:
     chart = Charts.objects.get(id=chart_id)
 
     # get data for chart
-    incidents_per_variable = get_query_set(chart, start_year, end_year)
+    query_set = get_query_set(chart, start_year, end_year)
 
-    labels = get_labels(chart)
+    #data 
+    table_data = prepare_table_data(query_set, chart)
+    
+    #all_labels: List[str] = get_labels(chart)
 
     # sum of all incidents
-    total_incidents = sum(incident["count"] for incident in incidents_per_variable) if incidents_per_variable else 0
+    total_incidents = sum(incident["count"] for incident in query_set) if query_set else 0
 
     print(total_incidents)
     # create dictionary for chart.js
@@ -76,13 +79,13 @@ def get_chart(request: HttpRequest) -> HttpResponse:
         "xAxisName": chart.x_label,
         "yAxisName": "Anzahl Vorfälle",
         "labels": [
-            incident["x_variable"] for incident in incidents_per_variable
+            incident["x_variable"] for incident in query_set
         ],  # Years on x-axis
         "datasets": [
             {
                 "label": "Anzahl Vorfälle",
                 "data": [
-                    incident["count"] for incident in incidents_per_variable
+                    incident["count"] for incident in query_set
                 ],  # Count of incidents on y-axis
             }
         ],
@@ -97,8 +100,8 @@ def get_chart(request: HttpRequest) -> HttpResponse:
         "chart.html",
         {
             "data": data_json,
-            "chart_description": chart.description,
-            "chart_name": chart.name,
+            "table_data": table_data,
+            "chart": chart,
         },
     )
 

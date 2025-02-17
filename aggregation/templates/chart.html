@@ -1,7 +1,7 @@
 {% load static %}
 
-<h2>{{ chart_name }}</h2>
-<p>{{ chart_description }}</p>
+<h2>{{ chart.name }}</h2>
+<p>{{ chart.description }}</p>
 
 <canvas id="chart"></canvas>
 <div class="dataTable-container">
@@ -9,10 +9,17 @@
     <table id="dataTable" border="1">
         <thead>
             <tr>
-                <!-- Empty for now; will be populated by JavaScript -->
+                <th>{{ chart.x_label }}</th>
+                <th>Anzahl</th>
             </tr>
         </thead>
         <tbody>
+            {% for row in table_data %}
+            <tr>
+                <td>{{ row.0 }}</td>  {# First element of tuple (x_variable) #}
+                <td>{{ row.1 }}</td>  {# Second element of tuple (count) #}
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>
@@ -84,52 +91,6 @@
     renderChart(data);
 
     console.log(data)
-
-    // Dynamically set axis names in the table header
-    var tableHeadRow = document.querySelector('#dataTable thead tr');
-        
-        // Create and append the X-axis name header (e.g., Year)
-        var xAxisHeader = document.createElement('th');
-        xAxisHeader.textContent = data.xAxisName;  // Set X-axis name from data
-        tableHeadRow.appendChild(xAxisHeader);
-
-        // Create and append the Y-axis name header (chart dataset name)
-        var yAxisHeader = document.createElement('th');
-        yAxisHeader.textContent = data.chartName;  // Set Y-axis name (chart name) from data
-        tableHeadRow.appendChild(yAxisHeader);
-
-        // Populate the table body with data
-        var dataTableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
-        
-        data.labels.forEach((label, index) => {
-            var row = document.createElement('tr');
-
-            // Add label (e.g., year) to the first column
-            var labelCell = document.createElement('td');
-            labelCell.textContent = label;
-            row.appendChild(labelCell);
-
-            // Add data value to the second column
-            var valueCell = document.createElement('td');
-            valueCell.textContent = data.datasets[0].data[index];
-            row.appendChild(valueCell);
-
-            // Append row to the table body
-            dataTableBody.appendChild(row);
-        });
-
-        // Add a row for the sum of the data
-        var sumRow = document.createElement('tr');
-        
-        var sumLabelCell = document.createElement('td');
-        sumLabelCell.textContent = 'Summe';
-        sumRow.appendChild(sumLabelCell);
-
-        var sumValueCell = document.createElement('td');
-        sumValueCell.textContent = data.totalIncidents;
-        sumRow.appendChild(sumValueCell);
-
-        dataTableBody.appendChild(sumRow);
         
 
 

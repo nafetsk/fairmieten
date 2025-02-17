@@ -8,6 +8,7 @@ from .models import Charts
 from django.db.models import Q
 
 
+
 def get_dates(start_year, end_year):
     """Hilfsfunktion zur Konvertierung von Jahren in Datumsstrings."""
     return f"{start_year}-01-01", f"{end_year}-12-31"
@@ -19,29 +20,78 @@ def get_time_filter(start_date, end_date):
         datum_kontaktaufnahme__lte=end_date
     )
 
+def prepare_table_data(query_set, chart):
+    # Convert the queryset to a dictionary for fast lookup
+    count_dict = {entry['x_variable']: entry['count'] for entry in query_set}
+    
+    labels = get_labels(chart)
+    # Create the list of tuples ensuring all labels are included
+    result = [(label, count_dict.get(label, 0)) for label in labels]
+    # append sum
+    result.append(("Summe", sum([entry[1] for entry in result])))
+    print(result)
+    return result
+    
+    
+
 def get_labels(chart):
     labels = []
-    if chart.type == 1:
-        # Chart-Typ 1: Einfaches Feld in Vorgang
-        labels = FormValues.get_field_values(chart.variable)
-        if labels:
-            labels = [label[1] for label in labels]
-    elif chart.type == 2 or chart.type == 4 or chart.type == 6:
-        # Chart-Typ 2: M2M Feld, Vorgang verweist auf anderes Modell.
-        model = apps.get_model("fairmieten", chart.model)
-        labels = model.objects.all()
-    elif chart.type == 3:
-        # Chart-Typ 3: Variable ist Jahr.
-        labels = [
-            {"year": year["year"]}
-            for year in Vorgang.objects.annotate(year=ExtractYear(chart.variable))
-            .values("year")
+    if FormValues.get_field_values(chart.variable):
+        labels = [label[1] for label in FormValues.get_field_values(chart.variable)]
+        
+    elif chart.variable == "datum_kontaktaufnahme":
+        labels = (
+            Vorgang.objects.annotate(year=ExtractYear("datum_kontaktaufnahme", output_field=IntegerField()))
+            .filter(year__gt=1000)  # Filter direkt in der Datenbank
+            .values_list("year", flat=True)
             .distinct()
             .order_by("year")
-        ]
-    elif chart.type == 5:
-        pass
+        )
+    else:
+        print(chart.variable)
     
+    
+    # "sprache_item", FormValues
+    # "bezirk_item", FormValues
+    # "diskriminierung",
+    # "kontaktaufnahme_durch_item", FormValues
+    # "loesungsansaetze",
+    # "ergebnis",
+    # "datum_kontaktaufnahme", sonder if
+    # "vorgangstyp",
+    # "alter_item", FormValues
+    # "gender_item", FormValues
+    # "unternehmenstyp_item", FormValues
+    # "personentyp_item", FormValues
+    # "rechtsbereich",
+    # "betroffen_item", FormValues
+    # "prozeskostenuebernahme_item",
+    # "zugang_fachstelle_item",
+    # "form_item", FormValues
+    # "intervention",
+    # "bereich_diskriminierung_item", FormValues
+    # "diskriminierungsform",
+    # "",
+    # if chart.type == 1:
+    #     # Chart-Typ 1: Einfaches Feld in Vorgang
+    #     labels = FormValues.get_field_values(chart.variable)
+    #     if labels:
+    #         labels = [label[1] for label in labels]
+    # elif chart.type == 2 or chart.type == 4 or chart.type == 6:
+    #     # Chart-Typ 2: M2M Feld, Vorgang verweist auf anderes Modell.
+    #     model = apps.get_model("fairmieten", chart.model)
+    #     labels = model.objects.all()
+    # elif chart.type == 3:
+    #     # Chart-Typ 3: Variable ist Jahr.
+    #     labels = (
+    #         Vorgang.objects.annotate(year=ExtractYear("datum_kontaktaufnahme", output_field=IntegerField()))
+    #         .filter(year__gt=1000)  # Filter direkt in der Datenbank
+    #         .values_list("year", flat=True)
+    #         .distinct()
+    #         .order_by("year")
+    #     )
+    # elif chart.type == 5:
+    #     pass
     print(labels)
     return labels
 
