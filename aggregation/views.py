@@ -37,19 +37,7 @@ def aggregation(request: HttpRequest) -> HttpResponse:
     # get all charts from database
     charts = Charts.objects.all()
     # get all relevant years from database
-    #valid_years = get_valid_years()
-    years = (
-        Vorgang.objects.annotate(year=ExtractYear("datum_kontaktaufnahme"))
-        .values("year")
-        .distinct()
-        .order_by("year")
-    )
-
-    valid_years = [
-        year["year"]
-        for year in years
-        if isinstance(year["year"], int) and year["year"] is not None and year["year"] > 1000
-    ]
+    valid_years = get_valid_years()
 
     return render(
         request,

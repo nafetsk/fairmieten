@@ -1,5 +1,6 @@
 from django.test import TestCase
 from aggregation.models import Charts
+from fairmieten.models import Vorgang
 from aggregation.test_data import create_test_data
 from aggregation.chart_utils import get_query_set, get_dates
 from aggregation.views import get_valid_years
@@ -16,13 +17,15 @@ class GetDatesTest(TestCase):
 
 class GetValidYearsTest(TestCase):
     def setUp(self):
-        Faker.seed(1)
-        random.seed(1)
-        create_test_data()
+        Vorgang.objects.create(datum_kontaktaufnahme="2021-01-01", fallnummer="1")
+        Vorgang.objects.create(datum_kontaktaufnahme="2022-01-01", fallnummer="2")
+        Vorgang.objects.create(datum_kontaktaufnahme="2025-01-01", fallnummer="3")
+        Vorgang.objects.create(datum_kontaktaufnahme="2025-01-01", fallnummer="4")
         
     def test_1(self):
-        result = get_valid_years()
-        print(result)
+        result = list(get_valid_years())
+        expected = [2021, 2022, 2025]
+        self.assertEqual(result, expected)
 
 class ChartQuerySetTest(TestCase):
     def setUp(self):
