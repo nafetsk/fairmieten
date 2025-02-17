@@ -358,7 +358,7 @@ def codebook_download_txt(request: HttpRequest) -> HttpResponse:
         encodings = codebook[field]
         for encoding in sorted(encodings.keys(), key=int):
             value = encodings[encoding]
-            lines.append(f"{encoding} {value}")
+            lines.append(f"{encoding} „{value}\"")
         lines.append('')
     
     # Join all lines into a single string with newline separators
