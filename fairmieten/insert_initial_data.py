@@ -254,10 +254,6 @@ def setup(apps = None, schema_editor = None):
         typ = Diskrimminierungsart.objects.filter(name=diskrimminierungsart).first()
         Diskriminierung.objects.create(name=diskriminierung, typ=typ)
 
-    # andere Diskriminierung
-    for diskrimminierungsart in Diskrimminierungsart.objects.all():
-        Diskriminierung.objects.create(name=f"andere ({diskrimminierungsart.name})", typ=diskrimminierungsart)
-
     values["Diskriminierung"] = {
         "diskriminierung": {
             "Person of Color": "Person of Color",
@@ -265,6 +261,8 @@ def setup(apps = None, schema_editor = None):
             "Staatsangehörigkeit": "Staatsangehörigkeit",
             "Black Person of Color": "Black Person of Color",
             "nicht deutsch klingender Name": "nicht deutsch klingender Name",
+            "Ethnische Herrkunft": "Ethnische Herrkunft",
+            "Fluchterfahrung": "Fluchterfahrung",
             "Aufenthaltsstatus": "Aufenthaltsstatus",
             "Diskriminierung von Rom*nja und Sinti*zze": "Diskriminierung von Rom*nja und Sinti*zze",
             "Männlich": "Männlich",
@@ -291,6 +289,13 @@ def setup(apps = None, schema_editor = None):
             "zu alt": "zu alt",
             "zu jung": "zu jung",
         }}
+
+     # andere Diskriminierung
+    for diskrimminierungsart in Diskrimminierungsart.objects.all():
+        Diskriminierung.objects.create(name=f"andere ({diskrimminierungsart.name})", typ=diskrimminierungsart)
+        # append to values
+        values["Diskriminierung"]["diskriminierung"][f"andere ({diskrimminierungsart.name})"] = f"andere ({diskrimminierungsart.name})"
+    
 
     # Diskriminierungsform
     Diskriminierungsform.objects.all().delete()
@@ -392,6 +397,7 @@ def setup(apps = None, schema_editor = None):
             "Arbeitsrecht": "Arbeitsrecht",
             "Sozialrecht": "Sozialrecht",
             "AGG": "AGG",
+            "andere": "andere",
         }}
 
     for model in values:
