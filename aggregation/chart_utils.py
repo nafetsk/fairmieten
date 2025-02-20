@@ -129,7 +129,8 @@ def handle_type6(chart, start_date, end_date):
                 filter=Q(
                     diskriminierung__vorgang__datum_kontaktaufnahme__gte=start_date,
                     diskriminierung__vorgang__datum_kontaktaufnahme__lte=end_date
-                )
+                ),
+                distinct=True
             )
         )
         .values('count', x_variable=F('name'))

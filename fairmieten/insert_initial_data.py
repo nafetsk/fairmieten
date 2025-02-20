@@ -581,7 +581,7 @@ def setup(apps = None, schema_editor = None):
     )
     Charts.objects.create(
         name="Art der Diskriminierung",
-        description="",
+        description="Art der Diskriminierung",
         x_label="Art der Diskriminierung",
         variable="diskrimminierungsart",
         type=6,
