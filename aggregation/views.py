@@ -132,8 +132,8 @@ def disable_year(request: HttpRequest) -> HttpResponse:
 
 
 def create_codebook():
-    # Retrieve all FormValues from the database
-    form_values = FormValues.objects.all()
+    # Retrieve all FormValues with model=Vorgang from the database
+    form_values = FormValues.objects.filter(model="Vorgang")
 
     # Initialize the codebook dictionary
     codebook = {}
@@ -141,6 +141,9 @@ def create_codebook():
     # Group the FormValues by their field and create the nested dictionary
     for form_value in form_values:
         field = form_value.field
+        # if field ends with _item, remove it
+        if field.endswith("_item"):
+            field = field[:-5]
         encoding = form_value.encoding
         value = form_value.value
 
@@ -274,9 +277,9 @@ def generate_headers(column_configs) -> list:
     static_headers = [
         "id", "fallnummer", "vorgangstyp", "datum_kontakaufnahme",
         "kontakaufnahme_durch", "datum_vorfall_von", "datum_vorfall_bis",
-        "sprache","andere_sprache", "bezirk", "zugang", "alter", "anzahl_kinder",
-        "geschlecht", "betroffen", "prozesskostenuebernahme",
-        "anzahl_interventionen", "bereich_der_diskriminierung", "anderer_bereich_d",
+        "sprache","andere_sprache", "bezirk", "zugang_fachstelle", "alter", "anzahl_kinder",
+        "gender", "betroffen", "prozesskostenuebernahme",
+        "anzahl_interventionen", "bereich_diskriminierung", "anderer_bereich_d",
         "andere_df", "andere_d",
     ]
     
@@ -310,20 +313,20 @@ def get_static_row_data(vorgang, codebook) -> list:
         vorgang.fallnummer,
         _get_coded_value(vorgang.vorgangstyp.name, codebook, "vorgangstyp") if vorgang.vorgangstyp else "",
         vorgang.datum_kontaktaufnahme,
-        _get_coded_value(vorgang.kontaktaufnahme_durch_item, codebook, "kontaktaufnahme_durch_item"),
+        _get_coded_value(vorgang.kontaktaufnahme_durch_item, codebook, "kontaktaufnahme_durch"),
         vorgang.datum_vorfall_von,
         vorgang.datum_vorfall_bis,
-        _get_coded_value(vorgang.sprache_item, codebook, "sprache_item"),
+        _get_coded_value(vorgang.sprache_item, codebook, "sprache"),
         vorgang.andere_sprache,
-        _get_coded_value(vorgang.bezirk_item, codebook, "bezirk_item"),
-        _get_coded_value(vorgang.zugang_fachstelle_item, codebook, "zugang_fachstelle_item"),
-        _get_coded_value(vorgang.alter_item, codebook, "alter_item"),
+        _get_coded_value(vorgang.bezirk_item, codebook, "bezirk"),
+        _get_coded_value(vorgang.zugang_fachstelle_item, codebook, "zugang_fachstelle"),
+        _get_coded_value(vorgang.alter_item, codebook, "alter"),
         vorgang.anzahl_kinder,
-        _get_coded_value(vorgang.gender_item, codebook, "gender_item"),
-        _get_coded_value(vorgang.betroffen_item, codebook, "betroffen_item"),
-        _get_coded_value(vorgang.prozeskostenuebernahme_item, codebook, "prozeskostenuebernahme_item"),
+        _get_coded_value(vorgang.gender_item, codebook, "gender"),
+        _get_coded_value(vorgang.betroffen_item, codebook, "betroffen"),
+        _get_coded_value(vorgang.prozeskostenuebernahme_item, codebook, "prozeskostenuebernahme"),
         vorgang.intervention_count,
-        _get_coded_value(vorgang.bereich_diskriminierung_item, codebook, "bereich_diskriminierung_item"),
+        _get_coded_value(vorgang.bereich_diskriminierung_item, codebook, "bereich_diskriminierung"),
         vorgang.anderer_bereich_diskriminierung,
         vorgang.andere_diskriminierungsform,
         vorgang.andere_diskriminierung,
