@@ -20,7 +20,8 @@ RUN poetry install --no-root
 COPY . /app/
 COPY data/env_variables/.env.template data/env_variables/.env
 
-RUN apk add nodejs-current npm sqlite bash
+# Install node dependencies	
+RUN apk add nodejs-current npm sqlite bash wget
 RUN npm install
 RUN npx tailwindcss -i ./fairmieten/static/css/t_input.css -o ./fairmieten/static/css/t_output.css --minify
 
