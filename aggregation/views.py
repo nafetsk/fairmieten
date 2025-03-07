@@ -66,12 +66,6 @@ def get_chart(request: HttpRequest) -> HttpResponse:
     #data 
     table_data = prepare_table_data(query_set, chart)
     
-    #all_labels: List[str] = get_labels(chart)
-
-    # sum of all incidents
-    total_incidents = sum(incident["count"] for incident in query_set) if query_set else 0
-
-    print(total_incidents)
     # create dictionary for chart.js
     data: Dict[str, Any] = {
         "chartName": chart.name,
@@ -89,7 +83,6 @@ def get_chart(request: HttpRequest) -> HttpResponse:
                 ],  # Count of incidents on y-axis
             }
         ],
-        "totalIncidents": total_incidents,
     }
 
     # convert dictionary to json
