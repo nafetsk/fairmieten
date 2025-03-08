@@ -23,8 +23,9 @@ def get_time_filter(start_date, end_date):
 def prepare_table_data(query_set, chart):
     # Convert the queryset to a dictionary for fast lookup
     count_dict = {entry['x_variable']: entry['count'] for entry in query_set}
-    
     labels = get_labels(chart)
+    print("Labels:")
+    print(labels)
     # Create the list of tuples ensuring all labels are included
     result = [(label, count_dict.get(label, 0)) for label in labels]
     # append sum
@@ -36,9 +37,10 @@ def prepare_table_data(query_set, chart):
 
 def get_labels(chart):
     labels = []
+
     if FormValues.get_field_values(chart.variable):
         labels = [label[1] for label in FormValues.get_field_values(chart.variable)]
-        
+            
     elif chart.variable == "datum_kontaktaufnahme":
         labels = (
             Vorgang.objects.annotate(year=ExtractYear("datum_kontaktaufnahme", output_field=IntegerField()))
@@ -55,6 +57,14 @@ def get_labels(chart):
             .distinct()
             .order_by("intervention_count")
         )
+    else:
+        print("No labels found read Models")
+        model = apps.get_model("fairmieten", chart.model)
+        # Lese alle Einträge aus der Datenbank
+        entries = model.objects.all()
+        # Extrahiere die Labels aus den Einträgen
+        labels = [str(entry) for entry in entries]
+
     return labels
 
 
