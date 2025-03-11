@@ -202,17 +202,6 @@ def setup(apps = None, schema_editor = None):
     for diskrimminierungsart in diskrimminierungsarten:
         Diskrimminierungsart.objects.create(name=diskrimminierungsart)
 
-    values["Diskrimminierungsart"] = {
-        "diskrimminierungsart": {
-            "Rassismus": "Rassismus",
-            "Geschlecht": "Geschlecht",
-            "Sexuelle Identität": "Sexuelle Identität",
-            "Religion": "Religion",
-            "Behinderung": "Behinderung",
-            "Lebensalter": "Lebensalter",
-            "Sozialer Status": "Sozialer Status",
-            "Äußere Erscheinungsbild": "Äußere Erscheinungsbild",
-        }}
     
     # Diskriminierung
     Diskriminierung.objects.all().delete()
@@ -254,47 +243,10 @@ def setup(apps = None, schema_editor = None):
         typ = Diskrimminierungsart.objects.filter(name=diskrimminierungsart).first()
         Diskriminierung.objects.create(name=diskriminierung, typ=typ)
 
-    values["Diskriminierung"] = {
-        "diskriminierung": {
-            "Person of Color": "Person of Color",
-            "Sprache": "Sprache",
-            "Staatsangehörigkeit": "Staatsangehörigkeit",
-            "Black Person of Color": "Black Person of Color",
-            "nicht deutsch klingender Name": "nicht deutsch klingender Name",
-            "Ethnische Herrkunft": "Ethnische Herrkunft",
-            "Fluchterfahrung": "Fluchterfahrung",
-            "Aufenthaltsstatus": "Aufenthaltsstatus",
-            "Diskriminierung von Rom*nja und Sinti*zze": "Diskriminierung von Rom*nja und Sinti*zze",
-            "Männlich": "Männlich",
-            "Weiblich": "Weiblich",
-            "Intersexuell": "Intersexuell",
-            "lesbisch": "lesbisch",
-            "schwul": "schwul",
-            "bisexuell": "bisexuell",
-            "muslimisch": "muslimisch",
-            "jüdisch": "jüdisch",
-            "weltanschaulich": "weltanschaulich",
-            "Konfessionslos": "Konfessionslos",
-            "körperliche Behinderung": "körperliche Behinderung",
-            "chronische Krankheit": "chronische Krankheit",
-            "psychische Krankheit": "psychische Krankheit",
-            "Bildung": "Bildung",
-            "Schwangerschaft": "Schwangerschaft",
-            "Alleinerziehend": "Alleinerziehend",
-            "Haushaltsstruktur": "Haushaltsstruktur",
-            "Einkommenssituation": "Einkommenssituation",
-            "Körperform": "Körperform",
-            "Körpergewicht": "Körpergewicht",
-            "Körpergröße": "Körpergröße",
-            "zu alt": "zu alt",
-            "zu jung": "zu jung",
-        }}
 
      # andere Diskriminierung
     for diskrimminierungsart in Diskrimminierungsart.objects.all():
         Diskriminierung.objects.create(name=f"andere ({diskrimminierungsart.name})", typ=diskrimminierungsart)
-        # append to values
-        values["Diskriminierung"]["diskriminierung"][f"andere ({diskrimminierungsart.name})"] = f"andere ({diskrimminierungsart.name})"
     
 
     # Diskriminierungsform
@@ -313,17 +265,6 @@ def setup(apps = None, schema_editor = None):
     for diskriminierungsform in diskriminierungsformen:
         Diskriminierungsform.objects.create(name=diskriminierungsform)
 
-    values["Diskriminierungsform"] = {
-        "diskriminierungsform": {
-            "unmittelbar": "unmittelbar",
-            "mittelbar": "mittelbar",
-            "körperlicher Angriff": "körperlicher Angriff",
-            "sexualisierte Beläsitgung": "sexualisierte Beläsitgung",
-            "verbale Belästigung": "verbale Belästigung",
-            "non-verbale Belästigung": "non-verbale Belästigung",
-            "Sachbeschädigung": "Sachbeschädigung",
-            "andere": "andere",
-        }}
 
     # Loesungsansaetze
     Loesungsansaetze.objects.all().delete()
@@ -341,18 +282,6 @@ def setup(apps = None, schema_editor = None):
     for loesungsansatz in loesungsansaetze:
         Loesungsansaetze.objects.create(name=loesungsansatz)
     
-    values["Loesungsansaetze"] = {
-        "loesungsansaetze": {
-            "Nachbarschaftsverhältnis verbessern": "Nachbarschaftsverhältnis verbessern",
-            "Entschuldigung": "Entschuldigung",
-            "gütliche Einigung": "gütliche Einigung",
-            "juristische Beratung": "juristische Beratung",
-            "Mediation": "Mediation",
-            "Schlichtung": "Schlichtung",
-            "Schiedsverfahren": "Schiedsverfahren",
-            "gerichtliche Klärung": "gerichtliche Klärung",
-            "andere": "andere",
-        }}
     
     # Ergebnis
     Ergebnis.objects.all().delete()
@@ -368,16 +297,6 @@ def setup(apps = None, schema_editor = None):
     for ergebnis in ergebnisse:
         Ergebnis.objects.create(name=ergebnis)
 
-    values["Ergebnis"] = {
-        "ergebnis": {
-            "Entschuldigung": "Entschuldigung",
-            "gütliche Einigung": "gütliche Einigung",
-            "gerichtliche Klärung": "gerichtliche Klärung",
-            "Mediation": "Mediation",
-            "Schlichtung": "Schlichtung",
-            "Schiedsverfahren": "Schiedsverfahren",
-            "andere": "andere",
-        }}
 
     # Rechtsbereich
     Rechtsbereich.objects.all().delete()
@@ -391,14 +310,6 @@ def setup(apps = None, schema_editor = None):
     for rechtsbereich in rechtsbereiche:
         Rechtsbereich.objects.create(name=rechtsbereich)
 
-    values["Rechtsbereich"] = {
-        "rechtsbereich": {
-            "Mietrecht": "Mietrecht",
-            "Arbeitsrecht": "Arbeitsrecht",
-            "Sozialrecht": "Sozialrecht",
-            "AGG": "AGG",
-            "andere": "andere",
-        }}
 
     for model in values:
         for fieldname, value_dict in values[model].items():
