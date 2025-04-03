@@ -75,15 +75,15 @@ def setup(apps = None, schema_editor = None):
         },
         "bezirk_item": {
             "Mitte": "Mitte",
-            "Kreuzberg": "Friedrichshain-Kreuzberg",
+            "Friedrichshain-Kreuzberg": "Friedrichshain-Kreuzberg",
             "Pankow": "Pankow",
-            "Wilmersdorf": "Charlottenburg-Wilmersdorf",
+            "Charlottenburg-Wilmersdorf": "Charlottenburg-Wilmersdorf",
             "Spandau": "Spandau",
-            "Steglitz": "Steglitz-Zehlendorf",
-            "Tempelhof": "Tempelhof-Schöneberg",
+            "Steglitz-Zehlendorf": "Steglitz-Zehlendorf",
+            "Tempelhof-Schöneberg": "Tempelhof-Schöneberg",
             "Neukölln": "Neukölln",
-            "Treptow": "Treptow-Köpenick",
-            "Marzahn": "Marzahn-Hellersdorf",
+            "Treptow-Köpenick": "Treptow-Köpenick",
+            "Marzahn-Hellersdorf": "Marzahn-Hellersdorf",
             "Lichtenberg": "Lichtenberg",
             "Reinickendorf": "Reinickendorf",
         },
@@ -184,20 +184,7 @@ def setup(apps = None, schema_editor = None):
         }
     }
 
-    for model in values:
-        for fieldname, value_dict in values[model].items():
-            encoding_counter = 0
-            for key, value in value_dict.items():
-                print("Try to set value for", model, "->", fieldname, "->", key)
-                # increment encoding for each value
-                encoding_counter += 1
-                FormValues.objects.create(
-                    model=model,
-                    key=key,
-                    value=value,
-                    field=fieldname,
-                    encoding=encoding_counter,
-                )
+    
 
     # Diskriminierungsart
     Diskrimminierungsart.objects.all().delete()
@@ -215,6 +202,7 @@ def setup(apps = None, schema_editor = None):
     for diskrimminierungsart in diskrimminierungsarten:
         Diskrimminierungsart.objects.create(name=diskrimminierungsart)
 
+    
     # Diskriminierung
     Diskriminierung.objects.all().delete()
     diskriminierungen = {
@@ -255,9 +243,11 @@ def setup(apps = None, schema_editor = None):
         typ = Diskrimminierungsart.objects.filter(name=diskrimminierungsart).first()
         Diskriminierung.objects.create(name=diskriminierung, typ=typ)
 
-    # andere Diskriminierung
+
+     # andere Diskriminierung
     for diskrimminierungsart in Diskrimminierungsart.objects.all():
         Diskriminierung.objects.create(name=f"andere ({diskrimminierungsart.name})", typ=diskrimminierungsart)
+    
 
     # Diskriminierungsform
     Diskriminierungsform.objects.all().delete()
@@ -275,6 +265,7 @@ def setup(apps = None, schema_editor = None):
     for diskriminierungsform in diskriminierungsformen:
         Diskriminierungsform.objects.create(name=diskriminierungsform)
 
+
     # Loesungsansaetze
     Loesungsansaetze.objects.all().delete()
     loesungsansaetze = [
@@ -290,7 +281,8 @@ def setup(apps = None, schema_editor = None):
     ]
     for loesungsansatz in loesungsansaetze:
         Loesungsansaetze.objects.create(name=loesungsansatz)
-
+    
+    
     # Ergebnis
     Ergebnis.objects.all().delete()
     ergebnisse = [
@@ -305,6 +297,7 @@ def setup(apps = None, schema_editor = None):
     for ergebnis in ergebnisse:
         Ergebnis.objects.create(name=ergebnis)
 
+
     # Rechtsbereich
     Rechtsbereich.objects.all().delete()
     rechtsbereiche = [
@@ -316,6 +309,23 @@ def setup(apps = None, schema_editor = None):
     ]
     for rechtsbereich in rechtsbereiche:
         Rechtsbereich.objects.create(name=rechtsbereich)
+
+
+    for model in values:
+        for fieldname, value_dict in values[model].items():
+            encoding_counter = 0
+            for key, value in value_dict.items():
+                print("Try to set value for", model, "->", fieldname, "->", key)
+                # increment encoding for each value
+                encoding_counter += 1
+                FormValues.objects.create(
+                    model=model,
+                    key=key,
+                    value=value,
+                    field=fieldname,
+                    encoding=encoding_counter,
+                )
+
 
     # Charts
     Charts.objects.create(
@@ -370,7 +380,7 @@ def setup(apps = None, schema_editor = None):
         name="Jahr des Vorfalls",
         description="Wann hat die Diskriminierung stattgefunden?",
         x_label="Jahr",
-        variable="datum_vorfall_von",
+        variable="datum_kontaktaufnahme",
         type=3,
         model="Vorgang",
     )
@@ -482,9 +492,9 @@ def setup(apps = None, schema_editor = None):
     )
     Charts.objects.create(
         name="Art der Diskriminierung",
-        description="",
+        description="Art der Diskriminierung",
         x_label="Art der Diskriminierung",
-        variable="",
+        variable="diskrimminierungsart",
         type=6,
         model="Diskrimminierungsart",
     )

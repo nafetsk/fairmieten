@@ -3,8 +3,10 @@ from django.db.models import Count, F, IntegerField, OuterRef, Subquery
 from django.apps import apps
 from django.db.models.functions import Coalesce
 from fairmieten.models import Vorgang
+from fairmieten.models import FormValues
 from .models import Charts
 from django.db.models import Q
+
 
 
 def get_dates(start_year, end_year):
@@ -17,6 +19,54 @@ def get_time_filter(start_date, end_date):
         datum_kontaktaufnahme__gte=start_date, 
         datum_kontaktaufnahme__lte=end_date
     )
+
+def prepare_table_data(query_set, chart):
+    # Convert the queryset to a dictionary for fast lookup
+    count_dict = {entry['x_variable']: entry['count'] for entry in query_set}
+    labels = get_labels(chart)
+    print("Labels:")
+    print(labels)
+    # Create the list of tuples ensuring all labels are included
+    result = [(label, count_dict.get(label, 0)) for label in labels]
+    # append sum
+    result.append(("Summe", sum([entry[1] for entry in result])))
+    print(result)
+    return result
+    
+    
+
+def get_labels(chart):
+    labels = []
+
+    if FormValues.get_field_values(chart.variable):
+        labels = [label[1] for label in FormValues.get_field_values(chart.variable)]
+            
+    elif chart.variable == "datum_kontaktaufnahme":
+        labels = (
+            Vorgang.objects.annotate(year=ExtractYear("datum_kontaktaufnahme", output_field=IntegerField()))
+            .filter(year__gt=1000)  # Filter direkt in der Datenbank
+            .values_list("year", flat=True)
+            .distinct()
+            .order_by("year")
+        )
+    elif chart.variable == "intervention":
+        # Anazahl Interventionen
+        labels = (
+            Vorgang.objects.annotate(intervention_count=Count("intervention"))
+            .values_list("intervention_count", flat=True)
+            .distinct()
+            .order_by("intervention_count")
+        )
+    else:
+        print("No labels found read Models")
+        model = apps.get_model("fairmieten", chart.model)
+        # Lese alle Einträge aus der Datenbank
+        entries = model.objects.all()
+        # Extrahiere die Labels aus den Einträgen
+        labels = [str(entry) for entry in entries]
+
+    return labels
+
 
 def apply_exclusions(result, chart_type):
     """Wendet Ausschlussfilter auf das Ergebnis an."""
@@ -89,7 +139,8 @@ def handle_type6(chart, start_date, end_date):
                 filter=Q(
                     diskriminierung__vorgang__datum_kontaktaufnahme__gte=start_date,
                     diskriminierung__vorgang__datum_kontaktaufnahme__lte=end_date
-                )
+                ),
+                distinct=True
             )
         )
         .values('count', x_variable=F('name'))

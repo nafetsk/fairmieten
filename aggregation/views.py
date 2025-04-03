@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
 from fairmieten.models import (
@@ -13,38 +13,38 @@ from fairmieten.models import (
 )
 from .models import Charts
 from django.db.models.functions import ExtractYear
-from django.db.models import Count
+from django.db.models import Count, IntegerField
 import json
 import csv
 from fairmieten.form_views import layout
 from django.db.models import OuterRef, Exists
 import unicodedata
 from datetime import datetime
-from aggregation.chart_utils import get_query_set
+from aggregation.chart_utils import get_query_set, prepare_table_data
 
+def get_valid_years():
+    valid_years = (
+        Vorgang.objects.annotate(year=ExtractYear("datum_kontaktaufnahme", output_field=IntegerField()))
+        .filter(year__gt=1000)  # Filter direkt in der Datenbank
+        .values_list("year", flat=True)
+        .distinct()
+        .order_by("year")
+    )
+    return valid_years
+    
 
 def aggregation(request: HttpRequest) -> HttpResponse:
     # get all charts from database
     charts = Charts.objects.all()
     # get all relevant years from database
-    years = (
-        Vorgang.objects.annotate(year=ExtractYear("datum_kontaktaufnahme"))
-        .values("year")
-        .distinct()
-        .order_by("year")
-    )
-
-    valid_years = [
-        year["year"]
-        for year in years
-        if isinstance(year["year"], int) and year["year"] is not None and year["year"] > 1000
-    ]
+    valid_years = get_valid_years()
 
     return render(
         request,
         "aggregation.html",
         {"base": layout(request), "charts": charts, "years": valid_years},
     )
+
 
 
 def get_chart(request: HttpRequest) -> HttpResponse:
@@ -61,12 +61,11 @@ def get_chart(request: HttpRequest) -> HttpResponse:
     chart = Charts.objects.get(id=chart_id)
 
     # get data for chart
-    incidents_per_variable = get_query_set(chart, start_year, end_year)
+    query_set = get_query_set(chart, start_year, end_year)
 
-    # sum of all incidents
-    total_incidents = sum(incident["count"] for incident in incidents_per_variable) if incidents_per_variable else 0
-
-    print(total_incidents)
+    #data 
+    table_data = prepare_table_data(query_set, chart)
+    
     # create dictionary for chart.js
     data: Dict[str, Any] = {
         "chartName": chart.name,
@@ -74,17 +73,16 @@ def get_chart(request: HttpRequest) -> HttpResponse:
         "xAxisName": chart.x_label,
         "yAxisName": "Anzahl Vorfälle",
         "labels": [
-            incident["x_variable"] for incident in incidents_per_variable
+            incident["x_variable"] for incident in query_set
         ],  # Years on x-axis
         "datasets": [
             {
                 "label": "Anzahl Vorfälle",
                 "data": [
-                    incident["count"] for incident in incidents_per_variable
+                    incident["count"] for incident in query_set
                 ],  # Count of incidents on y-axis
             }
         ],
-        "totalIncidents": total_incidents,
     }
 
     # convert dictionary to json
@@ -95,8 +93,8 @@ def get_chart(request: HttpRequest) -> HttpResponse:
         "chart.html",
         {
             "data": data_json,
-            "chart_description": chart.description,
-            "chart_name": chart.name,
+            "table_data": table_data,
+            "chart": chart,
         },
     )
 
@@ -127,8 +125,8 @@ def disable_year(request: HttpRequest) -> HttpResponse:
 
 
 def create_codebook():
-    # Retrieve all FormValues from the database
-    form_values = FormValues.objects.all()
+    # Retrieve all FormValues with model=Vorgang from the database
+    form_values = FormValues.objects.filter(model="Vorgang")
 
     # Initialize the codebook dictionary
     codebook = {}
@@ -136,6 +134,9 @@ def create_codebook():
     # Group the FormValues by their field and create the nested dictionary
     for form_value in form_values:
         field = form_value.field
+        # if field ends with _item, remove it
+        if field.endswith("_item"):
+            field = field[:-5]
         encoding = form_value.encoding
         value = form_value.value
 
@@ -269,9 +270,9 @@ def generate_headers(column_configs) -> list:
     static_headers = [
         "id", "fallnummer", "vorgangstyp", "datum_kontakaufnahme",
         "kontakaufnahme_durch", "datum_vorfall_von", "datum_vorfall_bis",
-        "sprache","andere_sprache", "bezirk", "zugang", "alter", "anzahl_kinder",
-        "geschlecht", "betroffen", "prozesskostenuebernahme",
-        "anzahl_interventionen", "bereich_der_diskriminierung", "anderer_bereich_d",
+        "sprache","andere_sprache", "bezirk", "zugang_fachstelle", "alter", "anzahl_kinder",
+        "gender", "betroffen", "prozesskostenuebernahme",
+        "anzahl_interventionen", "bereich_diskriminierung", "anderer_bereich_d",
         "andere_df", "andere_d",
     ]
     
@@ -305,20 +306,20 @@ def get_static_row_data(vorgang, codebook) -> list:
         vorgang.fallnummer,
         _get_coded_value(vorgang.vorgangstyp.name, codebook, "vorgangstyp") if vorgang.vorgangstyp else "",
         vorgang.datum_kontaktaufnahme,
-        _get_coded_value(vorgang.kontaktaufnahme_durch_item, codebook, "kontaktaufnahme_durch_item"),
+        _get_coded_value(vorgang.kontaktaufnahme_durch_item, codebook, "kontaktaufnahme_durch"),
         vorgang.datum_vorfall_von,
         vorgang.datum_vorfall_bis,
-        _get_coded_value(vorgang.sprache_item, codebook, "sprache_item"),
+        _get_coded_value(vorgang.sprache_item, codebook, "sprache"),
         vorgang.andere_sprache,
-        _get_coded_value(vorgang.bezirk_item, codebook, "bezirk_item"),
-        _get_coded_value(vorgang.zugang_fachstelle_item, codebook, "zugang_fachstelle_item"),
-        _get_coded_value(vorgang.alter_item, codebook, "alter_item"),
+        _get_coded_value(vorgang.bezirk_item, codebook, "bezirk"),
+        _get_coded_value(vorgang.zugang_fachstelle_item, codebook, "zugang_fachstelle"),
+        _get_coded_value(vorgang.alter_item, codebook, "alter"),
         vorgang.anzahl_kinder,
-        _get_coded_value(vorgang.gender_item, codebook, "gender_item"),
-        _get_coded_value(vorgang.betroffen_item, codebook, "betroffen_item"),
-        _get_coded_value(vorgang.prozeskostenuebernahme_item, codebook, "prozeskostenuebernahme_item"),
+        _get_coded_value(vorgang.gender_item, codebook, "gender"),
+        _get_coded_value(vorgang.betroffen_item, codebook, "betroffen"),
+        _get_coded_value(vorgang.prozeskostenuebernahme_item, codebook, "prozeskostenuebernahme"),
         vorgang.intervention_count,
-        _get_coded_value(vorgang.bereich_diskriminierung_item, codebook, "bereich_diskriminierung_item"),
+        _get_coded_value(vorgang.bereich_diskriminierung_item, codebook, "bereich_diskriminierung"),
         vorgang.anderer_bereich_diskriminierung,
         vorgang.andere_diskriminierungsform,
         vorgang.andere_diskriminierung,
@@ -358,7 +359,7 @@ def codebook_download_txt(request: HttpRequest) -> HttpResponse:
         encodings = codebook[field]
         for encoding in sorted(encodings.keys(), key=int):
             value = encodings[encoding]
-            lines.append(f"{encoding} {value}")
+            lines.append(f"{encoding} „{value}\"")
         lines.append('')
     
     # Join all lines into a single string with newline separators

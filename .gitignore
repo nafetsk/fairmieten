@@ -7,3 +7,4 @@ staticfiles
 fairmieten/static/css/t_output.css
 .env
 node_modules/
+.DS_Store
