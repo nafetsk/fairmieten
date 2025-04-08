@@ -126,14 +126,23 @@ def disable_year(request: HttpRequest) -> HttpResponse:
 
 def create_codebook():
     # Retrieve all FormValues with model=Vorgang from the database
-    form_values = FormValues.objects.filter(model="Vorgang")
+    #form_values = FormValues.objects.filter(model="Vorgang")
+    form_values = FormValues.objects.all()
 
     # Initialize the codebook dictionary
     codebook = {}
 
+    field_names = {
+        "form_item": "inter_form"
+    }
+
     # Group the FormValues by their field and create the nested dictionary
     for form_value in form_values:
         field = form_value.field
+        # Check if the field is in the field_names dictionary
+        if field in field_names:
+            # If it is, use the corresponding value from field_names
+            field = field_names[field]
         # if field ends with _item, remove it
         if field.endswith("_item"):
             field = field[:-5]
@@ -251,11 +260,30 @@ def csv_download(request):
     # Write data rows
     for vorgang in queryset:
         static_data = get_static_row_data(vorgang, codebook)
+        interventions = get_interventions(vorgang, codebook)
         dynamic_data = generate_dynamic_row_data(vorgang, column_configs)
-        writer.writerow(static_data + dynamic_data)
+        writer.writerow(static_data + interventions + dynamic_data)
 
     return response
 
+def get_interventions(vorgang, codebook) -> list:
+    """ get first 6 interventions 
+    intervention mode is pointing to Vorgang
+    """
+    interventions = vorgang.intervention_set.all().order_by('datum')[:6]
+    intervention_data = []
+    
+    for x in range(6):
+        if x < len(interventions):
+            intervention_data.append(
+                _get_coded_value(interventions[x].form_item, codebook, "inter_form")
+            )
+        else:
+            intervention_data.append("")
+    
+    print(intervention_data)
+    
+    return intervention_data
 
 def create_csv_response() -> HttpResponse:
     """Create HttpResponse with CSV headers."""
@@ -276,6 +304,10 @@ def generate_headers(column_configs) -> list:
         "andere_df", "andere_d", "la_beschreibung", "erg_beschreibung",
     ]
     
+    intervention_headers = [
+        f"inter_{i+1}" for i in range(6)
+    ]
+    
     dynamic_headers = []
     for config in column_configs:
         dynamic_headers.extend([
@@ -283,7 +315,7 @@ def generate_headers(column_configs) -> list:
             for instance in config['instances']
         ])
     
-    return static_headers + dynamic_headers
+    return static_headers + intervention_headers + dynamic_headers
 
 
 def generate_annotations(instances, through_model, filter_field, prefix) -> dict:
