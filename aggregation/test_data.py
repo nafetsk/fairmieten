@@ -22,7 +22,7 @@ fake = Faker()
 def custom_random_element(field_name):
     options = FormValues.get_field_values(field_name)
     if options:
-        first_elements = [option[1] for option in options]
+        first_elements = [option[0] for option in options]
         return random.choice(first_elements)
     return None
 

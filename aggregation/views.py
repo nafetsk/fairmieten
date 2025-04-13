@@ -147,12 +147,13 @@ def create_codebook():
         if field.endswith("_item"):
             field = field[:-5]
         encoding = form_value.encoding
-        value = form_value.value
+        # value = form_value.value
+        key = form_value.key
 
         if field not in codebook:
             codebook[field] = {}
 
-        codebook[field][encoding] = value
+        codebook[field][encoding] = key
 
     return codebook
 
