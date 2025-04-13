@@ -36,7 +36,7 @@ admin.site.register(Charts, unfold.admin.ModelAdmin)
 admin.site.register(Diskriminierungsform, unfold.admin.ModelAdmin)
 admin.site.register(Vorgang)
 admin.site.register(Rechtsbereich)
-#admin.site.register(Verursacher)
+admin.site.register(Verursacher)
 #admin.site.register(Intervention)
 
 

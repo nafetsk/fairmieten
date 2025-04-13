@@ -159,9 +159,16 @@ def create_codebook():
 
 def _get_coded_value(value, codebook, category):
     # Reverse lookup to find the code for the given value
+    if category == "personentyp":
+        print(f"category: {category}, value: {value}")
+        print(codebook[category])
+    if category == "unternehmenstyp":
+        print(f"category: {category}, value: {value}")
+    
     for code, label in codebook.get(category, {}).items():
         if label == value:
             return code
+            
 
     # If no matching code is found, return the original value
     return value
@@ -184,6 +191,7 @@ def transform_name(name):
     transformed_name = normalized_name.translate(translation_table).lower()
     # Remove any remaining non-ASCII characters
     transformed_name = "".join(c for c in transformed_name if c.isascii())
+    
     return transformed_name
 
 
@@ -260,9 +268,10 @@ def csv_download(request):
     # Write data rows
     for vorgang in queryset:
         static_data = get_static_row_data(vorgang, codebook)
+        verursacher = get_verursacher(vorgang, codebook)
         interventions = get_interventions(vorgang, codebook)
         dynamic_data = generate_dynamic_row_data(vorgang, column_configs)
-        writer.writerow(static_data + interventions + dynamic_data)
+        writer.writerow(static_data + verursacher + interventions + dynamic_data)
 
     return response
 
@@ -281,9 +290,31 @@ def get_interventions(vorgang, codebook) -> list:
         else:
             intervention_data.append("")
     
-    print(intervention_data)
-    
     return intervention_data
+
+def get_verursacher(vorgang, codebook) -> list:
+    """ get first 3 perpetrators 
+    perpetrator mode is pointing to Vorgang
+    """
+    verursacher = vorgang.verursacher_set.all()[:3]
+    verursacher_data = []
+    
+    for x in range(3):
+        if x < len(verursacher):
+            verursacher_data.append(
+                _get_coded_value(verursacher[x].unternehmenstyp_item, codebook, "unternehmenstyp")
+            )
+            verursacher_data.append(
+                _get_coded_value(verursacher[x].personentyp_item, codebook, "personentyp")
+            )
+        else:
+            # append two empty strings for missing data
+            verursacher_data.append("")
+            verursacher_data.append("")
+    
+    print(verursacher_data)
+    
+    return verursacher_data
 
 def create_csv_response() -> HttpResponse:
     """Create HttpResponse with CSV headers."""
@@ -308,6 +339,12 @@ def generate_headers(column_configs) -> list:
         f"inter_{i+1}" for i in range(6)
     ]
     
+    verursacher_headers = [
+        header
+        for i in range(3)
+        for header in (f"u_typ_{i+1}", f"p_typ_{i+1}")
+    ]
+    
     dynamic_headers = []
     for config in column_configs:
         dynamic_headers.extend([
@@ -315,7 +352,7 @@ def generate_headers(column_configs) -> list:
             for instance in config['instances']
         ])
     
-    return static_headers + intervention_headers + dynamic_headers
+    return static_headers + verursacher_headers + intervention_headers + dynamic_headers
 
 
 def generate_annotations(instances, through_model, filter_field, prefix) -> dict:
