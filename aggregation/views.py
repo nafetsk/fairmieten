@@ -126,33 +126,50 @@ def disable_year(request: HttpRequest) -> HttpResponse:
 
 def create_codebook():
     # Retrieve all FormValues with model=Vorgang from the database
-    form_values = FormValues.objects.filter(model="Vorgang")
+    #form_values = FormValues.objects.filter(model="Vorgang")
+    form_values = FormValues.objects.all()
 
     # Initialize the codebook dictionary
     codebook = {}
 
+    field_names = {
+        "form_item": "inter_form"
+    }
+
     # Group the FormValues by their field and create the nested dictionary
     for form_value in form_values:
         field = form_value.field
+        # Check if the field is in the field_names dictionary
+        if field in field_names:
+            # If it is, use the corresponding value from field_names
+            field = field_names[field]
         # if field ends with _item, remove it
         if field.endswith("_item"):
             field = field[:-5]
         encoding = form_value.encoding
-        value = form_value.value
+        # value = form_value.value
+        key = form_value.key
 
         if field not in codebook:
             codebook[field] = {}
 
-        codebook[field][encoding] = value
+        codebook[field][encoding] = key
 
     return codebook
 
 
 def _get_coded_value(value, codebook, category):
     # Reverse lookup to find the code for the given value
+    if category == "personentyp":
+        print(f"category: {category}, value: {value}")
+        print(codebook[category])
+    if category == "unternehmenstyp":
+        print(f"category: {category}, value: {value}")
+    
     for code, label in codebook.get(category, {}).items():
         if label == value:
             return code
+            
 
     # If no matching code is found, return the original value
     return value
@@ -175,6 +192,7 @@ def transform_name(name):
     transformed_name = normalized_name.translate(translation_table).lower()
     # Remove any remaining non-ASCII characters
     transformed_name = "".join(c for c in transformed_name if c.isascii())
+    
     return transformed_name
 
 
@@ -251,11 +269,53 @@ def csv_download(request):
     # Write data rows
     for vorgang in queryset:
         static_data = get_static_row_data(vorgang, codebook)
+        verursacher = get_verursacher(vorgang, codebook)
+        interventions = get_interventions(vorgang, codebook)
         dynamic_data = generate_dynamic_row_data(vorgang, column_configs)
-        writer.writerow(static_data + dynamic_data)
+        writer.writerow(static_data + verursacher + interventions + dynamic_data)
 
     return response
 
+def get_interventions(vorgang, codebook) -> list:
+    """ get first 6 interventions 
+    intervention mode is pointing to Vorgang
+    """
+    interventions = vorgang.intervention_set.all().order_by('datum')[:6]
+    intervention_data = []
+    
+    for x in range(6):
+        if x < len(interventions):
+            intervention_data.append(
+                _get_coded_value(interventions[x].form_item, codebook, "inter_form")
+            )
+        else:
+            intervention_data.append("")
+    
+    return intervention_data
+
+def get_verursacher(vorgang, codebook) -> list:
+    """ get first 3 perpetrators 
+    perpetrator mode is pointing to Vorgang
+    """
+    verursacher = vorgang.verursacher_set.all()[:3]
+    verursacher_data = []
+    
+    for x in range(3):
+        if x < len(verursacher):
+            verursacher_data.append(
+                _get_coded_value(verursacher[x].unternehmenstyp_item, codebook, "unternehmenstyp")
+            )
+            verursacher_data.append(
+                _get_coded_value(verursacher[x].personentyp_item, codebook, "personentyp")
+            )
+        else:
+            # append two empty strings for missing data
+            verursacher_data.append("")
+            verursacher_data.append("")
+    
+    print(verursacher_data)
+    
+    return verursacher_data
 
 def create_csv_response() -> HttpResponse:
     """Create HttpResponse with CSV headers."""
@@ -270,10 +330,20 @@ def generate_headers(column_configs) -> list:
     static_headers = [
         "id", "fallnummer", "vorgangstyp", "datum_kontakaufnahme",
         "kontakaufnahme_durch", "datum_vorfall_von", "datum_vorfall_bis",
-        "sprache","andere_sprache", "bezirk", "zugang_fachstelle", "alter", "anzahl_kinder",
+        "sprache","andere_sprache", "vorg_beschreibung", "bezirk", "zugang_fachstelle", "alter", "anzahl_kinder",
         "gender", "betroffen", "prozesskostenuebernahme",
         "anzahl_interventionen", "bereich_diskriminierung", "anderer_bereich_d",
-        "andere_df", "andere_d",
+        "andere_df", "andere_d", "la_beschreibung", "erg_beschreibung",
+    ]
+    
+    intervention_headers = [
+        f"inter_{i+1}" for i in range(6)
+    ]
+    
+    verursacher_headers = [
+        header
+        for i in range(3)
+        for header in (f"u_typ_{i+1}", f"p_typ_{i+1}")
     ]
     
     dynamic_headers = []
@@ -283,7 +353,7 @@ def generate_headers(column_configs) -> list:
             for instance in config['instances']
         ])
     
-    return static_headers + dynamic_headers
+    return static_headers + verursacher_headers + intervention_headers + dynamic_headers
 
 
 def generate_annotations(instances, through_model, filter_field, prefix) -> dict:
@@ -311,6 +381,7 @@ def get_static_row_data(vorgang, codebook) -> list:
         vorgang.datum_vorfall_bis,
         _get_coded_value(vorgang.sprache_item, codebook, "sprache"),
         vorgang.andere_sprache,
+        vorgang.beschreibung,
         _get_coded_value(vorgang.bezirk_item, codebook, "bezirk"),
         _get_coded_value(vorgang.zugang_fachstelle_item, codebook, "zugang_fachstelle"),
         _get_coded_value(vorgang.alter_item, codebook, "alter"),
@@ -323,6 +394,8 @@ def get_static_row_data(vorgang, codebook) -> list:
         vorgang.anderer_bereich_diskriminierung,
         vorgang.andere_diskriminierungsform,
         vorgang.andere_diskriminierung,
+        vorgang.loesungsansaetze_bemerkung,
+        vorgang.ergebnis_bemerkung,
     ]
 
 
