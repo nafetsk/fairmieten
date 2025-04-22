@@ -71,7 +71,7 @@ git remote add <fairmieten> dokku@<your_domain>:fwfm #ip is also possible
 git push <fairmieten> main # or branchname:main if you are in another branch
 
 # app should now be available under http://<your_app_domain>
-# then got back to the server
+# then go back to the server
 dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git
 dokku letsencrypt:set --global email <your_email>
 dokku letsencrypt:enable fwfm
